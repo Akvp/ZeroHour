@@ -4,6 +4,8 @@
 #ifndef _H_MAIN_
 #define _H_MAIN_
 
+#include "Common.h"
+
 #include "Model.h"
 #include "Event.h"
 #include "FPS.h"
