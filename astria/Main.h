@@ -15,6 +15,8 @@
 #include "StaticObj.h"
 #include "Params.h"
 
+#include "Agent.h"
+
 #define _DEBUG 1
 
 class CMain : public CEvent
@@ -99,6 +101,8 @@ private:	//Movements and related Matrix transformations
 
 	glm::vec3 Direction;
 	glm::vec3 Right;
+
+	Agent* agent;
 
 	float Speed;			//Speed of movements
 	float MouseSpeed;

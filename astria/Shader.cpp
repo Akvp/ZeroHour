@@ -175,7 +175,7 @@ bool CShaderProgram::addShader(CShader* shader)
 {
 	if (!shader->isLoaded())
 	{
-		char* errorMsg;
+		char* errorMsg = "";
 		sprintf(errorMsg, "Error! Shader file %s wasn't loaded properly\n", shader->getFile());
 		MessageBox(NULL, errorMsg, "Program error", MB_ICONERROR);
 		return false;

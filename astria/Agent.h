@@ -2,6 +2,7 @@
 #define _AGENT_H_
 
 #include "Object.h"
+#include "State.h"
 #include "Common.h"
 
 enum AGENT_STATE
@@ -9,6 +10,8 @@ enum AGENT_STATE
 	STATE_ROAM,
 	STATE_FLEE
 };
+
+class State;
 
 class Agent : public Object
 {
@@ -19,6 +22,9 @@ public:
 	~Agent();
 
 	void Move(float direction, float distance);
+
+	Object* FindTarget();
+	void CenterTarget();
 
 	void ChangeState(State* newState);
 	void Interact(Object* target);
@@ -33,6 +39,7 @@ public:
 	glm::vec3 GetMoveDirection () const { return MoveDirection; }
 	glm::vec3 GetLook () const { return Look; }
 	float GetSpeed () const { return Speed; }
+	float GetTurnRate() const { return TurnRate; }
 	State* GetState () const { return CurrentState; }
 
 private:
@@ -41,10 +48,9 @@ private:
 	glm::vec3 Look;
 	glm::vec3 MoveDirection;
 	float Speed;
+	float TurnRate;
 
 	State* CurrentState;
-
-
 };
 
 #endif

@@ -3,6 +3,8 @@
 
 #include "Agent.h"
 
+class Agent;
+
 class State
 {
 public:

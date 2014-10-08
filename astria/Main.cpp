@@ -5,6 +5,8 @@ CMain::CMain()
 	Running = true;
 	Window_Main = NULL;
 
+	agent = new Agent("asd", 1, 0, 0);
+
 	Speed = 5.0f;
 	MouseSpeed = 0.002f;
 }

@@ -134,7 +134,7 @@ bool CTexture::load_SDL(char* file)
 
 	if (Surf_Load == NULL)
 	{
-		char* errorMsg;
+		char* errorMsg = "";
 		sprintf(errorMsg, "Error loading %s!\nError message: %s\n", file, IMG_GetError());
 		MessageBox(NULL, errorMsg, "Texture loading error", MB_ICONERROR);
 		return false;

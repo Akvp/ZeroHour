@@ -26,6 +26,7 @@ void* CVBO::mapBuffer(int hint)
 	if (!dataUploaded)
 		return NULL;
 	void* ptrRes = glMapBuffer(type, hint);
+	return ptrRes;
 }
 
 void* CVBO::mapSubBuffer(int hint, GLuint offset, GLuint length)

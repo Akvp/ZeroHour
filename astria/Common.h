@@ -13,6 +13,7 @@
 #include <gl\glew.h>
 #include <SDL/SDL.h>
 #include <SDL\SDL_opengl.h>
+#include <SDL\SDL_image.h>
 #include <gl\GLU.h>
 #include <glm\glm.hpp>
 #include <glm\gtc\matrix_transform.hpp>

@@ -1,11 +1,9 @@
 #include "State.h"
-#include "Agent.h"
 #include "utils.h"
 
 Agent::Agent()
 {
-	std::string name = "Individual " + NextValidID;
-	Agent(name);
+	Agent("Individual " + std::to_string(NextValidID));
 }
 
 Agent::Agent(std::string name)
@@ -24,7 +22,7 @@ Agent::Agent(std::string name, int x, int y, int z)
 	MoveDirection = glm::vec3(0);
 	Speed = 0;
 
-	CurrentState = new State();
+	CurrentState = new State_Roam();
 }
 
 Agent::~Agent()
