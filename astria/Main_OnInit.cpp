@@ -1,4 +1,4 @@
-#include "hMain.h"
+#include "Main.h"
 
 bool CMain::OnInit()
 {
@@ -36,10 +36,10 @@ bool CMain::OnInit()
 	switch (FullscreenOption)
 	{
 	case IDNO:
-		Window_Main = SDL_CreateWindow(WINDOW_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		break;
 	case IDYES:
-		Window_Main = SDL_CreateWindow(WINDOW_NAME, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
 	}
 	if(Window_Main == NULL)
 	{
@@ -84,7 +84,7 @@ bool CMain::OnInit()
 	}
 
 	//Center mouse cursor
-	SDL_WarpMouseInWindow(Window_Main, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	SDL_WarpMouseInWindow(Window_Main, CParams::WindowWidth / 2, CParams::WindowHeight / 2);
 
 	return true;
 }

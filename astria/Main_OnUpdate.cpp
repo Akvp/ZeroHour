@@ -1,4 +1,4 @@
-#include "hMain.h"
+#include "Main.h"
 
 void CMain::OnUpdate()
 {
@@ -20,7 +20,7 @@ void CMain::OnUpdate()
 
 	glm::vec3 up = glm::cross(Right, Direction);
 
-	Projection = glm::perspective(FoV, WINDOW_RATIO, 0.1f, 1000.0f);
+	Projection = glm::perspective(FoV, 4.0f/3.0f, 0.1f, 1000.0f);
 
 	View = glm::lookAt(
 		Position,

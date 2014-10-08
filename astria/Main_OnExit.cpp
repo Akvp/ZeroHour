@@ -1,4 +1,4 @@
-#include "hMain.h"
+#include "Main.h"
 
 void CMain::OnExit()
 {

@@ -1,4 +1,4 @@
-#include "hMain.h"
+#include "Main.h"
 
 void CMain::OnEvent(SDL_Event Event)
 {
@@ -26,11 +26,11 @@ void CMain::OnEvent(SDL_Event Event)
 	SDL_GetMouseState(&Mouse_X, &Mouse_Y);
 
 	//Recenter mouse
-	SDL_WarpMouseInWindow(Window_Main, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	SDL_WarpMouseInWindow(Window_Main, CParams::WindowWidth / 2, CParams::WindowHeight / 2);
 
 	//Compute new orientation
-	HorizontalAngle += MouseSpeed * float(SCREEN_WIDTH / 2 - Mouse_X);
-	VerticalAngle += MouseSpeed * float(SCREEN_HEIGHT / 2 - Mouse_Y);
+	HorizontalAngle += MouseSpeed * float(CParams::WindowWidth / 2 - Mouse_X);
+	VerticalAngle += MouseSpeed * float(CParams::WindowHeight / 2 - Mouse_Y);
 }
 
 void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode)

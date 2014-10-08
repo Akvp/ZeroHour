@@ -4,20 +4,6 @@
 #ifndef _H_MAIN_
 #define _H_MAIN_
 
-#include <gl\glew.h>
-#include <SDL\SDL.h>
-#include <SDL\SDL_opengl.h>
-#include <gl\GLU.h>
-
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-
-#include <Windows.h>
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <cmath>
-
 #include "Model.h"
 #include "Event.h"
 #include "FPS.h"
@@ -25,6 +11,7 @@
 #include "Skybox.h"
 #include "Light.h"
 #include "StaticObj.h"
+#include "Params.h"
 
 #define _DEBUG 1
 

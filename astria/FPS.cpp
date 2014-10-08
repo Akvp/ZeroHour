@@ -1,4 +1,4 @@
-#include "hFPS.h"
+#include "FPS.h"
 
 CFPS CFPS::FPSControl;
 

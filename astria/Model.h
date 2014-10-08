@@ -8,7 +8,7 @@
 #include <assimp/scene.h>           // Output data structure
 #include <assimp/postprocess.h>     // Post processing flags
 
-#include "hader.h"
+#include "Shader.h"
 #include "VBO.h"
 #include "Texture.h"
 

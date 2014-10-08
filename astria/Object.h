@@ -1,6 +1,8 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_
 
+#include "Common.h"
+
 enum OBJ_FLAG
 {
 	FLAG_NONE		= 0x00000000,

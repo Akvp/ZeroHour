@@ -1,5 +1,4 @@
 #include "Gene.h"
-#include "Individual.h"
 
 //CGenAlg::CGenAlg(int popsize, double mutrate, double crossrate, int numweights) :
 //PopSize(popsize),
@@ -194,54 +193,54 @@
 //	AverageFitness = 0;
 //}
 
-void CGenAlg::GetOffSpring(CIndividual* dad, CIndividual* mom)
-{
-	if (dad == mom || !dad->CanMate() || !mom->CanMate())
-	{
-		return;
-	}
-
-	vector<SGenome> NewDNA(dad->GetDNA().size());
-
-	for (int i = 0; i < NewDNA.size(); i++)
-	{
-		if (RandFloat() <= CParams::CrossoverRate)
-		{
-			CrossOver(dad->GetDNA()[i], mom->GetDNA()[i], NewDNA[i]);
-		}
-
-		if (RandFloat() <= CParams::MutationRate)
-		{
-			Mutate(NewDNA[i]);
-		}
-	}
-
-	SVector2D NewPosition((dad->position.x - mom->position.x) / 2, (dad->position.y - mom->position.y) / 2);
-
-	CIndividual::Population.push_back(new CIndividual(NewPosition.x, NewPosition.y, NewDNA));
-}
-
-void CGenAlg::CrossOver(const vector<double> & dad, const vector<double> & mom, vector<double> & offspring)
-{
-	int cp = RandInt(0, dad.size());
-
-	for (int i = 0; i < cp; i++)
-	{
-		offspring.push_back(dad[i]);
-	}
-	for (int i = cp; i < mom.size(); i++)
-	{
-		offspring.push_back(mom[i]);
-	}
-}
-
-void CGenAlg::Mutate(vector<double> & chromosome)
-{
-	for (int i = 0; i < chromosome.size(); i++)
-	{
-		if (RandFloat() < CParams::MutationRate)
-		{
-			chromosome[i] += (RandNormal() * CParams::MaxPerturbation);
-		}
-	}
-}
+//void CGenAlg::GetOffSpring(CIndividual* dad, CIndividual* mom)
+//{
+//	if (dad == mom || !dad->CanMate() || !mom->CanMate())
+//	{
+//		return;
+//	}
+//
+//	vector<SGenome> NewDNA(dad->GetDNA().size());
+//
+//	for (int i = 0; i < NewDNA.size(); i++)
+//	{
+//		if (RandFloat() <= CParams::CrossoverRate)
+//		{
+//			CrossOver(dad->GetDNA()[i], mom->GetDNA()[i], NewDNA[i]);
+//		}
+//
+//		if (RandFloat() <= CParams::MutationRate)
+//		{
+//			Mutate(NewDNA[i]);
+//		}
+//	}
+//
+//	SVector2D NewPosition((dad->position.x - mom->position.x) / 2, (dad->position.y - mom->position.y) / 2);
+//
+//	CIndividual::Population.push_back(new CIndividual(NewPosition.x, NewPosition.y, NewDNA));
+//}
+//
+//void CGenAlg::CrossOver(const vector<double> & dad, const vector<double> & mom, vector<double> & offspring)
+//{
+//	int cp = RandInt(0, dad.size());
+//
+//	for (int i = 0; i < cp; i++)
+//	{
+//		offspring.push_back(dad[i]);
+//	}
+//	for (int i = cp; i < mom.size(); i++)
+//	{
+//		offspring.push_back(mom[i]);
+//	}
+//}
+//
+//void CGenAlg::Mutate(vector<double> & chromosome)
+//{
+//	for (int i = 0; i < chromosome.size(); i++)
+//	{
+//		if (RandFloat() < CParams::MutationRate)
+//		{
+//			chromosome[i] += (RandNormal() * CParams::MaxPerturbation);
+//		}
+//	}
+//}

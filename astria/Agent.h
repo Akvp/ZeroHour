@@ -25,8 +25,8 @@ public:
 
 	void Update();
 
-	vector<Object*> GetSurrounding(float radius);
-	vector<Object*> GetSurrounding(int numObj);
+	std::vector<Object*> GetSurrounding(float radius);
+	std::vector<Object*> GetSurrounding(int numObj);
 
 // Accessor functions
 public:
