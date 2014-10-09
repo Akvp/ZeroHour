@@ -72,7 +72,6 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Gene.cpp" />
-    <ClCompile Include="Log.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NeuralNet.cpp" />
     <ClCompile Include="Params.cpp" />

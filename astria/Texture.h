@@ -20,9 +20,9 @@ class CTexture
 {
 public:
 	CTexture();
-	CTexture(char* file, bool generateMipMap = false);
+	CTexture(const char* file, bool generateMipMap = false);
 
-	bool load_2D(char* file, bool generateMipMap = false);
+	bool load_2D(const char* file, bool generateMipMap = false);
 	void createEmpty(int width, int height, GLenum format);
 	void createFromData(BYTE* data, int width, int height, int BPP, GLenum format, bool generateMipMap = false);
 	void release();
@@ -39,7 +39,7 @@ public:
 	int getHeight();
 	int getBPP();
 
-	char* getFile();
+	const char* getFile();
 
 	void bind(int textureUnit = 0);
 
@@ -47,11 +47,11 @@ public:
 	GLuint operator()();
 
 private:
-	bool load_SDL(char* file);
-	bool load_DDS(char* file);
+	bool load_SDL(const char* file);
+	bool load_DDS(const char* file);
 
 private:
-	char* file;
+	const char* file;
 	GLuint texture;
 	GLuint sampler;
 	int width, height, BPP;

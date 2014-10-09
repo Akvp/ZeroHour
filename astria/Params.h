@@ -11,23 +11,24 @@ class CParams
 public:
 	static char* File;
 
-	// ===== General parameters ======
+	// ===== Constant parameters ======
 	static double Pi;
 	static double HalfPi;
 	static double TwoPi;
 
-	static char* WindowName;
+
+	// ===== Graphical options =====
+	static char WindowName[64];
 	static int WindowWidth;
 	static int WindowHeight;
+	static float AspectRatio;
+	static char SkyBoxFolder[128];
 
 	// ===== General properties =====
-	static int FoodCount;
-	static int InitIndividualCount;
-
-	static int WorldMinX, WorldMaxX;
-	static int WorldMinY, WorldMaxY;
-	static int WorldMinZ, WorldMaxZ;
-	static int GroundLevel;
+	static float WorldMinX, WorldMaxX;
+	static float WorldMinY, WorldMaxY;
+	static float WorldMinZ, WorldMaxZ;
+	static float GroundLevel;
 
 	// ===== Genetic algorithm =====
 	static double CrossoverRate;
@@ -39,8 +40,6 @@ public:
 	// ===== Individual properties =====
 	static int DecayTimeInterval;	//in millisecond
 	static int AgeTimeInterval;		//in millisecond
-
-	static int MatingCooldown;
 
 	CParams()
 	{

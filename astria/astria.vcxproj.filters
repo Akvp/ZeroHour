@@ -39,9 +39,6 @@
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Skybox.cpp">
-      <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="StaticObj.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
@@ -68,9 +65,6 @@
     </ClCompile>
     <ClCompile Include="NeuralNet.cpp">
       <Filter>Source Files\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="Stringify.cpp">
       <Filter>Source Files\common</Filter>
@@ -104,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="Skybox.cpp">
+      <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -140,9 +137,6 @@
     <ClInclude Include="StaticObj.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Skybox.h">
-      <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="FPS.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -169,6 +163,9 @@
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="Skybox.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

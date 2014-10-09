@@ -45,6 +45,5 @@ int CMain::OnExecute()
 
 int main(int argc, char* argv[])
 {
-	CMain::GetInstance()->OnExecute();
-	return 0;
+	return CMain::GetInstance()->OnExecute();
 }

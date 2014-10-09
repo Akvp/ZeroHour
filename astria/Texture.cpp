@@ -14,12 +14,12 @@ CTexture::CTexture()
 	file = "";
 }
 
-CTexture::CTexture(char* file, bool generateMipMap)
+CTexture::CTexture(const char* file, bool generateMipMap)
 {
 	load_2D(file, generateMipMap);
 }
 
-bool CTexture::load_2D(char* file, bool generateMipMap)
+bool CTexture::load_2D(const char* file, bool generateMipMap)
 {
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -41,7 +41,7 @@ bool CTexture::load_2D(char* file, bool generateMipMap)
 #define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
-bool CTexture::load_DDS(char* file)
+bool CTexture::load_DDS(const char* file)
 {
 	unsigned char header[124];
 
@@ -128,7 +128,7 @@ bool CTexture::load_DDS(char* file)
 	return true;
 }
 
-bool CTexture::load_SDL(char* file)
+bool CTexture::load_SDL(const char* file)
 {
 	SDL_Surface* Surf_Load = IMG_Load(file);
 
@@ -266,7 +266,7 @@ GLuint CTexture::getID()
 	return texture;
 }
 
-char* CTexture::getFile()
+const char* CTexture::getFile()
 {
 	return file;
 }

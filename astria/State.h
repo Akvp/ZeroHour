@@ -1,8 +1,6 @@
 #ifndef _STATE_H_
 #define _STATE_H_
 
-#include "Agent.h"
-
 class Agent;
 
 class State

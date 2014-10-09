@@ -129,7 +129,8 @@ bool CMain::OnInit_GL()
 	//			"gfx/skybox_elbrus/elbrus_top.jpg", 
 	//			"gfx/skybox_elbrus/elbrus_top.jpg");
 
-	skybox.load("gfx/mp_hexagon/hexagon_ft.tga",
+	skybox.load("gfx/mp_hexagon/",
+				"gfx/mp_hexagon/hexagon_ft.tga",
 				"gfx/mp_hexagon/hexagon_bk.tga",
 				"gfx/mp_hexagon/hexagon_lf.tga",
 				"gfx/mp_hexagon/hexagon_rt.tga",
