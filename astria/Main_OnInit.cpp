@@ -105,9 +105,12 @@ bool CMain::OnInit_GL()
 		return false;
 	if (!lightShader_fragment.load("shaders/dirLight.frag", GL_FRAGMENT_SHADER))
 		return false;
-	if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
-		return false;
-
+	//if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
+	//	return false;
+	mainProgram.create();
+	mainProgram.addShader(&mainShader_vertex);
+	mainProgram.addShader(&mainShader_fragment);
+	mainProgram.link();
 
 	//Load models
 	models[0].load("gfx/Wolf/Wolf.obj");
@@ -122,27 +125,13 @@ bool CMain::OnInit_GL()
 	//Clear the background as dark blue
 	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
 
-	//skybox.load("gfx/skybox_elbrus/elbrus_front.jpg",
-	//			"gfx/skybox_elbrus/elbrus_back.jpg", 
-	//			"gfx/skybox_elbrus/elbrus_right.jpg",
-	//			"gfx/skybox_elbrus/elbrus_left.jpg",
-	//			"gfx/skybox_elbrus/elbrus_top.jpg", 
-	//			"gfx/skybox_elbrus/elbrus_top.jpg");
-
-	skybox.load("gfx/mp_hexagon/",
-				"gfx/mp_hexagon/hexagon_ft.tga",
-				"gfx/mp_hexagon/hexagon_bk.tga",
-				"gfx/mp_hexagon/hexagon_lf.tga",
-				"gfx/mp_hexagon/hexagon_rt.tga",
-				"gfx/mp_hexagon/hexagon_up.tga",
-				"gfx/mp_hexagon/hexagon_dn.tga");
-
-	//skybox.load("gfx/mp_chlorine/chlorine-bay_ft.tga",
-	//			"gfx/mp_chlorine/chlorine-bay_bk.tga",
-	//			"gfx/mp_chlorine/chlorine-bay_lf.tga",
-	//			"gfx/mp_chlorine/chlorine-bay_rt.tga",
-	//			"gfx/mp_chlorine/chlorine-bay_up.tga",
-	//			"gfx/mp_chlorine/chlorine-bay_dn.tga");
+	skybox.load(CParams::SkyboxFolder,
+				CParams::SkyboxTop,
+				CParams::SkyboxBot,
+				CParams::SkyboxLeft,
+				CParams::SkyboxRight,
+				CParams::SkyboxFront,
+				CParams::SkyboxBack);
 
 	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
 

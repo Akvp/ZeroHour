@@ -4,8 +4,6 @@
 #include <fstream>
 #include <Windows.h>
 
-using namespace std;
-
 class CParams
 {
 public:
@@ -19,10 +17,18 @@ public:
 
 	// ===== Graphical options =====
 	static char WindowName[64];
+	static char VersionNumber[16];
 	static int WindowWidth;
 	static int WindowHeight;
 	static float AspectRatio;
-	static char SkyBoxFolder[128];
+
+	static char SkyboxFolder[128];
+	static char SkyboxTop[64];
+	static char SkyboxBot[64];
+	static char SkyboxLeft[64];
+	static char SkyboxRight[64];
+	static char SkyboxFront[64];
+	static char SkyboxBack[64];
 
 	// ===== General properties =====
 	static float WorldMinX, WorldMaxX;
@@ -36,10 +42,6 @@ public:
 	static double MaxPerturbation;	//Maximum amount the genetic algorithm may mutate each weight by
 	static double ActivationResponse;	//For tweaking sigmoid function
 	static double Bias;	//bias value
-
-	// ===== Individual properties =====
-	static int DecayTimeInterval;	//in millisecond
-	static int AgeTimeInterval;		//in millisecond
 
 	CParams()
 	{

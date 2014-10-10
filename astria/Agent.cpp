@@ -4,15 +4,6 @@
 
 Agent::Agent()
 {
-	Agent("Individual " + std::to_string(NextValidID));
-}
-
-Agent::Agent(std::string name)
-{
-	int x = RandInt(CParams::WorldMinX, CParams::WorldMaxX);
-	int y = RandInt(CParams::WorldMinY, CParams::WorldMaxY);
-	int z = CParams::GroundLevel;
-	Agent(name, x, y, z);
 }
 
 Agent::Agent(std::string name, int x, int y, int z)
@@ -27,6 +18,11 @@ Agent::Agent(std::string name, int x, int y, int z)
 }
 
 Agent::~Agent()
+{
+
+}
+
+void Agent::Update()
 {
 
 }

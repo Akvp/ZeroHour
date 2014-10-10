@@ -1,5 +1,7 @@
 #include "Main.h"
 
+CMain CMain::Instance;
+
 CMain::CMain()
 {
 	Running = true;

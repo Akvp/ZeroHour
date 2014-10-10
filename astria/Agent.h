@@ -16,7 +16,6 @@ class Agent : public Object
 {
 public:
 	Agent();
-	Agent(std::string name);
 	Agent(std::string name, int x, int y, int z);
 	~Agent();
 
@@ -40,6 +39,9 @@ public:
 	float GetSpeed () const { return Speed; }
 	float GetTurnRate() const { return TurnRate; }
 	State* GetState () const { return CurrentState; }
+
+private:
+	void Init(std::string name, int x, int y, int z);
 
 private:
 	std::string Name;

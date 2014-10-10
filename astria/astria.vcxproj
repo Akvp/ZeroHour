@@ -50,6 +50,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glu32.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -74,6 +75,7 @@
     <ClCompile Include="Gene.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NeuralNet.cpp" />
+    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Params.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main_OnEvent.cpp" />

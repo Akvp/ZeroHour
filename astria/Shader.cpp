@@ -151,7 +151,6 @@ bool CShaderProgram::initiate(int n_arg, ...)
 	va_end(shaders);
 	if (!link())
 		return false;
-	linked = true;
 	return true;
 }
 
@@ -162,7 +161,6 @@ bool CShaderProgram::initiate(CShader* vertex, CShader* fragment)
 		return false;
 	if (!link())
 		return false;
-	linked = true;
 	return true;
 }
 

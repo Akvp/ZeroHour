@@ -5,4 +5,4 @@ Roaming
 Intelligent
 Agent
 
-Optimized for nVidia grahics cards
+Developed for nVidia grahics cards
