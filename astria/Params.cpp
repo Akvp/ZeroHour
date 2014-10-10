@@ -51,7 +51,6 @@ bool CParams::Load(char* file)
 	inFile >> ParamDescription >> VersionNumber;
 	inFile >> ParamDescription >> WindowWidth;
 	inFile >> ParamDescription >> WindowHeight;
-	inFile >> ParamDescription >> AspectRatio;
 	inFile >> ParamDescription >> SkyboxFolder;
 	inFile >> ParamDescription >> SkyboxTop;
 	inFile >> ParamDescription >> SkyboxBot;
@@ -68,6 +67,8 @@ bool CParams::Load(char* file)
 	inFile >> ParamDescription >> CrossoverRate;
 	inFile >> ParamDescription >> MutationRate;
 	inFile >> ParamDescription >> MaxPerturbation;
+
+	AspectRatio = WindowWidth / WindowHeight;
 
 	return true;
 }

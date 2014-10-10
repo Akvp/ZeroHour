@@ -16,8 +16,10 @@ void CMain::OnRender()
 	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
 	mainProgram.SetUniform("vColor", glm::vec4(1, 1, 1, 1));
 	
+	//Render directional sun light
 	sun.setUniform(&mainProgram, "sunLight");
 
+	//Render skybox
 	mainProgram.SetUniform("matrices.modelMatrix", glm::translate(glm::mat4(1.0), Position));
 	skybox.render();
 

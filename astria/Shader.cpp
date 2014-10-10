@@ -141,7 +141,7 @@ bool CShaderProgram::initiate(int n_arg, ...)
 	create();
 	va_list shaders;
 	va_start(shaders, n_arg);
-	for (int i = 0; i <= n_arg; i++) 
+	for (int i = 0; i < n_arg; i++) 
 	{
 		if (!addShader(va_arg(shaders, CShader*)))
 		{

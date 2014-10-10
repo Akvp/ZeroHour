@@ -22,6 +22,7 @@ void CMain::OnUpdate()
 
 	Projection = glm::perspective(FoV, 4.0f/3.0f, 0.1f, 1000.0f);
 
+	//Get the view matrix using lookAt
 	View = glm::lookAt(
 		Position,
 		Position + Direction,
@@ -29,9 +30,9 @@ void CMain::OnUpdate()
 		);
 
 	ModelView = View * Model;
-	ModelView3x3 = glm::mat3(ModelView);
 	MVP = Projection * View * Model;
 	
+	//FPSControl loop to update FPS
 	CFPS::FPSControl.Loop();
 
 	std::string Text_FPS = "OpenGL_Test   FPS: " + std::to_string(CFPS::FPSControl.GetFPS());

@@ -84,7 +84,9 @@ void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode)
 #endif
 
 	case SDLK_F1:
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Position", pos.c_str(), NULL);
+		char VersionInfo[1024];
+		sprintf(VersionInfo, "Project ASTRIA\nVersion: %s", CParams::VersionNumber);
+		MessageBox(NULL, VersionInfo, "Information", MB_ICONINFORMATION);
 		break;
 	case SDLK_F2:
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Angles", angle.c_str(), NULL);

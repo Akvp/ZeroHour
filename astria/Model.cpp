@@ -105,7 +105,7 @@ bool CModel::load(char* file)
 			else
 			{
 				CTexture tNew;
-				tNew.load_2D((char*)sFullPath.c_str(), true);
+				tNew.load_2D(sFullPath, true);
 				materialRemap[i] = textures.size();
 				textures.push_back(tNew);
 			}

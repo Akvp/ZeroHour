@@ -14,12 +14,12 @@ Result:	Loads skybox and creates VAO and VBO for it.
 
 void CSkybox::load(std::string a_sDirectory, std::string a_sFront, std::string a_sBack, std::string a_sLeft, std::string a_sRight, std::string a_sTop, std::string a_sBottom)
 {
-	tTextures[0].load_2D((a_sDirectory + a_sFront).c_str());
-	tTextures[1].load_2D((a_sDirectory + a_sBack).c_str());
-	tTextures[2].load_2D((a_sDirectory + a_sLeft).c_str());
-	tTextures[3].load_2D((a_sDirectory + a_sRight).c_str());
-	tTextures[4].load_2D((a_sDirectory + a_sTop).c_str());
-	tTextures[5].load_2D((a_sDirectory + a_sBottom).c_str());
+	tTextures[0].load_2D(a_sDirectory + a_sFront);
+	tTextures[1].load_2D(a_sDirectory + a_sBack);
+	tTextures[2].load_2D(a_sDirectory + a_sLeft);
+	tTextures[3].load_2D(a_sDirectory + a_sRight);
+	tTextures[4].load_2D(a_sDirectory + a_sTop);
+	tTextures[5].load_2D(a_sDirectory + a_sBottom);
 
 	sDirectory = a_sDirectory;
 

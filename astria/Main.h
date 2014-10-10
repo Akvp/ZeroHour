@@ -80,10 +80,10 @@ private:
 	//Scene obj
 	CVBO	scene_VBO;
 	GLuint	scene_VAO;
-	CTexture scene_texture;
+	CTexture scene_texture;	//Texture for static scene object
 
-	CModel models[2];
-	GLuint PolyMode;
+	CModel models[2];	//Model array
+	GLuint PolyMode;	//Used for wireframe
 
 	//Matrices
 	glm::mat4 Projection;
@@ -91,7 +91,6 @@ private:
 	glm::mat4 Model;
 	glm::mat4 MVP;
 	glm::mat4 ModelView;
-	glm::mat3 ModelView3x3;
 
 private:	//Movements and related Matrix transformations
 	glm::vec3 Position;		//Position of the camera

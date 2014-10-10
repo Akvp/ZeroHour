@@ -2,6 +2,9 @@
 
 bool CMain::OnInit()
 {
+	//Load parameters
+	CParams::Load(CParams::File);
+
 	//Initialize SDL
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -98,25 +101,22 @@ bool CMain::OnInit_GL()
 	// glEnable(GL_CULL_FACE);
 
 
-	//Load shader
+	//Load shaders and programs
 	if (!mainShader_vertex.load("shaders/main_shader.vert", GL_VERTEX_SHADER))
 		return false;
 	if (!mainShader_fragment.load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
 		return false;
 	if (!lightShader_fragment.load("shaders/dirLight.frag", GL_FRAGMENT_SHADER))
 		return false;
-	//if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
-	//	return false;
-	mainProgram.create();
-	mainProgram.addShader(&mainShader_vertex);
-	mainProgram.addShader(&mainShader_fragment);
-	mainProgram.link();
+	if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
+		return false;
 
 	//Load models
 	models[0].load("gfx/Wolf/Wolf.obj");
 	models[1].load("gfx/house/house.3ds");
 	CModel::finalizeVBO();
 
+	//Used for wire frame
 	PolyMode = GL_FILL;
 
 	//Model matrix //Identity matrix
@@ -125,6 +125,7 @@ bool CMain::OnInit_GL()
 	//Clear the background as dark blue
 	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
 
+	//Load the skybox
 	skybox.load(CParams::SkyboxFolder,
 				CParams::SkyboxTop,
 				CParams::SkyboxBot,

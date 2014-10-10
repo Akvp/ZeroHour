@@ -14,18 +14,18 @@ CTexture::CTexture()
 	file = "";
 }
 
-CTexture::CTexture(const char* file, bool generateMipMap)
+CTexture::CTexture(std::string file, bool generateMipMap)
 {
 	load_2D(file, generateMipMap);
 }
 
-bool CTexture::load_2D(const char* file, bool generateMipMap)
+bool CTexture::load_2D(std::string file, bool generateMipMap)
 {
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	this->mipmap = generateMipMap;
 	this->file = file;
-	const char* ext = GetFileExtension(file).c_str();
+	std::string ext = GetFileExtension(file);
 	if (ext == "dds")
 	{
 		return load_DDS(file);
@@ -41,14 +41,14 @@ bool CTexture::load_2D(const char* file, bool generateMipMap)
 #define FOURCC_DXT1 0x31545844 // Equivalent to "DXT1" in ASCII
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
-bool CTexture::load_DDS(const char* file)
+bool CTexture::load_DDS(std::string file)
 {
 	unsigned char header[124];
 
 	FILE *fp;
 
 	/* try to open the file */
-	fp = fopen(file, "rb");
+	fp = fopen(file.c_str(), "rb");
 	if (fp == NULL){
 		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", file); getchar();
 		return 0;
@@ -128,9 +128,9 @@ bool CTexture::load_DDS(const char* file)
 	return true;
 }
 
-bool CTexture::load_SDL(const char* file)
+bool CTexture::load_SDL(std::string file)
 {
-	SDL_Surface* Surf_Load = IMG_Load(file);
+	SDL_Surface* Surf_Load = IMG_Load(file.c_str());
 
 	if (Surf_Load == NULL)
 	{
@@ -266,7 +266,7 @@ GLuint CTexture::getID()
 	return texture;
 }
 
-const char* CTexture::getFile()
+std::string CTexture::getFile()
 {
 	return file;
 }
