@@ -50,6 +50,8 @@ bool CMain::OnInit()
 		return false;
 	}
 
+	std::cout << CParams::WindowWidth << ' ' << CParams::WindowHeight;
+
 	//Create OpenGL context
 	glContext = SDL_GL_CreateContext(Window_Main);
 	if(glContext == NULL)
@@ -94,11 +96,15 @@ bool CMain::OnInit()
 
 bool CMain::OnInit_GL()
 {
+	//Clear the background as dark blue
+	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
+
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	glClearDepth(1.0);
+	//glDepthFunc(GL_LESS);
 
 	//Remove triangles which normal is not towards the camera (do not render the inside of the model)
-	// glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 
 	//Load shaders and programs
@@ -122,9 +128,6 @@ bool CMain::OnInit_GL()
 	//Model matrix //Identity matrix
 	Model = glm::mat4(1.0f);
 
-	//Clear the background as dark blue
-	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
-
 	//Load the skybox
 	skybox.load(CParams::SkyboxFolder,
 				CParams::SkyboxTop,
@@ -139,6 +142,8 @@ bool CMain::OnInit_GL()
 	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
 	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);
 	scene_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+	test_texture.load_2D("gfx/metal.jpg", true);
+	test_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
 
 	Position = glm::vec3(30, 5, 30);
 	FoV = 45.0f;

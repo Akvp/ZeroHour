@@ -61,6 +61,7 @@ void CSkybox::load(std::string a_sDirectory, std::string a_sFront, std::string a
 	glm::vec2 vSkyBoxTexCoords[4] =
 	{
 		glm::vec2(0.0f, 1.0f), glm::vec2(0.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec2(1.0f, 0.0f)
+		//glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec2(1.0f, 0.0f), glm::vec2(1.0f, 1.0f)
 	};
 
 	glm::vec3 vSkyBoxNormals[6] = 

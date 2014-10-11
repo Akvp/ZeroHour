@@ -7,8 +7,6 @@ glm::vec3 vGround[6] =
 	glm::vec3(-1000, 0, -1000), glm::vec3(-1000, 0, 1000), glm::vec3(1000, 0, 1000), glm::vec3(1000, 0, 1000), glm::vec3(1000, 0, -1000), glm::vec3(-1000, 0, -1000)
 };
 
-int iSphereFaces;
-
 void CreateStaticSceneObjects(GLuint* VAO, CVBO& vboDest)
 {
 	vboDest.create();

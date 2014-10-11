@@ -8,7 +8,7 @@ void CMain::OnRender()
 	//Use shaders
 	mainProgram.use();
 
-	mainProgram.SetUniform("matrices.projMatrix", Projection);
+	mainProgram.SetUniform("matrices.projMatrix", &Projection);
 	mainProgram.SetUniform("matrices.viewMatrix", View);
 	mainProgram.SetUniform("gSampler", 0);
 

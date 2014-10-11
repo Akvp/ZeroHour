@@ -5,6 +5,7 @@
 #define _H_MAIN_
 
 #include "Common.h"
+#include "Log.h"
 
 #include "Model.h"
 #include "Event.h"
@@ -81,6 +82,7 @@ private:
 	CVBO	scene_VBO;
 	GLuint	scene_VAO;
 	CTexture scene_texture;	//Texture for static scene object
+	CTexture test_texture;
 
 	CModel models[2];	//Model array
 	GLuint PolyMode;	//Used for wireframe
