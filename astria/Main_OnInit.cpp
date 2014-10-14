@@ -33,7 +33,7 @@ bool CMain::OnInit()
 
 	//User interaction before the creation of the main window
 	//- Fullscreen
-	int FullscreenOption = MessageBox(NULL, "Enable fullscreen?", "Fullscreen", MB_ICONQUESTION | MB_YESNO);
+	int FullscreenOption = MessageBox(NULL, "Enable fullscreen?\nP.S. Border less window full screen", "Fullscreen", MB_ICONQUESTION | MB_YESNO);
 
 	//Create Window
 	switch (FullscreenOption)
@@ -42,15 +42,14 @@ bool CMain::OnInit()
 		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 		break;
 	case IDYES:
-		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN);
+		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
+		break;
 	}
 	if(Window_Main == NULL)
 	{
 		MessageBox(NULL, SDL_GetError(), "Window creation error", MB_ICONERROR);
 		return false;
 	}
-
-	std::cout << CParams::WindowWidth << ' ' << CParams::WindowHeight;
 
 	//Create OpenGL context
 	glContext = SDL_GL_CreateContext(Window_Main);
@@ -119,7 +118,7 @@ bool CMain::OnInit_GL()
 
 	//Load models
 	models[0].load("gfx/Wolf/Wolf.obj");
-	models[1].load("gfx/house/house.3ds");
+	//models[1].load("gfx/audi_rsq/audi_rsq.obj");
 	CModel::finalizeVBO();
 
 	//Used for wire frame
@@ -149,6 +148,7 @@ bool CMain::OnInit_GL()
 	FoV = 45.0f;
 	HorizontalAngle = -3.14f;
 	VerticalAngle = 0.0f;
+
 
 	return true;
 }

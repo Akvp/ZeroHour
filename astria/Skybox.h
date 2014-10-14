@@ -19,6 +19,8 @@ public:
 	void render();
 
 	void release();
+
+	CTexture* getTextures() { return tTextures; };
 private:
 	UINT uiVAO;
 	CVBO vboRenderData;

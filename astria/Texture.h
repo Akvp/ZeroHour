@@ -1,9 +1,7 @@
 #ifndef _TEXTURE_H_
 #define _TEXTURE_H_
 
-#include <gl/glew.h>
-#include <Windows.h>
-#include <string>
+#include "Common.h"
 
 enum ETextureFiltering
 {
@@ -54,6 +52,7 @@ private:
 	std::string file;
 	GLuint texture;
 	GLuint sampler;
+	GLenum format;
 	int width, height, BPP;
 	bool mipmap;
 

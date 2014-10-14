@@ -1,4 +1,5 @@
 #include "Texture.h"
+#include "FreeImage.h"
 #include <SDL/SDL_image.h>
 
 std::string GetFileExtension(const std::string& FileName)
@@ -21,19 +22,55 @@ CTexture::CTexture(std::string file, bool generateMipMap)
 
 bool CTexture::load_2D(std::string file, bool generateMipMap)
 {
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	this->mipmap = generateMipMap;
+	FREE_IMAGE_FORMAT fif = FIF_UNKNOWN;
+	FIBITMAP* dib(0);
+
+	fif = FreeImage_GetFileType(file.c_str(), 0); // Check the file signature and deduce its format
+
+	if (fif == FIF_UNKNOWN) // If still unknown, try to guess the file format from the file extension
+		fif = FreeImage_GetFIFFromFilename(file.c_str());
+
+	if (fif == FIF_UNKNOWN) // If still unknown, return failure
+		return false;
+
+	if (FreeImage_FIFSupportsReading(fif)) // Check if the plugin has reading capabilities and load the file
+		dib = FreeImage_Load(fif, file.c_str());
+	if (!dib)
+		return false;
+
+	BYTE* bDataPointer = FreeImage_GetBits(dib); // Retrieve the image data
+
+	// If somehow one of these failed (they shouldn't), return failure
+	if (bDataPointer == NULL || FreeImage_GetWidth(dib) == 0 || FreeImage_GetHeight(dib) == 0)
+		return false;
+
+	GLenum format;
+	int bada = FreeImage_GetBPP(dib);
+	if (FreeImage_GetBPP(dib) == 32)format = GL_RGBA;
+	if (FreeImage_GetBPP(dib) == 24)format = GL_BGR;
+	if (FreeImage_GetBPP(dib) == 8)format = GL_LUMINANCE;
+	createFromData(bDataPointer, FreeImage_GetWidth(dib), FreeImage_GetHeight(dib), FreeImage_GetBPP(dib), format, generateMipMap);
+
+	FreeImage_Unload(dib);
+
 	this->file = file;
-	std::string ext = GetFileExtension(file);
-	if (ext == "dds")
-	{
-		return load_DDS(file);
-	}
-	else
-	{
-		return load_SDL(file);
-	}
+	std::cout << file << std::endl;
+	return true; // Success
+
+
+	//glGenTextures(1, &texture);
+	//glBindTexture(GL_TEXTURE_2D, texture);
+	//this->mipmap = generateMipMap;
+	//this->file = file;
+	//std::string ext = GetFileExtension(file);
+	//if (ext == "dds")
+	//{
+	//	return load_DDS(file);
+	//}
+	//else
+	//{
+	//	return load_SDL(file);
+	//}
 }
 
 
@@ -144,7 +181,30 @@ bool CTexture::load_SDL(std::string file)
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Surf_Load->w, Surf_Load->h, 0, GL_RGB, GL_UNSIGNED_BYTE, Surf_Load->pixels);
+	GLint nOfColors = Surf_Load->format->BytesPerPixel;
+	if (nOfColors == 4)     // contains an alpha channel
+	{
+		if (Surf_Load->format->Rmask == 0x000000ff)
+			format = GL_RGBA;
+		else
+			format = GL_BGRA;
+	}
+	else if (nOfColors == 3)     // no alpha channel
+	{
+		if (Surf_Load->format->Rmask == 0x000000ff)
+			format = GL_RGB;
+		else
+			format = GL_BGR;
+	}
+	else {
+		printf("warning: the image is not truecolor..  this will probably break\n");
+		return false;
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, format, Surf_Load->w, Surf_Load->h, 0, format, GL_UNSIGNED_BYTE, Surf_Load->pixels);
+
+	width = Surf_Load->w;
+	height = Surf_Load->h;
 
 	if (mipmap){
 		glGenerateMipmap(GL_TEXTURE_2D);	//Generate mipmaps

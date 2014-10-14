@@ -1,5 +1,5 @@
-/*The main header, contains most of the program flow functions
-*/
+//The main header, contains most of the program flow functions
+
 
 #ifndef _H_MAIN_
 #define _H_MAIN_
@@ -63,7 +63,7 @@ private:
 	int Mouse_Y;	//Mouse y position
 
 	//Event functions
-	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode);
+	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 
 private:	
 	//Shaders & Shader programs

@@ -14,9 +14,9 @@ void CMain::OnRender()
 
 	mainProgram.SetUniform("matrices.modelMatrix", Model);
 	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
-	mainProgram.SetUniform("vColor", glm::vec4(1, 1, 1, 1));
-	
+
 	//Render directional sun light
+	mainProgram.SetUniform("vColor", glm::vec4(1, 1, 1, 1));
 	sun.setUniform(&mainProgram, "sunLight");
 
 	//Render skybox
@@ -32,12 +32,14 @@ void CMain::OnRender()
 
 	//Render models
 	CModel::bindVAO();
-	float xPosHouse = -80.0f + 30.0f;
+	float xPosHouse = -10.0f;
 	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(xPosHouse, 0, 0));
 	mModel = glm::scale(mModel, glm::vec3(3, 3, 3));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
 	models[0].render();
-	//models[1].render();
+	models[1].render();
+
+	glEnable(GL_DEPTH_TEST);
 
 	SDL_GL_SwapWindow(Window_Main);
 }

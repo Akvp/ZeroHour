@@ -25,6 +25,7 @@ CModel::CModel()
 
 CModel::CModel(char* file)
 {
+	loaded = false;
 	load(file);
 }
 

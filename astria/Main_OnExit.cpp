@@ -11,6 +11,8 @@ void CMain::OnExit()
 	SDL_DestroyWindow(Window_Main);
 	Window_Main = NULL;
 
+	SDL_GL_DeleteContext(glContext);
+
 	IMG_Quit();
 	SDL_Quit();
 }

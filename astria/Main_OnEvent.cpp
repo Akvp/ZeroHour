@@ -33,7 +33,7 @@ void CMain::OnEvent(SDL_Event Event)
 	VerticalAngle += MouseSpeed * float(CParams::WindowHeight / 2 - Mouse_Y);
 }
 
-void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode)
+void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 {
 	std::string pos = std::to_string(Position.x) + ' ' + std::to_string(Position.y) + ' ' + std::to_string(Position.z);
 	std::string angle = std::to_string(HorizontalAngle) + ' ' + std::to_string(VerticalAngle);
@@ -41,15 +41,17 @@ void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode)
 	switch (sym)
 	{
 	//Terminate the program if the user press Esc or LeftAlt+F4
-	case SDLK_ESCAPE:	
+	case SDLK_ESCAPE:		//TODO: Change ESC to pause and bring up a menu
 		Running = false;	
 		break;
 	case SDLK_F4:
-		if (unicode == SDL_SCANCODE_LALT)
+		if (scancode == SDL_SCANCODE_LALT)
 		{
 			Running = false;
 		}
 		break;
+
+	//Movement Keys
 	case SDLK_w:
 	case SDLK_UP:
 		Position += Direction * Speed * CFPS::FPSControl.GetSpeedFactor();
@@ -67,7 +69,6 @@ void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode)
 		Position -= Right * Speed *CFPS::FPSControl.GetSpeedFactor();
 		break;
 
-#ifdef _DEBUG
 	//Switch between normal model and wireframe
 	case SDLK_q:
 		if (PolyMode == GL_FILL)
@@ -81,12 +82,11 @@ void CMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode)
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
 		}
 		break;
-#endif
 
 	case SDLK_F1:
 		char VersionInfo[1024];
-		sprintf(VersionInfo, "Project ASTRIA\nVersion: %s", CParams::VersionNumber);
-		MessageBox(NULL, VersionInfo, "Information", MB_ICONINFORMATION);
+		sprintf(VersionInfo, "Project ASTRIA\n\nVersion: %s", CParams::VersionNumber);
+		MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
 		break;
 	case SDLK_F2:
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Angles", angle.c_str(), NULL);

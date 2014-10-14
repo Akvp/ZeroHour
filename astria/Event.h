@@ -15,9 +15,9 @@ class CEvent {
 
 		virtual void OnInputBlur(); 
 
-		virtual void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode unicode);
+		virtual void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 
-		virtual void OnKeyUp(SDL_Keycode sym,  Uint16 mod, SDL_Scancode unicode);
+		virtual void OnKeyUp(SDL_Keycode sym,  Uint16 mod, SDL_Scancode scancode);
 
 		virtual void OnMouseFocus();
 
