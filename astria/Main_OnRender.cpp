@@ -37,7 +37,7 @@ void CMain::OnRender()
 	mModel = glm::scale(mModel, glm::vec3(3, 3, 3));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
 	models[0].render();
-	models[1].render();
+	//models[1].render();
 
 	glEnable(GL_DEPTH_TEST);
 

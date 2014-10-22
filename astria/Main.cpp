@@ -9,7 +9,7 @@ CMain::CMain()
 
 	agent = new Agent("asd", 1, 0, 0);
 
-	Speed = 5.0f;
+	Speed = 0.5f;
 	MouseSpeed = 0.002f;
 }
 

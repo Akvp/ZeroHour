@@ -129,12 +129,12 @@ bool CMain::OnInit_GL()
 
 	//Load the skybox
 	skybox.load(CParams::SkyboxFolder,
-				CParams::SkyboxTop,
-				CParams::SkyboxBot,
+				CParams::SkyboxFront,
+				CParams::SkyboxBack,
 				CParams::SkyboxLeft,
 				CParams::SkyboxRight,
-				CParams::SkyboxFront,
-				CParams::SkyboxBack);
+				CParams::SkyboxTop,
+				CParams::SkyboxBot);
 
 	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
 
