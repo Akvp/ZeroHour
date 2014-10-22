@@ -1,17 +1,17 @@
 #include "Main.h"
 
-void CMain::OnEvent(SDL_Event Event)
+void CMain::OnEvent(SDL_Event* Event)
 {
-	if(Event.type == SDL_QUIT)
+	if(Event->type == SDL_QUIT)
 	{
 		Running = false;
 	}
 
-	CEvent::OnEvent(&Event);
+	CEvent::OnEvent(Event);
 
-	if (Event.type == SDL_MOUSEWHEEL)
+	if (Event->type == SDL_MOUSEWHEEL)
 	{
-		FoV -= 5 * Event.wheel.y;
+		FoV -= 5 * Event->wheel.y;
 		if (FoV > 80)
 		{
 			FoV = 80;

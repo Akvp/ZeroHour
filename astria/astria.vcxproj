@@ -72,6 +72,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
+    <ClCompile Include="AppStateManager.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FPS.cpp" />
@@ -93,10 +94,17 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Stringify.cpp" />
+    <ClCompile Include="TextureBank_SDL.cpp" />
+    <ClCompile Include="Texture_SDL.cpp" />
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Agent.h" />
+    <ClInclude Include="AppState.h" />
+    <ClInclude Include="AppStateManager.h" />
+    <ClInclude Include="AppState_GL.h" />
+    <ClInclude Include="AppState_Intro.h" />
+    <ClInclude Include="AppState_Pause.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FPS.h" />
@@ -115,6 +123,8 @@
     <ClInclude Include="StaticObj.h" />
     <ClInclude Include="Stringify.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureBank_SDL.h" />
+    <ClInclude Include="Texture_SDL.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="VBO.h" />
   </ItemGroup>

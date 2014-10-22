@@ -6,6 +6,7 @@ CMain::CMain()
 {
 	Running = true;
 	Window_Main = NULL;
+	Renderer = NULL;
 
 	agent = new Agent("asd", 1, 0, 0);
 
@@ -16,6 +17,11 @@ CMain::CMain()
 CMain* CMain::GetInstance()
 {
 	return &Instance;
+}
+
+SDL_Renderer* CMain::GetRenderer()
+{
+	return Renderer;
 }
 
 int CMain::OnExecute()
@@ -31,7 +37,7 @@ int CMain::OnExecute()
 	{
 		while (SDL_PollEvent(&Event))
 		{
-			OnEvent(Event);
+			OnEvent(&Event);
 		}
 
 		OnUpdate();

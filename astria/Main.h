@@ -27,6 +27,8 @@ public:
 
 	static CMain* GetInstance();
 
+	SDL_Renderer* GetRenderer();
+
 	//Program entry point
 	int OnExecute();
 
@@ -36,7 +38,7 @@ public:
 	bool OnInit_GL();
 
 	//Handle Events
-	void OnEvent(SDL_Event Event);
+	void OnEvent(SDL_Event* Event);
 
 	//Update on each frame
 	void OnUpdate();
@@ -53,6 +55,7 @@ private:
 
 	SDL_Window* Window_Main;
 	SDL_GLContext glContext;
+	SDL_Renderer* Renderer;
 
 	const int OPENGL_MAJOR_VERSION = 3;
 	const int OPENGL_MINOR_VERSION = 3;
