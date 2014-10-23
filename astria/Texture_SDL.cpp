@@ -3,11 +3,11 @@
 #include "Log.h"
 
 //==============================================================================
-Texture::Texture() {
+Texture_SDL::Texture_SDL() {
 }
 
 //------------------------------------------------------------------------------
-Texture::~Texture() {
+Texture_SDL::~Texture_SDL() {
 	if(SDLTexture) {
 		SDL_DestroyTexture(SDLTexture);
 		SDLTexture = NULL;
@@ -15,7 +15,7 @@ Texture::~Texture() {
 }
 
 //==============================================================================
-bool Texture::Load(SDL_Renderer* Renderer, std::string Filename) {
+bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename) {
 	if(Renderer == NULL) {
 		Log("Bad SDL renderer passed");
 		return false;
@@ -49,40 +49,40 @@ bool Texture::Load(SDL_Renderer* Renderer, std::string Filename) {
 }
 
 //------------------------------------------------------------------------------
-void Texture::Render(int X, int Y) {
+void Texture_SDL::Render(int X, int Y) {
 	Render(X, Y, Width, Height);
 }
 
 //------------------------------------------------------------------------------
-void Texture::Render(int X, int Y, int Width, int Height) {
+void Texture_SDL::Render(int X, int Y, int Width, int Height) {
 	SDL_Rect Destination = {X, Y, Width, Height};
 
 	SDL_RenderCopy(Renderer, SDLTexture, NULL, &Destination);
 }
 
 //------------------------------------------------------------------------------
-void Texture::Render(int X, int Y, int Width, int Height, int SX, int SY, int SWidth, int SHeight) {
+void Texture_SDL::Render(int X, int Y, int Width, int Height, int SX, int SY, int SWidth, int SHeight) {
 	SDL_Rect Source = {SX, SY, SWidth, SHeight};
 	SDL_Rect Destination = {X, Y, Width, Height};
 
 	SDL_RenderCopy(Renderer, SDLTexture, &Source, &Destination);
 }
 
-void Texture::Render(int X, int Y, double Angle)
+void Texture_SDL::Render(int X, int Y, double Angle)
 {
 	SDL_Rect Destination = { X, Y, Width, Height };
 
 	SDL_RenderCopyEx(Renderer, SDLTexture, NULL, &Destination, Angle, NULL, SDL_FLIP_NONE);
 }
 
-void Texture::Render(int X, int Y, int Width, int Height, double Angle)
+void Texture_SDL::Render(int X, int Y, int Width, int Height, double Angle)
 {
 	SDL_Rect Destination = { X, Y, Width, Height };
 	SDL_RenderCopyEx(Renderer, SDLTexture, NULL, &Destination, Angle, NULL, SDL_FLIP_NONE);
 }
 
 //------------------------------------------------------------------------------
-int Texture::GetWidth()  { return Width;  }
-int Texture::GetHeight() { return Height; }
+int Texture_SDL::GetWidth()  { return Width; }
+int Texture_SDL::GetHeight() { return Height; }
 
 //==============================================================================

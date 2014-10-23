@@ -5,7 +5,7 @@
 #include "Log.h"
 
 //=============================================================================
-std::map<std::string, Texture*> TextureBank::TexList;
+std::map<std::string, Texture_SDL*> TextureBank::TexList;
 
 //=============================================================================
 bool TextureBank::Init(const char* folder) {
@@ -35,7 +35,7 @@ void TextureBank::Cleanup() {
 	if(TexList.size() <= 0) return;
 
 	for(auto& Iterator : TexList) {
-		Texture* TheTexture = (Texture*)Iterator.second;
+		Texture_SDL* TheTexture = (Texture_SDL*)Iterator.second;
 
 		if(TheTexture) {
 			delete TheTexture;
@@ -50,7 +50,7 @@ void TextureBank::Cleanup() {
 void TextureBank::AddTexture(SDL_Renderer* Renderer, std::string ID, std::string Filename) {
     if(ID == "") return;
 
-    Texture* NewTexture = new Texture();
+	Texture_SDL* NewTexture = new Texture_SDL();
 
 	assert(fopen(Filename.c_str(), "r") != NULL);
 
@@ -63,7 +63,7 @@ void TextureBank::AddTexture(SDL_Renderer* Renderer, std::string ID, std::string
 }
 
 //-----------------------------------------------------------------------------
-Texture* TextureBank::Get(std::string ID) {
+Texture_SDL* TextureBank::Get(std::string ID) {
 	if(TexList.find(ID) == TexList.end()) return 0;
 
 	return TexList[ID];

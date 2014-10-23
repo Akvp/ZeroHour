@@ -51,6 +51,14 @@ bool CMain::OnInit()
 		return false;
 	}
 
+	//Setup the renderer
+	if ((Renderer = SDL_CreateRenderer(Window_Main, -1, SDL_RENDERER_ACCELERATED)) == NULL)
+	{
+		Log("Unable to create renderer");
+		return false;
+	}
+	SDL_SetRenderDrawColor(Renderer, 0x00, 0x00, 0x10, 0xFF);
+
 	//Create OpenGL context
 	glContext = SDL_GL_CreateContext(Window_Main);
 	if(glContext == NULL)
@@ -74,16 +82,7 @@ bool CMain::OnInit()
 		MessageBox(NULL, SDL_GetError(), "Warning: Unable to set VSync!", MB_ICONWARNING);
 	}
 
-	//Hide mouse cursor
-	if (SDL_ShowCursor(SDL_DISABLE) < 0)
-	{
-		MessageBox(NULL, SDL_GetError(), "Warning: Unable to hide cursor", MB_ICONWARNING);
-	}
-
-	//Center mouse cursor
-	SDL_WarpMouseInWindow(Window_Main, CParams::WindowWidth / 2, CParams::WindowHeight / 2);
-
-	CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
+	CAppStateManager::SetActiveAppState(APPSTATE_INTRO);
 
 	return true;
 }

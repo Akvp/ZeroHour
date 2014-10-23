@@ -18,7 +18,7 @@
 
 class TextureBank {
 	private:
-		static std::map<std::string, Texture*> TexList;
+		static std::map<std::string, Texture_SDL*> TexList;
 
 	public:
 		static bool Init(const char* folder);
@@ -29,7 +29,7 @@ class TextureBank {
         static void AddTexture(SDL_Renderer* Renderer, std::string ID, std::string Filename);
 
 	public:
-		static Texture* Get(std::string ID);
+		static Texture_SDL* Get(std::string ID);
 
 		static TextureBank* GetInstance();
 };

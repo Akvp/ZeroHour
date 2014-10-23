@@ -18,7 +18,7 @@
 
 #include <string>
 
-class Texture {
+class Texture_SDL {
 	private:
 		std::string Filename;
 
@@ -29,8 +29,8 @@ class Texture {
 		SDL_Texture* SDLTexture = NULL;
 
 	public:
-		Texture();
-		~Texture();
+		Texture_SDL();
+		~Texture_SDL();
 
 		bool Load(SDL_Renderer* Renderer, std::string Filename);
 

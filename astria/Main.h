@@ -7,22 +7,15 @@
 #include "Common.h"
 #include "Log.h"
 
-#include "Model.h"
-#include "Event.h"
 #include "FPS.h"
-#include "Shader.h"
-#include "Skybox.h"
-#include "Light.h"
-#include "StaticObj.h"
 #include "Params.h"
+#include "TextureBank_SDL.h"
 
 #include "AppStateManager.h"
 
-#include "Agent.h"
-
 #define _DEBUG 1
 
-class CMain : public CEvent
+class CMain
 {
 public:
 	CMain();
@@ -62,11 +55,6 @@ private:
 
 	const int OPENGL_MAJOR_VERSION = 3;
 	const int OPENGL_MINOR_VERSION = 3;
-
-private:
-	//Event variables
-	int Mouse_X;	//Mouse x position
-	int Mouse_Y;	//Mouse y position
 };
 
 #endif

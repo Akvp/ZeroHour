@@ -2,6 +2,7 @@
 #define _APP_STATE_INTRO_H_
 
 #include "AppState.h"
+#include "Texture_SDL.h"
 
 class CAppStateIntro : public CAppState
 {
@@ -17,8 +18,12 @@ public:
 	void OnRender();
 
 private:
+	void OnLButtonDown(int mX, int mY);
+
+private:
 	static CAppStateIntro Instance;
 	int StartTime;
+	Texture_SDL splash;
 };
 
 #endif

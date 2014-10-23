@@ -19,6 +19,15 @@ void CAppStateMain::OnActivate()
 	Speed = 0.5f;
 	MouseSpeed = 0.002f;
 	OnInit_GL();
+
+	//Hide mouse cursor
+	if (SDL_ShowCursor(SDL_DISABLE) < 0)
+	{
+		MessageBox(NULL, SDL_GetError(), "Warning: Unable to hide cursor", MB_ICONWARNING);
+	}
+
+	//Center mouse cursor
+	SDL_WarpMouseInWindow(CMain::GetInstance()->GetWindow(), CParams::WindowWidth / 2, CParams::WindowHeight / 2);
 }
 
 void CAppStateMain::OnDeactivate()
@@ -28,6 +37,8 @@ void CAppStateMain::OnDeactivate()
 	lightShader_fragment.release();
 	mainProgram.release();
 	skybox.release();
+
+	SDL_ShowCursor(SDL_ENABLE);
 }
 
 void CAppStateMain::OnEvent(SDL_Event* Event)
@@ -213,7 +224,7 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 	{
 		//Terminate the program if the user press Esc or LeftAlt+F4
 	case SDLK_ESCAPE:		//TODO: Change ESC to pause and bring up a menu
-		//Running = false;
+		CMain::GetInstance()->Running = false;
 		break;
 	case SDLK_F4:
 		if (scancode == SDL_SCANCODE_LALT)

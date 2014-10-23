@@ -1,8 +1,5 @@
 #include "AppStateManager.h"
 
-//Include all app states
-#include "AppStateMain.h"
-
 CAppState* CAppStateManager::ActiveAppState = 0;
 
 void CAppStateManager::OnEvent(SDL_Event* Event)
@@ -33,6 +30,9 @@ void CAppStateManager::SetActiveAppState(int AppStateID)
 	{
 	case APPSTATE_NONE:
 		ActiveAppState = 0;
+		break;
+	case APPSTATE_INTRO:
+		ActiveAppState = CAppStateIntro::GetInstance();
 		break;
 	case APPSTATE_MAIN:
 		ActiveAppState = CAppStateMain::GetInstance();
