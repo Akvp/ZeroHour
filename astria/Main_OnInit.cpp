@@ -73,13 +73,6 @@ bool CMain::OnInit()
 	{
 		MessageBox(NULL, SDL_GetError(), "Warning: Unable to set VSync!", MB_ICONWARNING);
 	}
-	
-
-	//Initialize OpenGL components
-	if(!OnInit_GL())
-	{
-		return false;
-	}
 
 	//Hide mouse cursor
 	if (SDL_ShowCursor(SDL_DISABLE) < 0)
@@ -90,65 +83,7 @@ bool CMain::OnInit()
 	//Center mouse cursor
 	SDL_WarpMouseInWindow(Window_Main, CParams::WindowWidth / 2, CParams::WindowHeight / 2);
 
-	return true;
-}
-
-bool CMain::OnInit_GL()
-{
-	//Clear the background as dark blue
-	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
-
-	glEnable(GL_DEPTH_TEST);
-	glClearDepth(1.0);
-	//glDepthFunc(GL_LESS);
-
-	//Remove triangles which normal is not towards the camera (do not render the inside of the model)
-	//glEnable(GL_CULL_FACE);
-
-
-	//Load shaders and programs
-	if (!mainShader_vertex.load("shaders/main_shader.vert", GL_VERTEX_SHADER))
-		return false;
-	if (!mainShader_fragment.load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
-		return false;
-	if (!lightShader_fragment.load("shaders/dirLight.frag", GL_FRAGMENT_SHADER))
-		return false;
-	if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
-		return false;
-
-	//Load models
-	models[0].load("gfx/Wolf/Wolf.obj");
-	//models[1].load("gfx/audi_rsq/audi_rsq.obj");
-	CModel::finalizeVBO();
-
-	//Used for wire frame
-	PolyMode = GL_FILL;
-
-	//Model matrix //Identity matrix
-	Model = glm::mat4(1.0f);
-
-	//Load the skybox
-	skybox.load(CParams::SkyboxFolder,
-				CParams::SkyboxFront,
-				CParams::SkyboxBack,
-				CParams::SkyboxLeft,
-				CParams::SkyboxRight,
-				CParams::SkyboxTop,
-				CParams::SkyboxBot);
-
-	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
-
-	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
-	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);
-	scene_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
-	test_texture.load_2D("gfx/metal.jpg", true);
-	test_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
-
-	Position = glm::vec3(30, 5, 30);
-	FoV = 45.0f;
-	HorizontalAngle = -3.14f;
-	VerticalAngle = 0.0f;
-
+	CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
 
 	return true;
 }

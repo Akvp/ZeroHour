@@ -34,6 +34,12 @@
     <Filter Include="Header Files\AI">
       <UniqueIdentifier>{ffecb7e9-9cd0-4c80-9540-edd24182b9bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\AppStates">
+      <UniqueIdentifier>{4f1c957a-e068-4956-9561-3b6a6c5e5d84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\AppStates">
+      <UniqueIdentifier>{f448bde9-ad95-4b1f-8ac7-670161420a25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">
@@ -105,14 +111,23 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="AppStateManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Texture_SDL.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
     <ClCompile Include="TextureBank_SDL.cpp">
       <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="AppStateIntro.cpp">
+      <Filter>Source Files\AppStates</Filter>
+    </ClCompile>
+    <ClCompile Include="AppStatePause.cpp">
+      <Filter>Source Files\AppStates</Filter>
+    </ClCompile>
+    <ClCompile Include="AppStateManager.cpp">
+      <Filter>Source Files\AppStates</Filter>
+    </ClCompile>
+    <ClCompile Include="AppStateMain.cpp">
+      <Filter>Source Files\AppStates</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,26 +194,26 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="AppStateManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AppState.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AppState_Pause.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AppState_Intro.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AppState_GL.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Texture_SDL.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="TextureBank_SDL.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="AppStateManager.h">
+      <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="AppState.h">
+      <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="AppStateIntro.h">
+      <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="AppStatePause.h">
+      <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="AppStateMain.h">
+      <Filter>Header Files\AppStates</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

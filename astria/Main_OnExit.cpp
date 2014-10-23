@@ -2,11 +2,7 @@
 
 void CMain::OnExit()
 {
-	mainShader_vertex.release();
-	mainShader_fragment.release();
-	lightShader_fragment.release();
-	mainProgram.release();
-	skybox.release();
+	CAppStateManager::SetActiveAppState(APPSTATE_NONE);
 
 	SDL_DestroyWindow(Window_Main);
 	Window_Main = NULL;

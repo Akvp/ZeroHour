@@ -1,7 +1,7 @@
 #include "AppStateManager.h"
 
 //Include all app states
-
+#include "AppStateMain.h"
 
 CAppState* CAppStateManager::ActiveAppState = 0;
 
@@ -35,8 +35,9 @@ void CAppStateManager::SetActiveAppState(int AppStateID)
 		ActiveAppState = 0;
 		break;
 	case APPSTATE_MAIN:
+		ActiveAppState = CAppStateMain::GetInstance();
 		break;
-	case APPSTATE_PAUSEMENU:
+	case APPSTATE_PAUSE:
 		break;
 	}
 

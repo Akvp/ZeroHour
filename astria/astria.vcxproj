@@ -72,7 +72,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
+    <ClCompile Include="AppStateMain.cpp" />
+    <ClCompile Include="AppStateIntro.cpp" />
     <ClCompile Include="AppStateManager.cpp" />
+    <ClCompile Include="AppStatePause.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FPS.cpp" />
@@ -102,9 +105,9 @@
     <ClInclude Include="Agent.h" />
     <ClInclude Include="AppState.h" />
     <ClInclude Include="AppStateManager.h" />
-    <ClInclude Include="AppState_GL.h" />
-    <ClInclude Include="AppState_Intro.h" />
-    <ClInclude Include="AppState_Pause.h" />
+    <ClInclude Include="AppStateMain.h" />
+    <ClInclude Include="AppStateIntro.h" />
+    <ClInclude Include="AppStatePause.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FPS.h" />

@@ -7,11 +7,6 @@ CMain::CMain()
 	Running = true;
 	Window_Main = NULL;
 	Renderer = NULL;
-
-	agent = new Agent("asd", 1, 0, 0);
-
-	Speed = 0.5f;
-	MouseSpeed = 0.002f;
 }
 
 CMain* CMain::GetInstance()
@@ -22,6 +17,11 @@ CMain* CMain::GetInstance()
 SDL_Renderer* CMain::GetRenderer()
 {
 	return Renderer;
+}
+
+SDL_Window* CMain::GetWindow()
+{
+	return Window_Main;
 }
 
 int CMain::OnExecute()

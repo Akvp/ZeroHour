@@ -16,6 +16,8 @@
 #include "StaticObj.h"
 #include "Params.h"
 
+#include "AppStateManager.h"
+
 #include "Agent.h"
 
 #define _DEBUG 1
@@ -24,10 +26,12 @@ class CMain : public CEvent
 {
 public:
 	CMain();
+	bool Running;
 
 	static CMain* GetInstance();
 
 	SDL_Renderer* GetRenderer();
+	SDL_Window* GetWindow();
 
 	//Program entry point
 	int OnExecute();
@@ -50,7 +54,6 @@ public:
 	void OnExit();
 
 private:
-	bool Running;
 	static CMain Instance;
 
 	SDL_Window* Window_Main;
@@ -64,52 +67,6 @@ private:
 	//Event variables
 	int Mouse_X;	//Mouse x position
 	int Mouse_Y;	//Mouse y position
-
-	//Event functions
-	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
-
-private:	
-	//Shaders & Shader programs
-	CShader mainShader_vertex;
-	CShader mainShader_fragment;
-	//CShader ortho2D_vertex;
-	//CShader ortho2D_fragment;
-	CShader lightShader_fragment;
-	CShaderProgram mainProgram;
-
-	//Skybox and lighting
-	CSkybox skybox;
-	CDirectLight sun;
-
-	//Scene obj
-	CVBO	scene_VBO;
-	GLuint	scene_VAO;
-	CTexture scene_texture;	//Texture for static scene object
-	CTexture test_texture;
-
-	CModel models[2];	//Model array
-	GLuint PolyMode;	//Used for wireframe
-
-	//Matrices
-	glm::mat4 Projection;
-	glm::mat4 View;
-	glm::mat4 Model;
-	glm::mat4 MVP;
-	glm::mat4 ModelView;
-
-private:	//Movements and related Matrix transformations
-	glm::vec3 Position;		//Position of the camera
-	float HorizontalAngle;	//Horizontal viewing angle
-	float VerticalAngle;	//Vertical viewing angle
-	float FoV;				//Field of view
-
-	glm::vec3 Direction;
-	glm::vec3 Right;
-
-	Agent* agent;
-
-	float Speed;			//Speed of movements
-	float MouseSpeed;
 };
 
 #endif

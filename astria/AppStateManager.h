@@ -4,12 +4,15 @@
 #include "AppState.h"
 
 //List of all app states
+#include "AppStateMain.h"
+#include "AppStateIntro.h"
+#include "AppStatePause.h"
 
 enum
 {
 	APPSTATE_NONE,
 	APPSTATE_MAIN,
-	APPSTATE_PAUSEMENU
+	APPSTATE_PAUSE
 };
 
 class CAppStateManager
@@ -17,6 +20,7 @@ class CAppStateManager
 private:
 	static CAppState* ActiveAppState;
 
+public:
 	static void OnEvent(SDL_Event* Event);
 	static void OnLoop();
 	static void OnRender();
