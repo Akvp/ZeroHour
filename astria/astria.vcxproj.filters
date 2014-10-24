@@ -129,6 +129,9 @@
     <ClCompile Include="AppStateMain.cpp">
       <Filter>Source Files\AppStates</Filter>
     </ClCompile>
+    <ClCompile Include="HeightMap.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Light.h">
@@ -214,6 +217,9 @@
     </ClInclude>
     <ClInclude Include="AppStateMain.h">
       <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMap.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
