@@ -55,6 +55,8 @@ private:
 
 	const int OPENGL_MAJOR_VERSION = 3;
 	const int OPENGL_MINOR_VERSION = 3;
+
+	SDL_Surface* Surf_Icon;
 };
 
 #endif

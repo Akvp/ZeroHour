@@ -7,6 +7,7 @@ CMain::CMain()
 	Running = true;
 	Window_Main = NULL;
 	Renderer = NULL;
+	Surf_Icon = NULL;
 }
 
 CMain* CMain::GetInstance()

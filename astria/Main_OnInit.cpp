@@ -30,26 +30,21 @@ bool CMain::OnInit()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);				//Enable core profil
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);	//Backward compatibility
+	
+	Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 
-	//User interaction before the creation of the main window
-	//- Fullscreen
-	int FullscreenOption = MessageBox(NULL, "Enable fullscreen?\nP.S. Border less window full screen", "Fullscreen", MB_ICONQUESTION | MB_YESNO);
-
-	//Create Window
-	switch (FullscreenOption)
-	{
-	case IDNO:
-		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-		break;
-	case IDYES:
-		Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_FULLSCREEN_DESKTOP);
-		break;
-	}
 	if(Window_Main == NULL)
 	{
 		MessageBox(NULL, SDL_GetError(), "Window creation error", MB_ICONERROR);
 		return false;
 	}
+
+	//Set window icon
+	if ((Surf_Icon = IMG_Load(CParams::IconImage)) == NULL)
+	{
+		Log("Unable to load window icon");
+	}
+	SDL_SetWindowIcon(Window_Main, Surf_Icon);
 
 	//Setup the renderer
 	if ((Renderer = SDL_CreateRenderer(Window_Main, -1, SDL_RENDERER_ACCELERATED)) == NULL)

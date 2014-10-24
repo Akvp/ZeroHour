@@ -1,6 +1,7 @@
 #include "Common.h"
 
 #include "Skybox.h"
+#include "FileManager.h"
 
 /*-----------------------------------------------
 
@@ -12,23 +13,46 @@ Result:	Loads skybox and creates VAO and VBO for it.
 
 /*---------------------------------------------*/
 
-void CSkybox::load(std::string a_sDirectory, std::string a_sFront, std::string a_sBack, std::string a_sLeft, std::string a_sRight, std::string a_sTop, std::string a_sBottom)
+void CSkybox::load(std::string a_sDirectory)
 {
-	tTextures[0].load_2D(a_sDirectory + a_sFront);
-	tTextures[1].load_2D(a_sDirectory + a_sBack);
-	tTextures[2].load_2D(a_sDirectory + a_sLeft);
-	tTextures[3].load_2D(a_sDirectory + a_sRight);
-	tTextures[4].load_2D(a_sDirectory + a_sTop);
-	tTextures[5].load_2D(a_sDirectory + a_sBottom);
+	std::vector<std::string> files = FileManager::GetFilesInFolder(a_sDirectory);
+	
+	for (auto f : files)
+	{
+		if (FileManager::GetFilenameWithoutExt(f) == "up")
+		{
+			sTop = f;
+		}
+		else if (FileManager::GetFilenameWithoutExt(f) == "dn")
+		{
+			sBottom = f;
+		}
+		else if (FileManager::GetFilenameWithoutExt(f) == "lf")
+		{
+			sLeft = f;
+		}
+		else if (FileManager::GetFilenameWithoutExt(f) == "rt")
+		{
+			sRight = f;
+		}
+		else if (FileManager::GetFilenameWithoutExt(f) == "ft")
+		{
+			sFront = f;
+		}
+		else if (FileManager::GetFilenameWithoutExt(f) == "bk")
+		{
+			sBack = f;
+		}
+	}
+
+	tTextures[0].load_2D(sFront);
+	tTextures[1].load_2D(sBack);
+	tTextures[2].load_2D(sLeft);
+	tTextures[3].load_2D(sRight);
+	tTextures[4].load_2D(sTop);
+	tTextures[5].load_2D(sBottom);
 
 	sDirectory = a_sDirectory;
-
-	sFront = a_sFront;
-	sBack = a_sBack;
-	sLeft = a_sLeft;
-	sRight = a_sRight;
-	sTop = a_sTop;
-	sBottom = a_sBottom;
 
 	for (int i = 0; i < 6; i++)
 	{

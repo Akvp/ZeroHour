@@ -153,6 +153,8 @@ void CAppStateMain::OnRender()
 	//models[1].render();
 
 	glEnable(GL_DEPTH_TEST);
+
+	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
 
 bool CAppStateMain::OnInit_GL()
@@ -190,13 +192,7 @@ bool CAppStateMain::OnInit_GL()
 	Model = glm::mat4(1.0f);
 
 	//Load the skybox
-	skybox.load(CParams::SkyboxFolder,
-		CParams::SkyboxFront,
-		CParams::SkyboxBack,
-		CParams::SkyboxLeft,
-		CParams::SkyboxRight,
-		CParams::SkyboxTop,
-		CParams::SkyboxBot);
+	skybox.load(CParams::SkyboxFolder);
 
 	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
 

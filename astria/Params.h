@@ -14,7 +14,6 @@ public:
 	static double HalfPi;
 	static double TwoPi;
 
-
 	// ===== Graphical options =====
 	static char WindowName[64];
 	static char VersionNumber[16];
@@ -22,15 +21,14 @@ public:
 	static int WindowHeight;
 	static float AspectRatio;
 
-	static char SkyboxFolder[128];
-	static char SkyboxTop[64];
-	static char SkyboxBot[64];
-	static char SkyboxLeft[64];
-	static char SkyboxRight[64];
-	static char SkyboxFront[64];
-	static char SkyboxBack[64];
+	static char IconImage[128];
 
-	// ===== General properties =====
+	static char IntroImage[128];
+	static int IntroDelay;
+
+	static char SkyboxFolder[128];
+
+	// ===== World properties =====
 	static float WorldMinX, WorldMaxX;
 	static float WorldMinY, WorldMaxY;
 	static float WorldMinZ, WorldMaxZ;

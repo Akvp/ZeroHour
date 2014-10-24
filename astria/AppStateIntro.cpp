@@ -18,7 +18,7 @@ CAppStateIntro* CAppStateIntro::GetInstance()
 void CAppStateIntro::OnActivate()
 {
 	StartTime = SDL_GetTicks();
-	splash.Load(CMain::GetInstance()->GetRenderer(), "gfx/img/splash.jpg");
+	splash.Load(CMain::GetInstance()->GetRenderer(), CParams::IntroImage);
 }
 
 void CAppStateIntro::OnDeactivate()
@@ -32,7 +32,7 @@ void CAppStateIntro::OnEvent(SDL_Event* Event)
 
 void CAppStateIntro::OnLoop()
 {
-	if (StartTime + 3000 < SDL_GetTicks())
+	if (StartTime + CParams::IntroDelay < SDL_GetTicks())
 	{
 		CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
 	}
@@ -40,7 +40,8 @@ void CAppStateIntro::OnLoop()
 
 void CAppStateIntro::OnRender()
 {
-	splash.Render(0, 0);// , CParams::WindowWidth, CParams::WindowHeight);
+	splash.Render(0, 0, CParams::WindowWidth, CParams::WindowHeight);
+	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
 }
 
 void CAppStateIntro::OnLButtonDown(int mX, int mY)
