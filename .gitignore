@@ -1,3 +1,4 @@
 *.sdf
 *.v12.suo
 /astria/Debug
+/Release

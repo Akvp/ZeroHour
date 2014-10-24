@@ -30,7 +30,7 @@ void CAppStateIntro::OnEvent(SDL_Event* Event)
 {
 }
 
-void CAppStateIntro::OnLoop()
+void CAppStateIntro::OnUpdate()
 {
 	if (StartTime + CParams::IntroDelay < SDL_GetTicks())
 	{

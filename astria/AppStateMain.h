@@ -19,7 +19,7 @@ public:
 	void OnDeactivate();
 
 	void OnEvent(SDL_Event* Event);
-	void OnLoop();
+	void OnUpdate();
 	void OnRender();
 
 private:

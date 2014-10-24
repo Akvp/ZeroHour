@@ -8,10 +8,10 @@ void CAppStateManager::OnEvent(SDL_Event* Event)
 		ActiveAppState->OnEvent(Event);
 }
 
-void CAppStateManager::OnLoop()
+void CAppStateManager::OnUpdate()
 {
 	if (ActiveAppState)
-		ActiveAppState->OnLoop();
+		ActiveAppState->OnUpdate();
 }
 
 void CAppStateManager::OnRender()

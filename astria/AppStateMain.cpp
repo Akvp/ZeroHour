@@ -75,7 +75,7 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 
 }
 
-void CAppStateMain::OnLoop()
+void CAppStateMain::OnUpdate()
 {
 	//clamp(VerticalAngle, -3.14f / 4.0f, 3.14f / 4.0f);
 

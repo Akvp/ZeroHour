@@ -16,6 +16,34 @@ bool CHeightMap::Load(std::string file)
 		Release();
 	}
 
+	SDL_Surface* Surf_Load = IMG_Load(file.c_str());
+	
+	if (Surf_Load == NULL)
+	{
+		char errorMsg[512] = "";
+		sprintf(errorMsg, "Error loading height map %s\n Error message: %s\n", file, IMG_GetError());
+		MessageBox(NULL, errorMsg, "Height Map Loading Error", MB_ICONERROR);
+		return false;
+	}
+
+	//3 bytes per pixels
+	//RGB texture
+	if (Surf_Load->format->BytesPerPixel == 3)
+	{
+
+	}
+	//1 byte per pixel
+	//Depth texture
+	else if (Surf_Load->format->BytesPerPixel == 1)
+	{
+
+	}
+
+	return true;
+}
+
+void CHeightMap::Release()
+{
 
 }
 
@@ -41,6 +69,16 @@ void CHeightMap::SetRenderSize(float x, float h, float z)
 void CHeightMap::SetRenderSize(float QuadSize, float Height)
 {
 	RenderScale = glm::vec3(float(cols)*QuadSize, Height, float(rows)*QuadSize);
+}
+
+int CHeightMap::GetRows()
+{
+	return rows;
+}
+
+int CHeightMap::GetCols()
+{
+	return cols;
 }
 
 void CHeightMap::Render()

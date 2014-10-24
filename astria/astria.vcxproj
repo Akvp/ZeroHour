@@ -49,7 +49,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glu32.lib;glew32.lib;assimp.lib;FreeImage.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glu32.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -132,6 +132,32 @@
     <ClInclude Include="Texture_SDL.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="VBO.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\blaze_gen_common.geom" />
+    <None Include="shaders\blaze_part_gen_box.geom" />
+    <None Include="shaders\color.frag" />
+    <None Include="shaders\color.vert" />
+    <None Include="shaders\dirLight.frag" />
+    <None Include="shaders\fog.frag" />
+    <None Include="shaders\font2D.frag" />
+    <None Include="shaders\main_shader.frag" />
+    <None Include="shaders\main_shader.vert" />
+    <None Include="shaders\normal_displayer.frag" />
+    <None Include="shaders\normal_displayer.geom" />
+    <None Include="shaders\normal_displayer.vert" />
+    <None Include="shaders\ortho2D.frag" />
+    <None Include="shaders\ortho2D.vert" />
+    <None Include="shaders\particles_render.frag" />
+    <None Include="shaders\particles_render.geom" />
+    <None Include="shaders\particles_render.vert" />
+    <None Include="shaders\particles_update.frag" />
+    <None Include="shaders\particles_update.geom" />
+    <None Include="shaders\particles_update.vert" />
+    <None Include="shaders\pointLight.frag" />
+    <None Include="shaders\spotLight.frag" />
+    <None Include="shaders\terrain.frag" />
+    <None Include="shaders\terrain.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

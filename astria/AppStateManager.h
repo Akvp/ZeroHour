@@ -23,7 +23,7 @@ private:
 
 public:
 	static void OnEvent(SDL_Event* Event);
-	static void OnLoop();
+	static void OnUpdate();
 	static void OnRender();
 
 	static void SetActiveAppState(int AppStateID);
