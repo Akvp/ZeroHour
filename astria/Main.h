@@ -26,6 +26,9 @@ public:
 	SDL_Renderer* GetRenderer();
 	SDL_Window* GetWindow();
 
+	int GetWindowWidth();
+	int GetWindowHeight();
+
 	//Program entry point
 	int OnExecute();
 
@@ -52,6 +55,9 @@ private:
 	SDL_Window* Window_Main;
 	SDL_GLContext glContext;
 	SDL_Renderer* Renderer;
+
+	int window_width;
+	int window_height;
 
 	const int OPENGL_MAJOR_VERSION = 3;
 	const int OPENGL_MINOR_VERSION = 3;

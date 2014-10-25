@@ -49,7 +49,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;opengl32.lib;glu32.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;opengl32.lib;glu32.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
@@ -78,6 +78,7 @@
     <ClCompile Include="AppStatePause.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="Font_SDL.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Gene.cpp" />
     <ClCompile Include="HeightMap.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="AppStatePause.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Font_SDL.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="Gene.h" />
     <ClInclude Include="Event.h" />

@@ -18,12 +18,15 @@ public:
 	void OnActivate();
 	void OnDeactivate();
 
+	void Exit();
+
 	void OnEvent(SDL_Event* Event);
 	void OnUpdate();
 	void OnRender();
 
 private:
 	static CAppStateMain Instance;
+	bool Loaded;
 	bool OnInit_GL();
 	SDL_GLContext glContext;
 

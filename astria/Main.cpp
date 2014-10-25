@@ -25,6 +25,16 @@ SDL_Window* CMain::GetWindow()
 	return Window_Main;
 }
 
+int CMain::GetWindowWidth()
+{
+	return window_width;
+}
+
+int CMain::GetWindowHeight()
+{
+	return window_height;
+}
+
 int CMain::OnExecute()
 {
 	if (!OnInit())

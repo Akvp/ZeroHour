@@ -6,7 +6,7 @@ CAppStateMain CAppStateMain::Instance;
 
 CAppStateMain::CAppStateMain()
 {
-
+	Loaded = false;
 }
 
 CAppStateMain* CAppStateMain::GetInstance()
@@ -16,9 +16,14 @@ CAppStateMain* CAppStateMain::GetInstance()
 
 void CAppStateMain::OnActivate()
 {
-	Speed = 0.5f;
-	MouseSpeed = 0.002f;
-	OnInit_GL();
+	if (!Loaded)
+	{
+		Speed = 0.5f;
+		MouseSpeed = 0.002f;
+		OnInit_GL();
+
+		Loaded = true;
+	}
 
 	//Hide mouse cursor
 	if (SDL_ShowCursor(SDL_DISABLE) < 0)
@@ -27,18 +32,22 @@ void CAppStateMain::OnActivate()
 	}
 
 	//Center mouse cursor
-	SDL_WarpMouseInWindow(CMain::GetInstance()->GetWindow(), CParams::WindowWidth / 2, CParams::WindowHeight / 2);
+	SDL_WarpMouseInWindow(CMain::GetInstance()->GetWindow(), CMain::GetInstance()->GetWindowWidth() / 2, CMain::GetInstance()->GetWindowHeight() / 2);
+
 }
 
 void CAppStateMain::OnDeactivate()
+{
+	SDL_ShowCursor(SDL_ENABLE);
+}
+
+void CAppStateMain::Exit()
 {
 	mainShader_vertex.release();
 	mainShader_fragment.release();
 	lightShader_fragment.release();
 	mainProgram.release();
 	skybox.release();
-
-	SDL_ShowCursor(SDL_ENABLE);
 }
 
 void CAppStateMain::OnEvent(SDL_Event* Event)
@@ -67,11 +76,11 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 	SDL_GetMouseState(&Mouse_X, &Mouse_Y);
 
 	//Recenter mouse
-	SDL_WarpMouseInWindow(CMain::GetInstance()->GetWindow(), CParams::WindowWidth / 2, CParams::WindowHeight / 2);
+	SDL_WarpMouseInWindow(CMain::GetInstance()->GetWindow(), CMain::GetInstance()->GetWindowWidth() / 2, CMain::GetInstance()->GetWindowHeight() / 2);
 
 	//Compute new orientation
-	HorizontalAngle += MouseSpeed * float(CParams::WindowWidth / 2 - Mouse_X);
-	VerticalAngle += MouseSpeed * float(CParams::WindowHeight / 2 - Mouse_Y);
+	HorizontalAngle += MouseSpeed * float(CMain::GetInstance()->GetWindowWidth() / 2 - Mouse_X);
+	VerticalAngle += MouseSpeed * float(CMain::GetInstance()->GetWindowHeight() / 2 - Mouse_Y);
 
 }
 
@@ -213,14 +222,11 @@ bool CAppStateMain::OnInit_GL()
 
 void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 {
-	std::string pos = std::to_string(Position.x) + ' ' + std::to_string(Position.y) + ' ' + std::to_string(Position.z);
-	std::string angle = std::to_string(HorizontalAngle) + ' ' + std::to_string(VerticalAngle);
-
 	switch (sym)
 	{
 		//Terminate the program if the user press Esc or LeftAlt+F4
 	case SDLK_ESCAPE:		//TODO: Change ESC to pause and bring up a menu
-		CMain::GetInstance()->Running = false;
+		CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
 		break;
 	case SDLK_F4:
 		if (scancode == SDL_SCANCODE_LALT)
@@ -265,9 +271,6 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		char VersionInfo[1024];
 		sprintf(VersionInfo, "Project ASTRIA\n\nVersion: %s", CParams::VersionNumber);
 		MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
-		break;
-	case SDLK_F2:
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Angles", angle.c_str(), NULL);
 		break;
 	}
 }

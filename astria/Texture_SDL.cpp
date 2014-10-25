@@ -24,7 +24,7 @@ bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename) {
 	this->Renderer = Renderer;
 	this->Filename = Filename;
 
-	assert(fopen(Filename.c_str(), "r") != NULL);
+	//assert(fopen(Filename.c_str(), "r") != NULL);
 
 	SDL_Surface* TempSurface = IMG_Load(Filename.c_str());
 	if(TempSurface == NULL) {
@@ -79,6 +79,11 @@ void Texture_SDL::Render(int X, int Y, int Width, int Height, double Angle)
 {
 	SDL_Rect Destination = { X, Y, Width, Height };
 	SDL_RenderCopyEx(Renderer, SDLTexture, NULL, &Destination, Angle, NULL, SDL_FLIP_NONE);
+}
+
+void Texture_SDL::SetAlpha(int alpha)
+{
+	SDL_SetTextureAlphaMod(SDLTexture, alpha);
 }
 
 //------------------------------------------------------------------------------

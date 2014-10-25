@@ -9,6 +9,7 @@ void CMain::OnExit()
 
 	SDL_GL_DeleteContext(glContext);
 
+	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }

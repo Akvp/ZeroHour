@@ -13,7 +13,8 @@ public:
 	CHeightMap();
 
 	static bool LoadShaderProgram();
-	static bool ReleaseShaderProgram();
+	static void ReleaseShaderProgram();
+	static CShaderProgram* GetShaderProgram();
 
 	bool Load(std::string file);
 	void Release();
@@ -25,8 +26,6 @@ public:
 
 	int GetRows();
 	int GetCols();
-
-	static CShaderProgram* GetShaderProgram();
 
 private:
 	UINT vao;

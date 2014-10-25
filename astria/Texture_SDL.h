@@ -35,14 +35,12 @@ class Texture_SDL {
 		bool Load(SDL_Renderer* Renderer, std::string Filename);
 
 		void Render(int X, int Y);
-
 		void Render(int X, int Y, int Width, int Height);
-
 		void Render(int X, int Y, int Width, int Height, int SX, int SY, int SWidth, int SHeight);
-
 		void Render(int X, int Y, double Angle);
-
 		void Render(int X, int Y, int Width, int Height, double Angle);
+
+		void SetAlpha(int alpha);
 
 		int GetWidth();
 		int GetHeight();

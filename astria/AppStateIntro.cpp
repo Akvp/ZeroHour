@@ -40,7 +40,7 @@ void CAppStateIntro::OnUpdate()
 
 void CAppStateIntro::OnRender()
 {
-	splash.Render(0, 0, CParams::WindowWidth, CParams::WindowHeight);
+	splash.Render(0, 0, CMain::GetInstance()->GetWindowWidth(), CMain::GetInstance()->GetWindowHeight());
 	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
 }
 

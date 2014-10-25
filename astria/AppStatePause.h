@@ -3,8 +3,25 @@
 
 #include "AppState.h"
 #include "Texture_SDL.h"
+#include "Font_SDL.h"
+#include "Main.h"
 
-class CAppStatePause
+enum PAUSE_MENU
+{
+	PAUSE_MENU_OPTIONS,
+	PAUSE_MENU_EXIT,	
+	PAUSE_MENU_ABOUT,
+	PAUSE_MENU_HELP,
+	PAUSE_MENU_COUNT,
+	PAUSE_MENU_NONE
+};
+
+struct Button
+{
+	int x, y, w, h;
+};
+
+class CAppStatePause : public CAppState
 {
 public:
 	CAppStatePause();
@@ -19,13 +36,17 @@ public:
 	void OnRender();
 
 private:
-	static CAppStatePause Instance;
+	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 	
-	static const int NUM_OPTIONS = 5;
+private:
+	static CAppStatePause Instance;
 
-	Texture_SDL snapshot;
-	Texture_SDL menu;
-	Texture_SDL options[NUM_OPTIONS];
+	PAUSE_MENU selection;
+
+	Texture_SDL background;
+
+	Font_SDL complex;
+	Text_SDL options[PAUSE_MENU_COUNT];
 };
 
 #endif

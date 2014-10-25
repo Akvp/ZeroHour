@@ -21,23 +21,32 @@ bool CMain::OnInit()
 	//Initialize SDL_image for texture and image loading
 	if(IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL_image initiation", IMG_GetError(), NULL);
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL_image initiation error", IMG_GetError(), NULL);
 		return false;
 	}
 	
+	//Initialize SDL_ttf for font 
+	if (TTF_Init() < 0)
+	{
+		MessageBox(NULL, TTF_GetError(), "SDL_ttf initiation error", MB_ICONERROR);
+		return false;
+	}
+
 	//Set OpenGL 3.3 core
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);				//Enable core profil
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);	//Backward compatibility
 	
+	//Create the main window
 	Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
-
 	if(Window_Main == NULL)
 	{
 		MessageBox(NULL, SDL_GetError(), "Window creation error", MB_ICONERROR);
 		return false;
 	}
+	//Grab its dimension for future use
+	SDL_GetWindowSize(Window_Main, &window_width, &window_height);
 
 	//Set window icon
 	if ((Surf_Icon = IMG_Load(CParams::IconImage)) == NULL)

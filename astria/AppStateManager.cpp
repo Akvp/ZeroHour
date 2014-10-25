@@ -38,6 +38,7 @@ void CAppStateManager::SetActiveAppState(int AppStateID)
 		ActiveAppState = CAppStateMain::GetInstance();
 		break;
 	case APPSTATE_PAUSE:
+		ActiveAppState = CAppStatePause::GetInstance();
 		break;
 	}
 
