@@ -43,8 +43,6 @@ private:
 
 	PAUSE_MENU selection;
 
-	Texture_SDL background;
-
 	Font_SDL complex;
 	Text_SDL options[PAUSE_MENU_COUNT];
 };

@@ -6,6 +6,11 @@
 Texture_SDL::Texture_SDL() {
 }
 
+Texture_SDL::Texture_SDL(SDL_Texture* texture)
+{
+	SDLTexture = texture;
+}
+
 //------------------------------------------------------------------------------
 Texture_SDL::~Texture_SDL() {
 	if(SDLTexture) {
@@ -92,6 +97,11 @@ void Texture_SDL::SetAlpha(Uint8 alpha)
 {
 	if (SDL_SetTextureAlphaMod(SDLTexture, alpha) < 0)
 		printf("cant change alpha\n");
+}
+
+void Texture_SDL::SetColorMod(int r, int g, int b)
+{
+	SDL_SetTextureColorMod(SDLTexture, r, g, b);
 }
 
 void Texture_SDL::SetBlend(SDL_BlendMode blend)

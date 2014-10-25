@@ -16,9 +16,9 @@ CAppStatePause* CAppStatePause::GetInstance()
 void CAppStatePause::OnActivate()
 {
 	selection = PAUSE_MENU_NONE;
-	background.Load(CMain::GetInstance()->GetRenderer(), "gfx/img/bt.jpg");
-	background.SetBlend(SDL_BLENDMODE_BLEND);
-	background.SetAlpha(1);
+	CAppStateMain::GetInstance()->GetSnapshot();
+	SDL_SetTextureBlendMode(CAppStateMain::GetInstance()->GetSnapshot(), SDL_BLENDMODE_BLEND);
+	SDL_SetTextureColorMod(CAppStateMain::GetInstance()->GetSnapshot(), 100, 100, 100);
 
 	complex.Load("ttf/complex.ttf", 20);
 	options[0].Load(complex.GetFont(), "some text", CMain::GetInstance()->GetRenderer());
@@ -45,7 +45,8 @@ void CAppStatePause::OnUpdate()
 
 void CAppStatePause::OnRender()
 {
-	background.Render(0, 0, CMain::GetInstance()->GetWindowWidth(), CMain::GetInstance()->GetWindowHeight());
+	SDL_Rect dest = { 0, 0, CMain::GetInstance()->GetWindowWidth(), CMain::GetInstance()->GetWindowHeight() };
+	SDL_RenderCopyEx(CMain::GetInstance()->GetRenderer(), CAppStateMain::GetInstance()->GetSnapshot(), 0, &dest, 0, 0, SDL_FLIP_VERTICAL);
 	options[0].Render(50, 100);
 	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
 }

@@ -7,6 +7,7 @@ CAppStateMain CAppStateMain::Instance;
 CAppStateMain::CAppStateMain()
 {
 	Loaded = false;
+	snapshot = NULL;
 }
 
 CAppStateMain* CAppStateMain::GetInstance()
@@ -38,6 +39,13 @@ void CAppStateMain::OnActivate()
 
 void CAppStateMain::OnDeactivate()
 {
+	int width = CMain::GetInstance()->GetWindowWidth();
+	int height = CMain::GetInstance()->GetWindowHeight();
+	SDL_Surface* Surf_Tmp = SDL_CreateRGBSurface(0, width, height, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);
+	glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, Surf_Tmp->pixels);
+	snapshot = SDL_CreateTextureFromSurface(CMain::GetInstance()->GetRenderer(), Surf_Tmp);
+	SDL_FreeSurface(Surf_Tmp);
+
 	SDL_ShowCursor(SDL_ENABLE);
 }
 
@@ -218,6 +226,11 @@ bool CAppStateMain::OnInit_GL()
 
 
 	return true;
+}
+
+SDL_Texture* CAppStateMain::GetSnapshot()
+{
+	return snapshot;
 }
 
 void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)

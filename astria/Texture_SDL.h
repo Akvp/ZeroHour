@@ -30,6 +30,7 @@ class Texture_SDL {
 
 	public:
 		Texture_SDL();
+		Texture_SDL(SDL_Texture* texture);
 		~Texture_SDL();
 
 		bool Load(SDL_Renderer* Renderer, std::string Filename);
@@ -43,6 +44,7 @@ class Texture_SDL {
 		void Release();
 
 		void SetAlpha(Uint8 alpha);
+		void SetColorMod(int r, int g, int b);
 		void SetBlend(SDL_BlendMode blend);
 
 		int GetWidth();

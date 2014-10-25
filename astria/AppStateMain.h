@@ -24,6 +24,8 @@ public:
 	void OnUpdate();
 	void OnRender();
 
+	SDL_Texture* GetSnapshot();
+
 private:
 	static CAppStateMain Instance;
 	bool Loaded;
@@ -32,6 +34,8 @@ private:
 
 	const int OPENGL_MAJOR_VERSION = 3;
 	const int OPENGL_MINOR_VERSION = 3;
+
+	SDL_Texture* snapshot;
 
 private:
 	//Event variables
