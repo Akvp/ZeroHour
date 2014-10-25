@@ -39,6 +39,7 @@ void CAppStateMain::OnActivate()
 
 void CAppStateMain::OnDeactivate()
 {
+	//Save a snapshot of the current screen to use in pause menu
 	int width = CMain::GetInstance()->GetWindowWidth();
 	int height = CMain::GetInstance()->GetWindowHeight();
 	SDL_Surface* Surf_Tmp = SDL_CreateRGBSurface(0, width, height, 24, 0x000000FF, 0x0000FF00, 0x00FF0000, 0);

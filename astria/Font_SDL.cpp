@@ -54,7 +54,7 @@ Text_SDL::Text_SDL()
 	FontTexture = NULL;
 }
 
-bool Text_SDL::Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, TTF_RENDER_TYPE type)
+bool Text_SDL::Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, SDL_Color color, TTF_RENDER_TYPE type)
 {
 	Renderer = renderer;
 	
@@ -63,13 +63,13 @@ bool Text_SDL::Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, TT
 	switch (type)
 	{
 	case TTF_SOLID:
-		Surf_Load = TTF_RenderText_Solid(font, text.c_str(), { 0, 0, 0, 1 });
+		Surf_Load = TTF_RenderText_Solid(font, text.c_str(), color);
 		break;
 	case TTF_SHADED:
-		Surf_Load = TTF_RenderText_Shaded(font, text.c_str(), { 0, 0, 0, 1 }, { 1, 1, 1, 1 });
+		Surf_Load = TTF_RenderText_Shaded(font, text.c_str(), color, { 1, 1, 1, 1 });
 		break;
 	case TTF_BLENDED:
-		Surf_Load = TTF_RenderText_Blended(font, text.c_str(), { 0, 0, 0, 1 });
+		Surf_Load = TTF_RenderText_Blended(font, text.c_str(), color);
 		break;
 	}
 	if (Surf_Load == NULL)

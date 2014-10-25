@@ -28,6 +28,7 @@ void CAppStateIntro::OnDeactivate()
 
 void CAppStateIntro::OnEvent(SDL_Event* Event)
 {
+	CEvent::OnEvent(Event);
 }
 
 void CAppStateIntro::OnUpdate()

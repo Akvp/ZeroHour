@@ -37,7 +37,7 @@ class Text_SDL
 public:
 	Text_SDL();
 
-	bool Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, TTF_RENDER_TYPE type = TTF_BLENDED);
+	bool Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, SDL_Color color = { 0, 0, 0, 1 }, TTF_RENDER_TYPE type = TTF_BLENDED);
 
 	void Render(int x, int y);
 	void Render(int x, int y, float ratio);
