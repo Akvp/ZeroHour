@@ -112,11 +112,6 @@ void CEvent::OnEvent(SDL_Event* Event) {
 			break;
 		}
 
-		case SDL_QUIT: {
-			OnExit();
-			break;
-		}
-
 		case SDL_SYSWMEVENT: {
 			//Ignore
 			break;
@@ -251,11 +246,6 @@ void CEvent::OnResize(int w,int h) {
 
 //------------------------------------------------------------------------------
 void CEvent::OnExpose() {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
-void CEvent::OnExit() {
 	//Pure virtual, do nothing
 }
 

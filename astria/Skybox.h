@@ -23,9 +23,6 @@ public:
 	CTexture* getTextures() { return tTextures; };
 
 private:
-	void load_texture(std::string file, GLenum side);
-
-private:
 	UINT uiVAO;
 	CVBO vboRenderData;
 	CTexture tTextures[6];

@@ -6,6 +6,9 @@
 #include "Font_SDL.h"
 #include "Main.h"
 
+//For now, pause menu uses SDL 2.0
+//Will try change to OpenGL later... if I happen to have time
+
 enum PAUSE_MENU
 {
 	PAUSE_MENU_RESUME,
@@ -17,11 +20,6 @@ enum PAUSE_MENU
 	PAUSE_MENU_NONE
 };
 
-struct Button
-{
-	int x, y, w, h;
-};
-
 class CAppStatePause : public CAppState
 {
 public:
@@ -31,6 +29,7 @@ public:
 
 	void OnActivate();
 	void OnDeactivate();
+	void OnExit();
 
 	void OnEvent(SDL_Event* Event);
 	void OnUpdate();
@@ -42,11 +41,12 @@ private:
 
 private:
 	static CAppStatePause Instance;
+	bool loaded;
 
 	PAUSE_MENU selection;
 
-	Font_SDL complex;
-	Font_SDL complex_hover;
+	Font_SDL font;
+	Font_SDL font_hover;
 	Text_SDL options[PAUSE_MENU_COUNT];
 	Text_SDL options_hover[PAUSE_MENU_COUNT];
 

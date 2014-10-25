@@ -5,7 +5,7 @@ CAppStatePause CAppStatePause::Instance;
 
 CAppStatePause::CAppStatePause()
 {
-	
+	loaded = false;
 }
 
 CAppStatePause* CAppStatePause::GetInstance()
@@ -16,29 +16,48 @@ CAppStatePause* CAppStatePause::GetInstance()
 void CAppStatePause::OnActivate()
 {
 	selection = PAUSE_MENU_NONE;
-	//Color mod the snapshot to make it darker
-	SDL_SetTextureBlendMode(CAppStateMain::GetInstance()->GetSnapshot(), SDL_BLENDMODE_BLEND);
-	SDL_SetTextureColorMod(CAppStateMain::GetInstance()->GetSnapshot(), 100, 100, 100);
 
-	complex.Load("ttf/complex.ttf", 25);
-	complex_hover.Load("ttf/complex.ttf", 25);
-	complex_hover.SetOutline(1);
-	options[PAUSE_MENU_RESUME].Load(complex.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options[PAUSE_MENU_OPTIONS].Load(complex.GetFont(), "options", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options[PAUSE_MENU_ABOUT].Load(complex.GetFont(), "about", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options[PAUSE_MENU_HELP].Load(complex.GetFont(), "help", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options[PAUSE_MENU_EXIT].Load(complex.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options_hover[PAUSE_MENU_RESUME].Load(complex_hover.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options_hover[PAUSE_MENU_OPTIONS].Load(complex_hover.GetFont(), "options", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options_hover[PAUSE_MENU_ABOUT].Load(complex_hover.GetFont(), "about", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options_hover[PAUSE_MENU_HELP].Load(complex_hover.GetFont(), "help", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-	options_hover[PAUSE_MENU_EXIT].Load(complex_hover.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+	//Only load once
+	if (!loaded)
+	{
+		//Color mod the snapshot to make it darker
+		SDL_SetTextureBlendMode(CAppStateMain::GetInstance()->GetSnapshot(), SDL_BLENDMODE_BLEND);
+		SDL_SetTextureColorMod(CAppStateMain::GetInstance()->GetSnapshot(), 100, 100, 100);
+
+		//Load font
+		font.Load("ttf/after_shok.ttf", 25);
+		font_hover.Load("ttf/after_shok.ttf", 25);
+		font_hover.SetOutline(1);
+		//Load all the text textures
+		options[PAUSE_MENU_RESUME].Load(font.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options[PAUSE_MENU_OPTIONS].Load(font.GetFont(), "options", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options[PAUSE_MENU_ABOUT].Load(font.GetFont(), "about", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options[PAUSE_MENU_HELP].Load(font.GetFont(), "help", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options[PAUSE_MENU_EXIT].Load(font.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		//Load textures of text when mouse is over the text
+		options_hover[PAUSE_MENU_RESUME].Load(font_hover.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options_hover[PAUSE_MENU_OPTIONS].Load(font_hover.GetFont(), "options", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options_hover[PAUSE_MENU_ABOUT].Load(font_hover.GetFont(), "about", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options_hover[PAUSE_MENU_HELP].Load(font_hover.GetFont(), "help", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		options_hover[PAUSE_MENU_EXIT].Load(font_hover.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+	}
 }
 
 void CAppStatePause::OnDeactivate()
 {
-	complex.Release();
+	
+}
+
+void CAppStatePause::OnExit()
+{
+	std::cout << "Releasing CAppStatePause\n";
+	font.Release();
+	font_hover.Release();
 	for (auto op : options)
+	{
+		op.Release();
+	}
+	for (auto op : options_hover)
 	{
 		op.Release();
 	}
@@ -49,27 +68,33 @@ void CAppStatePause::OnEvent(SDL_Event* Event)
 	CEvent::OnEvent(Event);
 	SDL_GetMouseState(&mouseX, &mouseY);
 
-	for (int i = 0; i < PAUSE_MENU_COUNT; i++)
+	//Only change selection when mouse is moving
+	//Useful for keyboard selection
+	if (Event->type == SDL_MOUSEMOTION)
 	{
-		if (mouseX >= 50 &&
-			mouseX <= 50 + options[i].GetWidth() &&
-			mouseY >= i * 50 + 50 &&
-			mouseY <= (i * 50 + 50) + options[i].GetHeight()
-			)
+		for (int i = 0; i < PAUSE_MENU_COUNT; i++)
 		{
-			selection = PAUSE_MENU(i);
-			break;
-		}
-		else
-		{
-			selection = PAUSE_MENU_NONE;
+			if (mouseX >= 50 &&
+				mouseX <= 50 + options[i].GetWidth() &&
+				mouseY >= i * 50 + 50 &&
+				mouseY <= (i * 50 + 50) + options[i].GetHeight()
+				)
+			{
+				selection = PAUSE_MENU(i);
+				break;
+			}
+			else
+			{
+				selection = PAUSE_MENU_NONE;
+			}
 		}
 	}
+
 }
 
 void CAppStatePause::OnUpdate()
 {
-	
+	std::cout << selection << std::endl;
 }
 
 void CAppStatePause::OnRender()
@@ -98,6 +123,26 @@ void CAppStatePause::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancod
 	{
 	case SDLK_ESCAPE:
 		CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
+		break;
+	case SDLK_UP:
+		if (selection == PAUSE_MENU_NONE)
+		{
+			selection = PAUSE_MENU_EXIT;
+			break;
+		}
+		selection = PAUSE_MENU(selection - 1);
+		if (selection < PAUSE_MENU_RESUME)
+		{
+			selection = PAUSE_MENU(PAUSE_MENU_COUNT + selection);
+		}
+		break;
+	case SDLK_DOWN:
+		if (selection == PAUSE_MENU_NONE)
+		{
+			selection = PAUSE_MENU_RESUME;
+			break;
+		}
+		selection = PAUSE_MENU((selection + 1) % PAUSE_MENU_COUNT);
 		break;
 	}
 }

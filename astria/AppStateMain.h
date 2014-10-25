@@ -18,7 +18,7 @@ public:
 	void OnActivate();
 	void OnDeactivate();
 
-	void Exit();
+	void OnExit();
 
 	void OnEvent(SDL_Event* Event);
 	void OnUpdate();

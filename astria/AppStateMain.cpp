@@ -20,7 +20,7 @@ void CAppStateMain::OnActivate()
 	if (!Loaded)
 	{
 		Speed = 0.5f;
-		MouseSpeed = 0.002f;
+		MouseSpeed = 0.0015f;
 		OnInit_GL();
 
 		Loaded = true;
@@ -50,8 +50,9 @@ void CAppStateMain::OnDeactivate()
 	SDL_ShowCursor(SDL_ENABLE);
 }
 
-void CAppStateMain::Exit()
+void CAppStateMain::OnExit()
 {
+	std::cout << "Releasing CAppStateMain\n";
 	mainShader_vertex.release();
 	mainShader_fragment.release();
 	lightShader_fragment.release();
@@ -168,7 +169,9 @@ void CAppStateMain::OnRender()
 	mModel = glm::scale(mModel, glm::vec3(3, 3, 3));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
 	models[0].render();
-	//models[1].render();
+	mModel = glm::translate(glm::mat4(1.0), glm::vec3(10.0, 0, 0));
+	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
+	models[1].render();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -200,7 +203,7 @@ bool CAppStateMain::OnInit_GL()
 
 	//Load models
 	models[0].load("gfx/Wolf/Wolf.obj");
-	//models[1].load("gfx/audi_rsq/audi_rsq.obj");
+	models[1].load("gfx/house/house.obj");
 	CModel::finalizeVBO();
 
 	//Used for wire frame
