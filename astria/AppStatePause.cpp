@@ -17,12 +17,11 @@ void CAppStatePause::OnActivate()
 {
 	selection = PAUSE_MENU_NONE;
 	background.Load(CMain::GetInstance()->GetRenderer(), "gfx/img/bt.jpg");
-	background.SetAlpha(100);
+	background.SetBlend(SDL_BLENDMODE_BLEND);
+	background.SetAlpha(1);
 
-	complex.Load("ttf/complex.ttf", 10);
-	options[0].Load(complex.GetFont(), "Some text", CMain::GetInstance()->GetRenderer());
-
-	std::cout << "pause activate\n";
+	complex.Load("ttf/complex.ttf", 20);
+	options[0].Load(complex.GetFont(), "some text", CMain::GetInstance()->GetRenderer());
 }
 
 void CAppStatePause::OnDeactivate()
@@ -32,7 +31,6 @@ void CAppStatePause::OnDeactivate()
 	{
 		op.Release();
 	}
-	std::cout << "pause deactivate\n";
 }
 
 void CAppStatePause::OnEvent(SDL_Event* Event)
@@ -48,7 +46,7 @@ void CAppStatePause::OnUpdate()
 void CAppStatePause::OnRender()
 {
 	background.Render(0, 0, CMain::GetInstance()->GetWindowWidth(), CMain::GetInstance()->GetWindowHeight());
-	options[0].Render(0, 0);
+	options[0].Render(50, 100);
 	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
 }
 

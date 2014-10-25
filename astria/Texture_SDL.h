@@ -40,10 +40,14 @@ class Texture_SDL {
 		void Render(int X, int Y, double Angle);
 		void Render(int X, int Y, int Width, int Height, double Angle);
 
-		void SetAlpha(int alpha);
+		void Release();
+
+		void SetAlpha(Uint8 alpha);
+		void SetBlend(SDL_BlendMode blend);
 
 		int GetWidth();
 		int GetHeight();
+		SDL_Texture* GetTexture();
 };
 
 #endif

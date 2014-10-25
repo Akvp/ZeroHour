@@ -97,6 +97,8 @@ void Text_SDL::Render(int x, int y, float ratio)
 void Text_SDL::Release()
 {
 	SDL_DestroyTexture(FontTexture);
+	FontTexture = NULL;
+	Renderer = NULL;
 }
 
 int Text_SDL::GetWidth()

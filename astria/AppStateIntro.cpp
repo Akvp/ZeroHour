@@ -23,7 +23,7 @@ void CAppStateIntro::OnActivate()
 
 void CAppStateIntro::OnDeactivate()
 {
-	
+	splash.Release();
 }
 
 void CAppStateIntro::OnEvent(SDL_Event* Event)
