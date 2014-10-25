@@ -4,6 +4,8 @@ void CMain::OnExit()
 {
 	CAppStateManager::SetActiveAppState(APPSTATE_NONE);
 
+	CAppStateMain::GetInstance()->OnExit();
+
 	SDL_DestroyWindow(Window_Main);
 	Window_Main = NULL;
 
