@@ -38,8 +38,8 @@ bool CShader::load(string file, int type)
 
 	if (iCompilationStatus == GL_FALSE)
 	{
-		char sInfoLog[1024];
-		char sFinalMessage[1536];
+		char sInfoLog[512];
+		char sFinalMessage[1024];
 		int iLogLength;
 		glGetShaderInfoLog(shader, 1024, &iLogLength, sInfoLog);
 		sprintf(sFinalMessage, "Error! Shader file %s wasn't compiled! The compiler returned:\n\n%s", file.c_str(), sInfoLog);
@@ -173,7 +173,7 @@ bool CShaderProgram::addShader(CShader* shader)
 {
 	if (!shader->isLoaded())
 	{
-		char* errorMsg = "";
+		char errorMsg[512];
 		sprintf(errorMsg, "Error! Shader file %s wasn't loaded properly\n", shader->getFile());
 		MessageBox(NULL, errorMsg, "Program error", MB_ICONERROR);
 		return false;
