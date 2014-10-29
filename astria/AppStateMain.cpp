@@ -254,7 +254,7 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		//Movement Keys
 	case SDLK_w:
 	case SDLK_UP:
-		MoveUp = true;
+		MoveUp = true;	//Movement bool variable is needed to counteract the inherent key repeat delay
 		break;
 	case SDLK_s:
 	case SDLK_DOWN:
@@ -276,7 +276,7 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 			PolyMode = GL_LINE;
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
 		}
-		else if (PolyMode == GL_LINE)
+		else if (PolyMode == GL_LINE)	//I think this is only useful for debugging
 		{
 			PolyMode = GL_FILL;
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);

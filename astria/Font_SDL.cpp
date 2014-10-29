@@ -9,6 +9,7 @@ bool Font_SDL::Load(const char* file, int ptsize)
 {
 	if ((font = TTF_OpenFont(file, ptsize)) == NULL)
 		return false;
+	return true;
 }
 
 void Font_SDL::SetStyle(int style)

@@ -11,7 +11,7 @@ enum OPTION_SELECTION
 	OPTION_SELECTION_NONE
 };
 
-class COptions : public CAppState
+class CPauseStateOptions : public CAppState
 {
 public:
 	void OnActivate();

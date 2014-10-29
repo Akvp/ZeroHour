@@ -142,34 +142,49 @@ bool CTexture::load_SDL(std::string file)
 
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	GLint nOfColors = Surf_Load->format->BitsPerPixel;
-	if (nOfColors == 32)     // contains an alpha channel
+	GLint nOfColors = Surf_Load->format->BytesPerPixel;
+	GLenum imgFormat;
+	//Get output format
+	if (nOfColors == 4)     // contains an alpha channel
 	{
-		if (Surf_Load->format->Rmask == 0x000000ff)
-			format = GL_BGRA;
-		else
-			format = GL_RGBA;
+		format = GL_RGBA;
 	}
-	else if (nOfColors == 24)     // no alpha channel
+	else if (nOfColors == 3)     // no alpha channel
 	{
-		format = GL_RGB;	
-		//No idea why but the following happens to NOT work
-		//if (Surf_Load->format->Rmask == 0x000000ff)
-		//	format = GL_RGB;
-		//else
-		//	format = GL_BGR;
+		format = GL_RGB;
+	}
+	else if (nOfColors == 1)
+	{
+		format = GL_LUMINANCE;
 	}
 	else {
 		printf("warning: the image is not truecolor..  this will probably break\n");
 		return false;
 	}
-
+	//Get input format
+	if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
+	{
+		if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
+		{
+			if (nOfColors == 4)
+				imgFormat = GL_BGRA;
+			else
+				imgFormat = GL_BGR;
+		}
+		else
+		{
+			if (nOfColors == 4)
+				imgFormat = GL_RGBA;
+			else
+				imgFormat = GL_RGB;
+		}
+	}
 	//Create the actual openGL texture
-	glTexImage2D(GL_TEXTURE_2D, 0, format, Surf_Load->w, Surf_Load->h, 0, format, GL_UNSIGNED_BYTE, Surf_Load->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, format, Surf_Load->w, Surf_Load->h, 0, imgFormat, GL_UNSIGNED_BYTE, Surf_Load->pixels);
 
 	width = Surf_Load->w;
 	height = Surf_Load->h;
-	BPP = Surf_Load->format->BitsPerPixel;
+	BPP = Surf_Load->format->BytesPerPixel;
 
 	if (mipmap){
 		glGenerateMipmap(GL_TEXTURE_2D);	//Generate mipmaps

@@ -1,27 +1,33 @@
 #include "PauseMenuState.h"
 #include "AppStateManager.h"
 
-void COptions::OnActivate()
+void CPauseStateOptions::OnActivate()
 {
 	
 }
 
-void COptions::OnDeactivate()
+void CPauseStateOptions::OnDeactivate()
 {
 
 }
 
-void COptions::OnEvent(SDL_Event* Event)
+void CPauseStateOptions::OnEvent(SDL_Event* Event)
 {
 	CEvent::OnEvent(Event);
+	SDL_GetMouseState(&mouseX, &mouseY);
+
+	if (Event->type == SDL_MOUSEMOTION)
+	{
+		
+	}
 }
 
-void COptions::OnUpdate()
+void CPauseStateOptions::OnUpdate()
 {
 
 }
 
-void COptions::OnRender()
+void CPauseStateOptions::OnRender()
 {
 	//Render the snapshot in the background
 	SDL_Rect dest = { 0, 0, CMain::GetInstance()->GetWindowWidth(), CMain::GetInstance()->GetWindowHeight() };

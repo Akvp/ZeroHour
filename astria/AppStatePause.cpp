@@ -1,5 +1,6 @@
 #include "AppStatePause.h"
 #include "AppStateManager.h"
+#include "PauseMenuState.h"
 
 CAppStatePause CAppStatePause::Instance;
 
@@ -72,6 +73,7 @@ void CAppStatePause::OnEvent(SDL_Event* Event)
 	//Useful for keyboard selection
 	if (Event->type == SDL_MOUSEMOTION)
 	{
+		//Should probably change the coordinates to a better place
 		for (int i = 0; i < PAUSE_MENU_COUNT; i++)
 		{
 			if (mouseX >= 50 &&
@@ -94,7 +96,8 @@ void CAppStatePause::OnEvent(SDL_Event* Event)
 
 void CAppStatePause::OnUpdate()
 {
-	std::cout << selection << std::endl;
+	//No updates
+	//How boring
 }
 
 void CAppStatePause::OnRender()

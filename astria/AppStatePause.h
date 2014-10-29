@@ -5,7 +5,6 @@
 #include "Texture_SDL.h"
 #include "Font_SDL.h"
 #include "Main.h"
-#include 
 
 //For now, pause menu uses SDL 2.0 instead of OpenGL
 //Will try change to OpenGL later... if I happen to have time
