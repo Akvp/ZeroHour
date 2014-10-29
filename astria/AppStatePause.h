@@ -5,8 +5,9 @@
 #include "Texture_SDL.h"
 #include "Font_SDL.h"
 #include "Main.h"
+#include 
 
-//For now, pause menu uses SDL 2.0
+//For now, pause menu uses SDL 2.0 instead of OpenGL
 //Will try change to OpenGL later... if I happen to have time
 
 enum PAUSE_MENU
@@ -39,6 +40,8 @@ private:
 	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 	void OnLButtonDown(int mX, int mY);
 
+	void OnSelect();
+
 private:
 	static CAppStatePause Instance;
 	bool loaded;
@@ -52,6 +55,10 @@ private:
 
 	int mouseX;
 	int mouseY;
+
+private:
+	//State classes for pause menu buttons
+	
 };
 
 #endif

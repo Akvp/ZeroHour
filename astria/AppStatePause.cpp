@@ -144,6 +144,11 @@ void CAppStatePause::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancod
 		}
 		selection = PAUSE_MENU((selection + 1) % PAUSE_MENU_COUNT);
 		break;
+	case SDLK_RETURN:
+		if (selection < PAUSE_MENU_COUNT)
+		{
+			OnSelect();
+		}
 	}
 }
 
@@ -157,25 +162,30 @@ void CAppStatePause::OnLButtonDown(int mX, int mY)
 			mY <= (i * 50 + 50) + options[i].GetHeight()
 			)
 		{
-			switch (i)
-			{
-			case PAUSE_MENU_RESUME:
-				CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
-				break;
-			case PAUSE_MENU_OPTIONS:
-				break;
-			case PAUSE_MENU_ABOUT:
-				char VersionInfo[1024];
-				sprintf(VersionInfo, "	Project ASTRIA	\n\n	Version: %s\n	Author: Shao Kun Deng", CParams::VersionNumber);
-				MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
-				break;
-			case PAUSE_MENU_HELP:
-				break;
-			case PAUSE_MENU_EXIT:
-				CMain::GetInstance()->Running = false;
-				break;
-			}
+			OnSelect();
 			break;
 		}
+	}
+}
+
+void CAppStatePause::OnSelect()
+{
+	switch (selection)
+	{
+		case PAUSE_MENU_RESUME:
+			CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
+			break;
+		case PAUSE_MENU_OPTIONS:
+			break;
+		case PAUSE_MENU_ABOUT:
+			char VersionInfo[1024];
+			sprintf(VersionInfo, "	Project ASTRIA	\n\n	Version: %s\n	Author: Shao Kun Deng", CParams::VersionNumber);
+			MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
+			break;
+		case PAUSE_MENU_HELP:
+			break;
+		case PAUSE_MENU_EXIT:
+			CMain::GetInstance()->Running = false;
+			break;
 	}
 }

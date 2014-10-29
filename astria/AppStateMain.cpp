@@ -228,7 +228,6 @@ bool CAppStateMain::OnInit_GL()
 	HorizontalAngle = -3.14f;
 	VerticalAngle = 0.0f;
 
-
 	return true;
 }
 

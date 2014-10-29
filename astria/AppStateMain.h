@@ -89,6 +89,8 @@ private:	//Movements and related Matrix transformations
 	float Speed;			//Speed of movements
 	float MouseSpeed;
 
+private:	//HUD & orthogonal projections
+
 };
 
 
