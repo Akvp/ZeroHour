@@ -1,7 +1,6 @@
 TODO:
  - Fix model texture mapping
- - Fix event functions, expecially mouse motion (transition to SDL2.0) 
- - Add height map for terrain
+ - Add height map for terrain (wrapper done but trial implementation failed)
 
 Artificial
 Self

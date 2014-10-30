@@ -20,4 +20,21 @@ public:
 	CDirectLight(glm::vec3 color, glm::vec3 direction, float ambient);
 };
 
+class CPointLight
+{
+public:
+	glm::vec3 Color;
+	glm::vec3 Position;
+	float Ambient;
+
+	float ConstantAttenuation;
+	float LinearAttenuation;
+	float ExponentialAttenuation;
+
+	void setUniform(CShaderProgram* program, std::string lightVarName);
+
+	CPointLight();
+	CPointLight(glm::vec3 color, glm::vec3 position, float ambient, float constAtt, float linAtt, float expAtt);
+};
+
 #endif

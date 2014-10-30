@@ -211,6 +211,11 @@ void CShaderProgram::use()
 		glUseProgram(program);
 }
 
+void CShaderProgram::interrupt()
+{
+	glUseProgram(0);
+}
+
 GLuint CShaderProgram::operator()()
 {
 	return program;

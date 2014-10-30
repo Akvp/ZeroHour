@@ -10,8 +10,10 @@ uniform sampler2D gSampler;
 uniform vec4 vColor;
 
 #include "dirLight.frag"
+#include "pointLight.frag"
 
 uniform DirectionalLight sunLight;
+uniform PointLight pointLight;
 uniform vec3 vEyePosition;
 
 uniform Material matActive;
@@ -23,7 +25,7 @@ void main()
    
    vec3 vNormalized = normalize(vNormal);
 
-   vec4 vDiffuseColor = GetDirectionalLightColor(sunLight, vNormalized);
+   vec4 vDiffuseColor = GetDirectionalLightColor(sunLight, vNormalized)+getPointLightColor(pointLight, vWorldPos, vNormalized);
    vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
    
    outputColor = vMixedColor*(vDiffuseColor+vSpecularColor);

@@ -48,6 +48,7 @@ public:
 	bool link();
 
 	void use();
+	void interrupt();
 
 	GLuint operator()();
 

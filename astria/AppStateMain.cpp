@@ -141,22 +141,35 @@ void CAppStateMain::OnRender()
 	mainProgram.use();
 
 	mainProgram.SetUniform("matrices.projMatrix", &Projection);
-	mainProgram.SetUniform("matrices.viewMatrix", View);
+	mainProgram.SetUniform("matrices.viewMatrix", &View);
 	mainProgram.SetUniform("gSampler", 0);
 
 	mainProgram.SetUniform("matrices.modelMatrix", Model);
 	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
 
-	//Render directional sun light
+	//Render light
 	mainProgram.SetUniform("vColor", glm::vec4(1, 1, 1, 1));
 	sun.setUniform(&mainProgram, "sunLight");
+	light.setUniform(&mainProgram, "pointLight");
 
-	//Render skybox
-	mainProgram.SetUniform("matrices.modelMatrix", glm::translate(glm::mat4(1.0), Position));
-	skybox.render();
+	//Specific fragment shader (and program) for skybox so it would process light 
+	//independant of other light sources in the scene
+	mainProgram.interrupt();
+	skyboxProgram.use();
+		//Render skybox
+		skyboxProgram.SetUniform("matrices.modelMatrix", glm::translate(glm::mat4(1.0), Position));
+		skyboxProgram.SetUniform("matrices.viewMatrix", &View);
+		skyboxProgram.SetUniform("matrices.projMatrix", &Projection);
+		skyboxProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
+		skyboxProgram.SetUniform("gSampler", 0);
+		skyboxProgram.SetUniform("vColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		skyboxProgram.SetUniform("fLightAmbient", sun.ambient);
+		skybox.render();
+	skyboxProgram.interrupt();
+	mainProgram.use();
 
 	mainProgram.SetUniform("matrices.modelMatrix", glm::mat4(1.0));
-
+	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
 	//Render ground
 	glBindVertexArray(scene_VAO);
 	scene_texture.bind();
@@ -198,12 +211,17 @@ bool CAppStateMain::OnInit_GL()
 		return false;
 	if (!lightShader_fragment.load("shaders/dirLight.frag", GL_FRAGMENT_SHADER))
 		return false;
-	if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
+	if (!ptlightShader_fragment.load("shaders/pointLight.frag", GL_FRAGMENT_SHADER))
 		return false;
+	if (!mainProgram.initiate(4, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment, &ptlightShader_fragment))
+		return false;
+
+	skybox_fragment.load("shaders/skybox.frag", GL_FRAGMENT_SHADER);
+	skyboxProgram.initiate(&mainShader_vertex, &skybox_fragment);
 
 	//Load models
 	models[0].load("gfx/Wolf/Wolf.obj");
-	models[1].load("gfx/house/house.obj");
+	models[1].load("gfx/nanosuit/nanosuit.obj");
 	CModel::finalizeVBO();
 
 	//Used for wire frame
@@ -215,7 +233,9 @@ bool CAppStateMain::OnInit_GL()
 	//Load the skybox
 	skybox.load(CParams::SkyboxFolder);
 
-	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
+	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.2f);
+	light.Ambient = 0.1f;
+	light.Color = glm::vec3(0.0f, 1.0f, 1.0f);
 
 	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
 	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);

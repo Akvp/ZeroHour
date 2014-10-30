@@ -20,14 +20,14 @@ smooth out vec4 vEyeSpacePos;
 
 void main()
 {
-  mat4 mMV = matrices.viewMatrix*matrices.modelMatrix;  
-  mat4 mMVP = matrices.projMatrix*matrices.viewMatrix*matrices.modelMatrix;
+	mat4 mMV = matrices.viewMatrix*matrices.modelMatrix;  
+	mat4 mMVP = matrices.projMatrix*matrices.viewMatrix*matrices.modelMatrix;
   
-  vTexCoord = inCoord;
+	vTexCoord = inCoord;
 
-  vEyeSpacePos = mMV*vec4(inPosition, 1.0);
+	vEyeSpacePos = mMV*vec4(inPosition, 1.0);
 	gl_Position = mMVP*vec4(inPosition, 1.0);
 
-  vNormal = (matrices.normalMatrix*vec4(inNormal, 1.0)).xyz;
-  vWorldPos = (matrices.modelMatrix*vec4(inPosition, 1.0)).xyz;
+	vNormal = (matrices.normalMatrix*vec4(inNormal, 1.0)).xyz;
+	vWorldPos = (matrices.modelMatrix*vec4(inPosition, 1.0)).xyz;
 }

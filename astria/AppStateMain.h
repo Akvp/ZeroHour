@@ -55,11 +55,16 @@ private:
 	//CShader ortho2D_vertex;
 	//CShader ortho2D_fragment;
 	CShader lightShader_fragment;
+	CShader ptlightShader_fragment;
 	CShaderProgram mainProgram;
+
+	CShader skybox_fragment;
+	CShaderProgram skyboxProgram;
 
 	//Skybox and lighting
 	CSkybox skybox;
 	CDirectLight sun;
+	CPointLight light;
 
 	//Scene obj
 	CVBO	scene_VBO;

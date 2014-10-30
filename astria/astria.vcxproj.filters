@@ -310,5 +310,8 @@
     <None Include="shaders\terrain.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="shaders\skybox.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

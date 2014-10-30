@@ -45,7 +45,7 @@ bool CModel::load(char* file)
 
 	if (!scene)
 	{
-		std::string errormsg = "Couldn't load model ";
+		std::string errormsg = "Couldn't load model: ";
 		errormsg += file;
 		MessageBox(NULL, errormsg.c_str(), "Error Importing Asset", MB_ICONERROR);
 		return false;
@@ -69,7 +69,8 @@ bool CModel::load(char* file)
 			{
 				aiVector3D pos = mesh->mVertices[face.mIndices[k]];
 				aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
-				aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
+				//aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
+				aiVector3D normal = mesh->mNormals[face.mIndices[k]];
 				vboModelData.addData(&pos, sizeof(aiVector3D));
 				vboModelData.addData(&uv, sizeof(aiVector2D));
 				vboModelData.addData(&normal, sizeof(aiVector3D));
@@ -97,12 +98,18 @@ bool CModel::load(char* file)
 			string sTextureName = path.data;
 			string sFullPath = sDir + sTextureName;
 			int iTexFound = -1;
-			for (int j = 0; j < textures.size(); j++)if (sFullPath == textures[j].getFile())
+			for (int j = 0; j < textures.size(); j++)
 			{
-				iTexFound = j;
-				break;
+				if (sFullPath == textures[j].getFile())
+				{
+					iTexFound = j;
+					break;
+				}
 			}
-			if (iTexFound != -1)materialRemap[i] = iTexFound;
+			if (iTexFound != -1)
+			{
+				materialRemap[i] = iTexFound;
+			}
 			else
 			{
 				CTexture tNew;
@@ -118,7 +125,9 @@ bool CModel::load(char* file)
 		int iOldIndex = materialIndices[i];
 		materialIndices[i] = materialRemap[iOldIndex];
 	}
-	return loaded = true;
+
+	loaded = true;
+	return loaded;
 }
 
 void CModel::finalizeVBO()
