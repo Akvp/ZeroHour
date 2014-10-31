@@ -233,9 +233,10 @@ bool CAppStateMain::OnInit_GL()
 	//Load the skybox
 	skybox.load(CParams::SkyboxFolder);
 
-	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.2f);
+	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
+	light.Position = glm::vec3(0.0f, 2.0f, 0.0f);
 	light.Ambient = 0.1f;
-	light.Color = glm::vec3(0.0f, 1.0f, 1.0f);
+	light.Color = glm::vec3(1.0f, 0.0f, 0.0f);
 
 	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
 	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);

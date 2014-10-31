@@ -76,6 +76,7 @@ bool CModel::load(char* file)
 				vboModelData.addData(&normal, sizeof(aiVector3D));
 			}
 		}
+
 		int iMeshVertices = mesh->mNumVertices;
 		totalVertices += iMeshVertices;
 		meshSize.push_back((vboModelData.getCurrentSize() - iSizeBefore) / vertexTotalSize);
