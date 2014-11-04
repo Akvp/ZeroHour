@@ -136,6 +136,11 @@ CShaderProgram::CShaderProgram()
 	linked = false;
 }
 
+GLuint CShaderProgram::getID()
+{
+	return program;
+}
+
 bool CShaderProgram::initiate(int n_arg, ...)
 {
 	create();
@@ -214,11 +219,6 @@ void CShaderProgram::use()
 void CShaderProgram::interrupt()
 {
 	glUseProgram(0);
-}
-
-GLuint CShaderProgram::operator()()
-{
-	return program;
 }
 
 void CShaderProgram::SetUniform(string sName, float* fValues, int iCount)

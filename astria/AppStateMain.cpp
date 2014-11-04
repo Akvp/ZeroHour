@@ -177,8 +177,7 @@ void CAppStateMain::OnRender()
 
 	//Render models
 	CModel::bindVAO();
-	float xPosHouse = -10.0f;
-	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(xPosHouse, 0, 0));
+	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 0, -10.0));
 	mModel = glm::scale(mModel, glm::vec3(3, 3, 3));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
 	models[0].render();
@@ -236,7 +235,7 @@ bool CAppStateMain::OnInit_GL()
 	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
 	light.Position = glm::vec3(0.0f, 2.0f, 0.0f);
 	light.Ambient = 0.1f;
-	light.Color = glm::vec3(1.0f, 0.0f, 0.0f);
+	light.Color = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
 	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);

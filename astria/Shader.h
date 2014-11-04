@@ -50,8 +50,6 @@ public:
 	void use();
 	void interrupt();
 
-	GLuint operator()();
-
 	GLuint getID();
 
 	// Setting vectors

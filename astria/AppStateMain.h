@@ -72,7 +72,7 @@ private:
 	CTexture scene_texture;	//Texture for static scene object
 	CTexture test_texture;
 
-	CModel models[2];	//Model array
+	CModel models[2];
 	GLuint PolyMode;	//Used for wireframe
 
 	//Matrices
