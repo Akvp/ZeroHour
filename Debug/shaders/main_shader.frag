@@ -24,7 +24,6 @@ void main()
    vec3 vNormalized = normalize(vNormal);
 
    vec4 vDiffuseColor = GetDirectionalLightColor(sunLight, vNormalized);
-   vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
-   
+   vec4 vSpecularColor = 10.0f*vColor*GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
    outputColor = vMixedColor*(vDiffuseColor+vSpecularColor);
 }

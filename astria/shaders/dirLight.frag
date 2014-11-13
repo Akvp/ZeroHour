@@ -8,7 +8,7 @@ struct DirectionalLight
 	vec3 vDirection;
 
 	float fAmbient;
-   int iSkybox;
+	int iSkybox;
 };
 
 vec4 GetDirectionalLightColor(DirectionalLight dirLight, vec3 vNormal);

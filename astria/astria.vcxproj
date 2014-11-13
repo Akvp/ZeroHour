@@ -72,6 +72,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
+    <ClCompile Include="AppStateLoading.cpp" />
     <ClCompile Include="AppStateMain.cpp" />
     <ClCompile Include="AppStateIntro.cpp" />
     <ClCompile Include="AppStateManager.cpp" />
@@ -107,6 +108,7 @@
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="AppState.h" />
+    <ClInclude Include="AppStateLoading.h" />
     <ClInclude Include="AppStateManager.h" />
     <ClInclude Include="AppStateMain.h" />
     <ClInclude Include="AppStateIntro.h" />

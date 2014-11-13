@@ -141,6 +141,9 @@
     <ClCompile Include="PauseMenuState.cpp">
       <Filter>Source Files\AppStates</Filter>
     </ClCompile>
+    <ClCompile Include="AppStateLoading.cpp">
+      <Filter>Source Files\AppStates</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Light.h">
@@ -175,9 +178,6 @@
     </ClInclude>
     <ClInclude Include="StaticObj.h">
       <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="FPS.h">
-      <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="Gene.h">
       <Filter>Header Files\AI</Filter>
@@ -235,6 +235,12 @@
     </ClInclude>
     <ClInclude Include="PauseMenuState.h">
       <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="AppStateLoading.h">
+      <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="FPS.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

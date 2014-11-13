@@ -11,5 +11,5 @@ Roaming
 Interactive
 Agent
 
-Developed for nVidia grahics cards
+Program has only been tested on nVidia and Intel video cards
 

@@ -36,6 +36,7 @@ private:
 	const int OPENGL_MINOR_VERSION = 3;
 
 	SDL_Texture* snapshot;
+	//GLuint snapshot;
 
 private:
 	//Event variables
@@ -55,7 +56,7 @@ private:
 	//CShader ortho2D_vertex;
 	//CShader ortho2D_fragment;
 	CShader lightShader_fragment;
-	CShader ptlightShader_fragment;
+	//CShader ptlightShader_fragment;
 	CShaderProgram mainProgram;
 
 	CShader skybox_fragment;
@@ -64,7 +65,6 @@ private:
 	//Skybox and lighting
 	CSkybox skybox;
 	CDirectLight sun;
-	CPointLight light;
 
 	//Scene obj
 	CVBO	scene_VBO;

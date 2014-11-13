@@ -26,7 +26,7 @@ void main()
   vTexCoord = inCoord;
 
   vEyeSpacePos = mMV*vec4(inPosition, 1.0);
-	gl_Position = mMVP*vec4(inPosition, 1.0);
+  gl_Position = mMVP*vec4(inPosition, 1.0);
 
   vNormal = (matrices.normalMatrix*vec4(inNormal, 1.0)).xyz;
   vWorldPos = (matrices.modelMatrix*vec4(inPosition, 1.0)).xyz;

@@ -181,9 +181,9 @@ void CAppStatePause::OnSelect()
 		case PAUSE_MENU_OPTIONS:
 			break;
 		case PAUSE_MENU_ABOUT:
-			char VersionInfo[1024];
-			sprintf(VersionInfo, "	Project ASTRIA	\n\n	Version: %s\n	Author: Shao Kun Deng", CParams::VersionNumber);
-			MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
+			char AboutInfo[1024];
+			sprintf(AboutInfo, "\tProject ASTRIA	\n\n\tVersion: %s\n\tAuthor: Shao Kun Deng\n\tVideo card vendor: %s", CParams::VersionNumber, glGetString(GL_VENDOR));
+			MessageBox(NULL, AboutInfo, "About", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_HELP:
 			break;
