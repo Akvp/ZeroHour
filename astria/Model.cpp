@@ -41,7 +41,8 @@ bool CModel::load(char* file)
 		aiProcess_CalcTangentSpace |
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
-		aiProcess_SortByPType);
+		aiProcess_SortByPType |
+		aiTextureMapMode_Decal);
 
 	if (!scene)
 	{
@@ -70,6 +71,7 @@ bool CModel::load(char* file)
 				aiVector3D pos = mesh->mVertices[face.mIndices[k]];
 				aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
 				//aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
+				uv.y = 1 - uv.y;
 				aiVector3D normal = mesh->mNormals[face.mIndices[k]];
 				vboModelData.addData(&pos, sizeof(aiVector3D));
 				vboModelData.addData(&uv, sizeof(aiVector2D));

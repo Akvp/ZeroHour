@@ -17,13 +17,12 @@
 
 	#define _DEBUG 1
 	#include <cassert>
-	#if _DEBUG
 		#include <cstdio>
 
 		#include <cstdarg>
 		#include <iostream>
 		#define Log(...) printf(__VA_ARGS__); printf("\n\n");
-	#else
+	#if !_DEBUG
 		#define NDEBUG
 		#include <Windows.h>
 	#endif

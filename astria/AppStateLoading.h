@@ -14,7 +14,7 @@ public:
 	void OnUpdate();
 	void OnRender();
 
-private:
+//private:
 	
 };
 

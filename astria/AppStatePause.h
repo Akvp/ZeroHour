@@ -4,10 +4,13 @@
 #include "AppState.h"
 #include "Texture_SDL.h"
 #include "Font_SDL.h"
+#include "MenuTree.h"
 #include "Main.h"
 
 //For now, pause menu uses SDL 2.0 instead of OpenGL
 //Will try change to OpenGL later... if I happen to have time
+
+typedef void(*fnptr)();
 
 enum PAUSE_MENU
 {
@@ -18,6 +21,14 @@ enum PAUSE_MENU
 	PAUSE_MENU_EXIT,
 	PAUSE_MENU_COUNT,
 	PAUSE_MENU_NONE
+};
+
+enum PAUSE_SUBMENU_OPTIONS
+{
+	PAUSE_SUBMENU_OPTIONS_RESOLUTION,
+	PAUSE_SUBMENU_OPTIONS_FULLSCREEN,
+	PAUSE_SUBMENU_OPTIONS_COUNT,
+	PAUSE_SUBMENU_OPTIONS_NONE
 };
 
 class CAppStatePause : public CAppState
@@ -36,6 +47,9 @@ public:
 	void OnRender();
 
 private:
+	void LoadFontTextures();
+	void UnloadFontTextures();
+
 	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 	void OnLButtonDown(int mX, int mY);
 
@@ -48,16 +62,22 @@ private:
 	PAUSE_MENU selection;
 
 	Font_SDL font;
-	Font_SDL font_hover;
-	Text_SDL options[PAUSE_MENU_COUNT];
-	Text_SDL options_hover[PAUSE_MENU_COUNT];
+	Text_SDL menu[PAUSE_MENU_COUNT];
+	Text_SDL menu_hover[PAUSE_MENU_COUNT];
 
 	int mouseX;
 	int mouseY;
-
-private:
-	//State classes for pause menu buttons
 	
+	//Menu callbacks
+	//void OnResume();
+	//void OnOptions();
+	//void OnAbout();
+	//void OnHelp();
+	//void OnExit();
+	
+//private:	
+//	MenuNode* PauseMenu;
+//	MenuNode* CurrentMenu;
 };
 
 #endif

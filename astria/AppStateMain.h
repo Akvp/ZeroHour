@@ -70,7 +70,6 @@ private:
 	CVBO	scene_VBO;
 	GLuint	scene_VAO;
 	CTexture scene_texture;	//Texture for static scene object
-	CTexture test_texture;
 
 	CModel models[2];
 	GLuint PolyMode;	//Used for wireframe

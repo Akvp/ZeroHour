@@ -94,7 +94,6 @@
     <ClCompile Include="Main_OnRender.cpp" />
     <ClCompile Include="Main_OnUpdate.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="PauseMenuState.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="StaticObj.cpp" />
@@ -123,11 +122,11 @@
     <ClInclude Include="Light.h" />
     <ClInclude Include="Log.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="MenuTree.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Params.h" />
-    <ClInclude Include="PauseMenuState.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="State.h" />

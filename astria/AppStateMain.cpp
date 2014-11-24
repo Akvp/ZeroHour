@@ -142,7 +142,8 @@ void CAppStateMain::OnRender()
 
 	mainProgram.SetUniform("matrices.projMatrix", &Projection);
 	mainProgram.SetUniform("matrices.viewMatrix", &View);
-	mainProgram.SetUniform("gSampler", 0);
+	mainProgram.SetUniform("DiffuseSampler", 0);
+	mainProgram.SetUniform("SpecularSampler", 2);
 
 	mainProgram.SetUniform("matrices.modelMatrix", Model);
 	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
@@ -171,10 +172,12 @@ void CAppStateMain::OnRender()
 	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
 	//Render ground
 	glBindVertexArray(scene_VAO);
-	test_texture.bind();
+	scene_texture.bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//Render models
+	//mainProgram.SetUniform("matActive.fSpecularIntensity", 1.0f);
+	//mainProgram.SetUniform("matActive.fSpecular", 1.0f);
 	CModel::bindVAO();
 	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 0, -10.0));
 	mModel = glm::scale(mModel, glm::vec3(3, 3, 3));
@@ -183,6 +186,9 @@ void CAppStateMain::OnRender()
 	mModel = glm::translate(glm::mat4(1.0), glm::vec3(10.0, 0, 0));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
 	models[1].render();
+
+	//mainProgram.SetUniform("matActive.fSpecularIntensity", 0.0f);
+	//mainProgram.SetUniform("matActive.fSpecular", 0.0f);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -218,7 +224,7 @@ bool CAppStateMain::OnInit_GL()
 		return false;
 
 	//Load models
-	models[0].load("gfx/House01/House01.obj");
+	models[0].load("gfx/Wolf/Wolf.obj");
 	models[1].load("gfx/nanosuit/nanosuit.obj");
 	CModel::finalizeVBO();
 
@@ -236,8 +242,6 @@ bool CAppStateMain::OnInit_GL()
 	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
 	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);
 	scene_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
-	test_texture.load_2D("gfx/metal.jpg", true);
-	test_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
 
 	Position = glm::vec3(30, 5, 30);
 	FoV = 45.0f;
@@ -257,7 +261,7 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 	switch (sym)
 	{
 		//Terminate the program if the user press Esc or LeftAlt+F4
-	case SDLK_ESCAPE:		//TODO: Change ESC to pause and bring up a menu
+	case SDLK_ESCAPE:
 		CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
 		break;
 	case SDLK_F4:
@@ -292,18 +296,20 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 			PolyMode = GL_LINE;
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
 		}
-		else if (PolyMode == GL_LINE)	//I think this is only useful for debugging
+		else if (PolyMode == GL_LINE)	//Useless but pretty cool
 		{
 			PolyMode = GL_FILL;
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
 		}
 		break;
 
-	case SDLK_F1:
+#ifdef _DEBUG
+	case SDLK_F1:	//Reserved for quick debugging
 		char VersionInfo[1024];
 		sprintf(VersionInfo, "Project ASTRIA\n\nVersion: %s", CParams::VersionNumber);
 		MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
 		break;
+#endif
 	}
 }
 

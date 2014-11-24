@@ -138,9 +138,6 @@
     <ClCompile Include="Font_SDL.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="PauseMenuState.cpp">
-      <Filter>Source Files\AppStates</Filter>
-    </ClCompile>
     <ClCompile Include="AppStateLoading.cpp">
       <Filter>Source Files\AppStates</Filter>
     </ClCompile>
@@ -233,13 +230,13 @@
     <ClInclude Include="Font_SDL.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="PauseMenuState.h">
-      <Filter>Header Files\AppStates</Filter>
-    </ClInclude>
     <ClInclude Include="AppStateLoading.h">
       <Filter>Header Files\AppStates</Filter>
     </ClInclude>
     <ClInclude Include="FPS.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuTree.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>

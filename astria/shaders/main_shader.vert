@@ -20,7 +20,7 @@ smooth out vec4 vEyeSpacePos;
 
 void main()
 {
-	mat4 mMV = matrices.viewMatrix*matrices.modelMatrix;  
+	mat4 mMV = matrices.viewMatrix*matrices.modelMatrix;						//Matrix multiplication is from left to right
 	mat4 mMVP = matrices.projMatrix*matrices.viewMatrix*matrices.modelMatrix;
   
 	vTexCoord = inCoord;

@@ -46,8 +46,6 @@ bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename) {
     // Grab dimensions
 	SDL_QueryTexture(SDLTexture, NULL, NULL, &Width, &Height);
 
-	//Log("Texture Dimensions: %s : %d %d", Filename.c_str(), Width, Height);
-
 	SDL_FreeSurface(TempSurface);
 
 	return true;
@@ -96,7 +94,7 @@ void Texture_SDL::Release()
 void Texture_SDL::SetAlpha(Uint8 alpha)
 {
 	if (SDL_SetTextureAlphaMod(SDLTexture, alpha) < 0)
-		printf("cant change alpha\n");
+		Log("cant change alpha");
 }
 
 void Texture_SDL::SetColorMod(int r, int g, int b)

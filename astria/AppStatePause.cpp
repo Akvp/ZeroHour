@@ -1,6 +1,5 @@
 #include "AppStatePause.h"
 #include "AppStateManager.h"
-#include "PauseMenuState.h"
 
 CAppStatePause CAppStatePause::Instance;
 
@@ -27,20 +26,34 @@ void CAppStatePause::OnActivate()
 
 		//Load font
 		font.Load("ttf/after_shok.ttf", 25);
-		font_hover.Load("ttf/after_shok.ttf", 25);
-		font_hover.SetOutline(1);
+		SDL_Color color = { 212, 175, 55, 1 };
 		//Load all the text textures
-		options[PAUSE_MENU_RESUME].Load(font.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options[PAUSE_MENU_OPTIONS].Load(font.GetFont(), "options", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options[PAUSE_MENU_ABOUT].Load(font.GetFont(), "about", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options[PAUSE_MENU_HELP].Load(font.GetFont(), "help", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options[PAUSE_MENU_EXIT].Load(font.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		menu[PAUSE_MENU_RESUME].Load(font.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), color);
+		menu[PAUSE_MENU_OPTIONS].Load(font.GetFont(), "options", CMain::GetInstance()->GetRenderer(), color);
+		menu[PAUSE_MENU_ABOUT].Load(font.GetFont(), "about", CMain::GetInstance()->GetRenderer(), color);
+		menu[PAUSE_MENU_HELP].Load(font.GetFont(), "help", CMain::GetInstance()->GetRenderer(), color);
+		menu[PAUSE_MENU_EXIT].Load(font.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), color);
+
 		//Load textures of text when mouse is over the text
-		options_hover[PAUSE_MENU_RESUME].Load(font_hover.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options_hover[PAUSE_MENU_OPTIONS].Load(font_hover.GetFont(), "options", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options_hover[PAUSE_MENU_ABOUT].Load(font_hover.GetFont(), "about", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options_hover[PAUSE_MENU_HELP].Load(font_hover.GetFont(), "help", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
-		options_hover[PAUSE_MENU_EXIT].Load(font_hover.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), { 212, 175, 55, 1 });
+		font.SetOutline(1);
+		menu_hover[PAUSE_MENU_RESUME].Load(font.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), color);
+		menu_hover[PAUSE_MENU_OPTIONS].Load(font.GetFont(), "options", CMain::GetInstance()->GetRenderer(), color);
+		menu_hover[PAUSE_MENU_ABOUT].Load(font.GetFont(), "about", CMain::GetInstance()->GetRenderer(), color);
+		menu_hover[PAUSE_MENU_HELP].Load(font.GetFont(), "help", CMain::GetInstance()->GetRenderer(), color);
+		menu_hover[PAUSE_MENU_EXIT].Load(font.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), color);
+
+		//PauseMenu = new MenuNode();
+		//MenuNode* ResumeNode = new MenuNode("resume", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
+		//PauseMenu->AddSubMenu(ResumeNode);
+		//MenuNode* OptionMode = new MenuNode("options", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
+		//PauseMenu->AddSubMenu(OptionMode);
+		//MenuNode* AboutNode = new MenuNode("about", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
+		//PauseMenu->AddSubMenu(AboutNode);
+		//MenuNode* HelpNode = new MenuNode("help", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
+		//PauseMenu->AddSubMenu(HelpNode);
+		//MenuNode* ExitNode = new MenuNode("exit", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
+		//PauseMenu->AddSubMenu(ExitNode);
+		
 	}
 }
 
@@ -51,14 +64,12 @@ void CAppStatePause::OnDeactivate()
 
 void CAppStatePause::OnExit()
 {
-	std::cout << "Releasing CAppStatePause\n";
 	font.Release();
-	font_hover.Release();
-	for (auto op : options)
+	for (auto op : menu)
 	{
 		op.Release();
 	}
-	for (auto op : options_hover)
+	for (auto op : menu_hover)
 	{
 		op.Release();
 	}
@@ -77,9 +88,9 @@ void CAppStatePause::OnEvent(SDL_Event* Event)
 		for (int i = 0; i < PAUSE_MENU_COUNT; i++)
 		{
 			if (mouseX >= 50 &&
-				mouseX <= 50 + options[i].GetWidth() &&
+				mouseX <= 50 + menu[i].GetWidth() &&
 				mouseY >= i * 50 + 50 &&
-				mouseY <= (i * 50 + 50) + options[i].GetHeight()
+				mouseY <= (i * 50 + 50) + menu[i].GetHeight()
 				)
 			{
 				selection = PAUSE_MENU(i);
@@ -111,14 +122,16 @@ void CAppStatePause::OnRender()
 	{
 		if (i == selection)
 		{
-			options_hover[i].Render(50, i * 50 + 50);
+			menu_hover[i].Render(50, i * 50 + 50);
 			continue;
 		}
-		options[i].Render(50, i * 50 + 50);
+		menu[i].Render(50, i * 50 + 50);
 	}
 
 	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
 }
+
+
 
 void CAppStatePause::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 {
@@ -160,9 +173,9 @@ void CAppStatePause::OnLButtonDown(int mX, int mY)
 	for (int i = 0; i < PAUSE_MENU_COUNT; i++)
 	{
 		if (mX >= 50 &&
-			mX <= 50 + options[i].GetWidth() &&
+			mX <= 50 + menu[i].GetWidth() &&
 			mY >= i * 50 + 50 &&
-			mY <= (i * 50 + 50) + options[i].GetHeight()
+			mY <= (i * 50 + 50) + menu[i].GetHeight()
 			)
 		{
 			OnSelect();
@@ -182,7 +195,7 @@ void CAppStatePause::OnSelect()
 			break;
 		case PAUSE_MENU_ABOUT:
 			char AboutInfo[1024];
-			sprintf(AboutInfo, "\tProject ASTRIA	\n\n\tVersion: %s\n\tAuthor: Shao Kun Deng\n\tVideo card vendor: %s", CParams::VersionNumber, glGetString(GL_VENDOR));
+			sprintf(AboutInfo, "\tProject ASTRIA	\n\n\tVersion: %s\n\tAuthor: Shao Kun Deng\n\tVideo card vendor: %s\n\tGPU: %s", CParams::VersionNumber, glGetString(GL_VENDOR), glGetString(GL_RENDERER));
 			MessageBox(NULL, AboutInfo, "About", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_HELP:
