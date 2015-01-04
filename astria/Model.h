@@ -12,10 +12,14 @@
 #include "VBO.h"
 #include "Texture.h"
 
-class CMaterial
+class CMesh
 {
 public:
-	int Texture;
+	void Draw();
+
+private:
+	static CVBO vboMeshData;
+	static GLuint VAO;
 };
 
 class CModel
@@ -24,23 +28,23 @@ public:
 	CModel();
 	CModel(char* file);
 
-	bool load(char* file);
-	//bool load_BumpMap(char* file, char* colorMap, char* normalMap);
+	bool Load(char* file);
 
-	static void finalizeVBO();
-	static void bindVAO();
+	static void UploadVBO();
+	static void BindVAO();
 
-	void render();
-	//void render_BumpMap(CShaderProgram* program);
+	void Render();
+
+	static void Release();
 
 private:
 	bool loaded;
 	static CVBO vboModelData;
 	static GLuint VAO;
-	static std::vector<CTexture> textures;
-	std::vector<int> meshStartIndices;
-	std::vector<int> meshSize;
-	std::vector<int> materialIndices;
+	static vector<CTexture> textures;
+	vector<int> meshStartIndices;
+	vector<int> meshSize;
+	vector<vector<int>> materialIndices;	
 	int numMaterials;
 };
 

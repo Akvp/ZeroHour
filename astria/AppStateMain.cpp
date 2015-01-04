@@ -17,12 +17,12 @@ CAppStateMain* CAppStateMain::GetInstance()
 
 void CAppStateMain::OnActivate()
 {
+	bool loadingState = false;
 	if (!Loaded)
 	{
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
 		OnInit_GL();
-
 		Loaded = true;
 	}
 
@@ -53,11 +53,11 @@ void CAppStateMain::OnDeactivate()
 void CAppStateMain::OnExit()
 {
 	std::cout << "Releasing CAppStateMain\n";
-	mainShader_vertex.release();
-	mainShader_fragment.release();
-	lightShader_fragment.release();
-	mainProgram.release();
-	skybox.release();
+	mainShader_vertex.Release();
+	mainShader_fragment.Release();
+	mainProgram.Release();
+	skybox.Release();
+	scene_VBO.Release();
 }
 
 void CAppStateMain::OnEvent(SDL_Event* Event)
@@ -117,7 +117,8 @@ void CAppStateMain::OnUpdate()
 		cos(HorizontalAngle - 3.14f / 2.0f)
 		);
 
-	glm::vec3 up = glm::cross(Right, Direction);
+	//Up vector
+	glm::vec3 Up = glm::cross(Right, Direction);
 
 	Projection = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
 
@@ -125,7 +126,7 @@ void CAppStateMain::OnUpdate()
 	View = glm::lookAt(
 		Position,
 		Position + Direction,
-		up
+		Up
 		);
 
 	ModelView = View * Model;
@@ -138,57 +139,43 @@ void CAppStateMain::OnRender()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Use shaders
-	mainProgram.use();
+	mainProgram.Use();
 
 	mainProgram.SetUniform("matrices.projMatrix", &Projection);
 	mainProgram.SetUniform("matrices.viewMatrix", &View);
-	mainProgram.SetUniform("DiffuseSampler", 0);
-	mainProgram.SetUniform("SpecularSampler", 2);
+	mainProgram.SetUniform("mat.diffuse", 0);
+	mainProgram.SetUniform("mat.specular", 2);
 
 	mainProgram.SetUniform("matrices.modelMatrix", Model);
 	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
 
 	//Render light
-	mainProgram.SetUniform("vColor", glm::vec4(1, 1, 1, 1));
-	sun.setUniform(&mainProgram, "sunLight");
+	sun.SetUniform(&mainProgram, "sunLight");
 
-	//Specific fragment shader (and program) for skybox so it would process light 
-	//independant of other light sources in the scene
-	mainProgram.interrupt();
-	skyboxProgram.use();
-		//Render skybox
-		skyboxProgram.SetUniform("matrices.modelMatrix", glm::translate(glm::mat4(1.0), Position));
-		skyboxProgram.SetUniform("matrices.viewMatrix", &View);
-		skyboxProgram.SetUniform("matrices.projMatrix", &Projection);
-		skyboxProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
-		skyboxProgram.SetUniform("gSampler", 0);
-		skyboxProgram.SetUniform("vColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		skyboxProgram.SetUniform("fLightAmbient", sun.ambient);
-		skybox.render();
-	skyboxProgram.interrupt();
-	mainProgram.use();
+	//Render Skybox
+	mainProgram.SetUniform("matrices.modelMatrix", glm::translate(glm::mat4(1.0), Position));
+	mainProgram.SetUniform("bSkybox", 1);
+	skybox.Render();
+	mainProgram.SetUniform("bSkybox", 0);
 
+	//Reset model matrix
 	mainProgram.SetUniform("matrices.modelMatrix", glm::mat4(1.0));
-	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
+
 	//Render ground
 	glBindVertexArray(scene_VAO);
-	scene_texture.bind();
+	scene_texture.Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//Render models
-	//mainProgram.SetUniform("matActive.fSpecularIntensity", 1.0f);
-	//mainProgram.SetUniform("matActive.fSpecular", 1.0f);
-	CModel::bindVAO();
-	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 0, -10.0));
-	mModel = glm::scale(mModel, glm::vec3(3, 3, 3));
+	CModel::BindVAO();
+	mainProgram.SetUniform("vEyePosition", Position);
+	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 30.0, -10.0));
+	mModel = glm::scale(mModel, glm::vec3(1,1,1));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
-	models[0].render();
+	models[0].Render();
 	mModel = glm::translate(glm::mat4(1.0), glm::vec3(10.0, 0, 0));
 	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
-	models[1].render();
-
-	//mainProgram.SetUniform("matActive.fSpecularIntensity", 0.0f);
-	//mainProgram.SetUniform("matActive.fSpecular", 0.0f);
+	models[1].Render();
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -205,28 +192,21 @@ bool CAppStateMain::OnInit_GL()
 	glDepthFunc(GL_LESS);
 
 	//Remove triangles which normal is not towards the camera (do not render the inside of the model)
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 
 
 	//Load shaders and programs
-	if (!mainShader_vertex.load("shaders/main_shader.vert", GL_VERTEX_SHADER))
+	if (!mainShader_vertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
 		return false;
-	if (!mainShader_fragment.load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
+	if (!mainShader_fragment.Load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
 		return false;
-	if (!lightShader_fragment.load("shaders/dirLight.frag", GL_FRAGMENT_SHADER))
-		return false;
-	if (!mainProgram.initiate(3, &mainShader_vertex, &mainShader_fragment, &lightShader_fragment))
-		return false;
-
-	if (!skybox_fragment.load("shaders/skybox.frag", GL_FRAGMENT_SHADER))
-		return false;
-	if (!skyboxProgram.initiate(&mainShader_vertex, &skybox_fragment))
+	if (!mainProgram.Initiate(&mainShader_vertex, &mainShader_fragment))
 		return false;
 
 	//Load models
-	models[0].load("gfx/Wolf/Wolf.obj");
-	models[1].load("gfx/nanosuit/nanosuit.obj");
-	CModel::finalizeVBO();
+	models[0].Load("gfx/Wolf/Wolf.obj");
+	models[1].Load("gfx/nanosuit/nanosuit.obj");
+	CModel::UploadVBO();
 
 	//Used for wire frame
 	PolyMode = GL_FILL;
@@ -235,13 +215,13 @@ bool CAppStateMain::OnInit_GL()
 	Model = glm::mat4(1.0f);
 
 	//Load the skybox
-	skybox.load(CParams::SkyboxFolder);
+	skybox.Load(CParams::SkyboxFolder);
 
-	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 1.0f);
+	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.3f, 1.0f);
 
 	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
-	scene_texture.load_2D("gfx/sand_grass_02.jpg", true);
-	scene_texture.setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+	scene_texture.Load_2D("gfx/sand_grass_02.jpg", true);
+	scene_texture.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
 
 	Position = glm::vec3(30, 5, 30);
 	FoV = 45.0f;

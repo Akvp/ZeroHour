@@ -14,24 +14,24 @@ CShader::CShader()
 
 CShader::~CShader()
 {
-	release();
+	Release();
 }
 
-bool CShader::load(string file, int type)
+bool CShader::Load(string file, int type)
 {
 	vector<string> sLines;
 
 	if (!GetLinesFromFile(file, false, &sLines))return false;
 
-	const char** sProgram = new const char*[sLines.size()];
-	for (int i = 0; i < sLines.size(); i++)sProgram[i] = sLines[i].c_str();
+	const char** sShader = new const char*[sLines.size()];
+	for (int i = 0; i < sLines.size(); i++)sShader[i] = sLines[i].c_str();
 
 	shader = glCreateShader(type);
 
-	glShaderSource(shader, sLines.size(), sProgram, NULL);
+	glShaderSource(shader, sLines.size(), sShader, NULL);
 	glCompileShader(shader);
 
-	delete[] sProgram;
+	delete[] sShader;
 
 	int iCompilationStatus;
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &iCompilationStatus);
@@ -105,24 +105,24 @@ bool CShader::GetLinesFromFile(string sFile, bool bIncludePart, vector<string>* 
 }
 
 
-bool CShader::isLoaded()
+bool CShader::IsLoaded()
 {
 	return loaded;
 }
 
-GLuint CShader::getID()
+GLuint CShader::GetID()
 {
 	return shader;
 }
 
-string CShader::getFile()
+string CShader::GetFile()
 {
 	return file;
 }
 
-void CShader::release()
+void CShader::Release()
 {
-	if (!isLoaded())
+	if (!IsLoaded())
 		return;
 
 	loaded = false;
@@ -136,60 +136,60 @@ CShaderProgram::CShaderProgram()
 	linked = false;
 }
 
-GLuint CShaderProgram::getID()
+GLuint CShaderProgram::GetID()
 {
 	return program;
 }
 
-bool CShaderProgram::initiate(int n_arg, ...)
+bool CShaderProgram::Initiate(int n_arg, ...)
 {
-	create();
+	Create();
 	va_list shaders;
 	va_start(shaders, n_arg);
 	for (int i = 0; i < n_arg; i++) 
 	{
-		if (!addShader(va_arg(shaders, CShader*)))
+		if (!AddShader(va_arg(shaders, CShader*)))
 		{
 			return false;
 		}
 	}
 	va_end(shaders);
-	if (!link())
+	if (!Link())
 		return false;
 	return true;
 }
 
-bool CShaderProgram::initiate(CShader* vertex, CShader* fragment)
+bool CShaderProgram::Initiate(CShader* vertex, CShader* fragment)
 {
-	create();
-	if (!addShader(vertex) || !addShader(fragment))
+	Create();
+	if (!AddShader(vertex) || !AddShader(fragment))
 		return false;
-	if (!link())
+	if (!Link())
 		return false;
 	return true;
 }
 
-void CShaderProgram::create()
+void CShaderProgram::Create()
 {
 	program = glCreateProgram();
 }
 
-bool CShaderProgram::addShader(CShader* shader)
+bool CShaderProgram::AddShader(CShader* shader)
 {
-	if (!shader->isLoaded())
+	if (!shader->IsLoaded())
 	{
 		char errorMsg[512];
-		sprintf(errorMsg, "Error! Shader file %s wasn't loaded properly\n", shader->getFile());
+		sprintf(errorMsg, "Error! Shader file %s wasn't loaded properly\n", shader->GetFile());
 		MessageBox(NULL, errorMsg, "Program error", MB_ICONERROR);
 		return false;
 	}
 
-	glAttachShader(program, shader->getID());
+	glAttachShader(program, shader->GetID());
 
 	return true;
 }
 
-bool CShaderProgram::link()
+bool CShaderProgram::Link()
 {
 	glLinkProgram(program);
 	int status;
@@ -197,12 +197,19 @@ bool CShaderProgram::link()
 	linked = status == GL_TRUE;
 	if (!linked)
 	{
-		MessageBox(NULL, "Program cannot be linked", "Program error", MB_ICONERROR);
+		char sInfoLog[512];
+		char sFinalMessage[1024];
+		int iLogLength;
+		glGetProgramInfoLog(program, 1024, &iLogLength, sInfoLog);
+		sprintf(sFinalMessage, "Error! Program cannot be linked!\nThe compiler returned:\n\n%s", sInfoLog);
+		MessageBox(NULL, sFinalMessage, "Program error", MB_ICONERROR);
+		return false;
+		//MessageBox(NULL, "Program cannot be linked", "Program error", MB_ICONERROR);
 	}
 	return linked;
 }
 
-void CShaderProgram::release()
+void CShaderProgram::Release()
 {
 	if (!linked)
 		return;
@@ -210,13 +217,13 @@ void CShaderProgram::release()
 	glDeleteProgram(program);
 }
 
-void CShaderProgram::use()
+void CShaderProgram::Use()
 {
 	if (linked)
 		glUseProgram(program);
 }
 
-void CShaderProgram::interrupt()
+void CShaderProgram::Interrupt()
 {
 	glUseProgram(0);
 }

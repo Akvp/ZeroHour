@@ -27,7 +27,7 @@ bool CHeightMap::Load(std::string file)
 	}
 
 	//Not sure if this works
-	float* DataPtr = (float*)Surf_Load->pixels;
+	BYTE* DataPtr = (BYTE*)Surf_Load->pixels;
 	rows = Surf_Load->h;
 	cols = Surf_Load->w;
 
@@ -130,20 +130,20 @@ bool CHeightMap::Load(std::string file)
 	}
 
 	//Create VBO with only vertex data
-	HeightMapData.create(rows*cols*(2 * sizeof(glm::vec3) + sizeof(glm::vec2)));
+	HeightMapData.Create(rows*cols*(2 * sizeof(glm::vec3) + sizeof(glm::vec2)));
 	for (int i = 0; i < rows; i++)
 	{
 		for (int j = 0; j < cols; j++)
 		{
 			//Pretty self-explanatory here
-			HeightMapData.addData(&VertexData[i][j], sizeof(glm::vec3));
-			HeightMapData.addData(&CoordsData[i][j], sizeof(glm::vec2));
-			HeightMapData.addData(&FinalNormals[i][j], sizeof(glm::vec3));
+			HeightMapData.AddData(&VertexData[i][j], sizeof(glm::vec3));
+			HeightMapData.AddData(&CoordsData[i][j], sizeof(glm::vec2));
+			HeightMapData.AddData(&FinalNormals[i][j], sizeof(glm::vec3));
 		}
 	}
 
 	//Create VBO with height map indices
-	HeightMapIndices.create();
+	HeightMapIndices.Create();
 	int PrimitiveRestartIndex = rows*cols;
 	for (int i = 0; i < rows - 1; i++)
 	{
@@ -153,18 +153,18 @@ bool CHeightMap::Load(std::string file)
 			{
 				int row = i + (1 - k);
 				int index = row*cols + j;
-				HeightMapIndices.addData(&index, sizeof(int));
+				HeightMapIndices.AddData(&index, sizeof(int));
 			}
 		}
 
 		//Restart triangle strip
-		HeightMapIndices.addData(&PrimitiveRestartIndex, sizeof(int));
+		HeightMapIndices.AddData(&PrimitiveRestartIndex, sizeof(int));
 	}
 
 	glGenVertexArrays(1, &vao);
 	glBindVertexArray(vao);
-	HeightMapData.bind();
-	HeightMapData.uploadGPU(GL_STATIC_DRAW);
+	HeightMapData.Bind();
+	HeightMapData.UploadGPU(GL_STATIC_DRAW);
 
 	//Vertex
 	glEnableVertexAttribArray(0);
@@ -176,8 +176,8 @@ bool CHeightMap::Load(std::string file)
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(glm::vec3) + sizeof(glm::vec2), (void*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
-	HeightMapIndices.bind(GL_ELEMENT_ARRAY_BUFFER);
-	HeightMapIndices.uploadGPU(GL_STATIC_DRAW);
+	HeightMapIndices.Bind(GL_ELEMENT_ARRAY_BUFFER);
+	HeightMapIndices.UploadGPU(GL_STATIC_DRAW);
 
 	loaded = true;
 
@@ -188,8 +188,8 @@ void CHeightMap::Release()
 {
 	if (!loaded)
 		return;
-	HeightMapData.release();
-	HeightMapIndices.release();
+	HeightMapData.Release();
+	HeightMapIndices.Release();
 	glDeleteVertexArrays(1, &vao);
 	loaded = false;
 }
@@ -197,23 +197,23 @@ void CHeightMap::Release()
 bool CHeightMap::LoadShaderProgram()
 {
 	bool ret = true;
-	ret = ret & TerrainShaders[0].load("shaders/terrain.vert", GL_VERTEX_SHADER);
-	ret = ret & TerrainShaders[1].load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
-	ret = ret & TerrainShaders[2].load("shaders/dirLight.frag", GL_FRAGMENT_SHADER);
+	ret = ret & TerrainShaders[0].Load("shaders/terrain.vert", GL_VERTEX_SHADER);
+	ret = ret & TerrainShaders[1].Load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
+	ret = ret & TerrainShaders[2].Load("shaders/dirLight.frag", GL_FRAGMENT_SHADER);
 
-	Terrain.create();
-	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	Terrain.addShader(&TerrainShaders[i]);
-	Terrain.link();
+	Terrain.Create();
+	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	Terrain.AddShader(&TerrainShaders[i]);
+	Terrain.Link();
 
 	return ret;
 }
 
 void CHeightMap::ReleaseShaderProgram()
 {
-	Terrain.release();
+	Terrain.Release();
 	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)
 	{
-		TerrainShaders[i].release();
+		TerrainShaders[i].Release();
 	}
 }
 
@@ -244,7 +244,7 @@ int CHeightMap::GetCols()
 
 void CHeightMap::Render()
 {
-	Terrain.use();
+	Terrain.Use();
 
 	Terrain.SetUniform("fRenderHeight", RenderScale.y);
 	Terrain.SetUniform("fMaxTextureU", float(cols)*0.1f);

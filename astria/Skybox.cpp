@@ -13,7 +13,7 @@ Result:	Loads skybox and creates VAO and VBO for it.
 
 /*---------------------------------------------*/
 
-void CSkybox::load(std::string a_sDirectory)
+void CSkybox::Load(std::string a_sDirectory)
 {
 	std::vector<std::string> files = FileManager::GetFilesInFolder(a_sDirectory);
 	
@@ -45,27 +45,27 @@ void CSkybox::load(std::string a_sDirectory)
 		}
 	}
 
-	tTextures[0].load_2D(sFront);
-	tTextures[1].load_2D(sBack);
-	tTextures[2].load_2D(sLeft);
-	tTextures[3].load_2D(sRight);
-	tTextures[4].load_2D(sTop);
-	tTextures[5].load_2D(sBottom);
+	tTextures[0].Load_2D(sFront);
+	tTextures[1].Load_2D(sBack);
+	tTextures[2].Load_2D(sLeft);
+	tTextures[3].Load_2D(sRight);
+	tTextures[4].Load_2D(sTop);
+	tTextures[5].Load_2D(sBottom);
 
 	sDirectory = a_sDirectory;
 
 	for (int i = 0; i < 6; i++)
 	{
-		tTextures[i].setFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR);
-		tTextures[i].setSamplerParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		tTextures[i].setSamplerParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		tTextures[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR);
+		tTextures[i].SetSamplerParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		tTextures[i].SetSamplerParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	}
 
 	glGenVertexArrays(1, &uiVAO);
 	glBindVertexArray(uiVAO);
 
-	vboRenderData.create();
-	vboRenderData.bind();
+	vboRenderData.Create();
+	vboRenderData.Bind();
 
 	//All vertices
 	//8 vertices of a cube, repeated 3 times each
@@ -105,12 +105,12 @@ void CSkybox::load(std::string a_sDirectory)
 
 	for (int i = 0; i < 24; i++)
 	{
-		vboRenderData.addData(&vSkyBoxVertices[i], sizeof(glm::vec3));
-		vboRenderData.addData(&vSkyBoxTexCoords[i%4], sizeof(glm::vec2));
-		vboRenderData.addData(&vSkyBoxNormals[i/4], sizeof(glm::vec3));
+		vboRenderData.AddData(&vSkyBoxVertices[i], sizeof(glm::vec3));
+		vboRenderData.AddData(&vSkyBoxTexCoords[i%4], sizeof(glm::vec2));
+		vboRenderData.AddData(&vSkyBoxNormals[i/4], sizeof(glm::vec3));
 	}
 
-	vboRenderData.uploadGPU(GL_STATIC_DRAW);
+	vboRenderData.UploadGPU(GL_STATIC_DRAW);
 
 	// Vertex positions
 	glEnableVertexAttribArray(0);
@@ -133,13 +133,13 @@ Result: Guess what it does :)
 
 /*---------------------------------------------*/
 
-void CSkybox::render()
+void CSkybox::Render()
 {
 	glDepthMask(0);
 	glBindVertexArray(uiVAO);
 	for (int i = 0; i < 6; i++)
 	{
-		tTextures[i].bind();
+		tTextures[i].Bind();
 		glDrawArrays(GL_TRIANGLE_STRIP, i*4, 4);
 	}
 	glDepthMask(1);
@@ -155,9 +155,9 @@ Result:	Deletes skybox and all associated memory.
 
 /*---------------------------------------------*/
 
-void CSkybox::release()
+void CSkybox::Release()
 {
-	for(int i = 0; i < 6; i++)tTextures[i].release();
+	for(int i = 0; i < 6; i++)tTextures[i].Release();
 	glDeleteVertexArrays(1, &uiVAO);
-	vboRenderData.release();
+	vboRenderData.Release();
 }

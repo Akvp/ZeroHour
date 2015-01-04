@@ -20,28 +20,28 @@ public:
 	CTexture();
 	CTexture(std::string file, bool generateMipMap = false);
 
-	bool load_2D(std::string file, bool generateMipMap = false);
-	void createEmpty(int width, int height, GLenum format);
-	void createFromData(BYTE* data, int width, int height, int BPP, GLenum format, bool generateMipMap = false);
-	void release();
+	bool Load_2D(std::string file, bool generateMipMap = false);
+	void CreateEmpty(int width, int height, GLenum format);
+	void CreateFromData(BYTE* data, int width, int height, int BPP, GLenum format, bool generateMipMap = false);
+	void Release();
 
-	bool reload();
+	bool Reload();
 	
-	void setFiltering(int magnification, int minification);
-	void setSamplerParameter(GLenum parament, GLenum value);
+	void SetFiltering(int magnification, int minification);
+	void SetSamplerParameter(GLenum parament, GLenum value);
 
-	int getMinificationFilter();
-	int getMagnificationFilter();
+	int GetMinificationFilter();
+	int GetMagnificationFilter();
 
-	int getWidth();
-	int getHeight();
-	int getBPP();
+	int GetWidth();
+	int GetHeight();
+	int GetBPP();
 
-	std::string getFile();
+	std::string GetFile();
 
-	void bind(int textureUnit = 0);
+	void Bind(int textureUnit = 0);
 
-	GLuint getID();
+	GLuint GetID();
 	GLuint operator()();
 
 private:

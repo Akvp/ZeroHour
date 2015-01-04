@@ -2,24 +2,26 @@
 
 CDirectLight::CDirectLight()
 {
-	color = glm::vec3(1.0f, 1.0f, 1.0f);
-	direction = glm::vec3(0.0f, -1.0f, 0.0f);
+	Color = glm::vec3(1.0f, 1.0f, 1.0f);
+	Direction = glm::vec3(0.0f, -1.0f, 0.0f);
 
-	ambient = 0.25f;
+	Ambient = 0.25f;
 }
 
-CDirectLight::CDirectLight(glm::vec3 color, glm::vec3 direction, float ambient)
+CDirectLight::CDirectLight(glm::vec3 color, glm::vec3 direction, float ambient, float brightness)
 {
-	this->color = color;
-	this->direction = direction;
-	this->ambient = ambient;
+	this->Color = color;
+	this->Direction = direction;
+	this->Ambient = ambient;
+	this->Brightness = brightness;
 }
 
-void CDirectLight::setUniform(CShaderProgram* program, std::string lightVarName)
+void CDirectLight::SetUniform(CShaderProgram* program, std::string lightVarName)
 {
-	program->SetUniform(lightVarName + ".vColor", color);
-	program->SetUniform(lightVarName + ".vDirection", direction);
-	program->SetUniform(lightVarName + ".fAmbient", ambient);
+	program->SetUniform(lightVarName + ".vColor", Color);
+	program->SetUniform(lightVarName + ".vDirection", Direction);
+	program->SetUniform(lightVarName + ".fAmbient", Ambient);
+	program->SetUniform(lightVarName + ".fBrightness", Brightness);
 }
 
 CPointLight::CPointLight()
@@ -42,7 +44,7 @@ CPointLight::CPointLight(glm::vec3 color, glm::vec3 position, float ambient, flo
 	ExponentialAttenuation = expAtt;
 }
 
-void CPointLight::setUniform(CShaderProgram* program, std::string lightVarName)
+void CPointLight::SetUniform(CShaderProgram* program, std::string lightVarName)
 {
 	program->SetUniform(lightVarName + ".vColor", Color);
 	program->SetUniform(lightVarName + ".vDirection", Position);

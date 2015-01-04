@@ -12,14 +12,14 @@ bool CMain::OnInit()
 		return false;
 	}
 
-#ifdef _DEBUG
+#if _DEBUG
 	//Enable console output
 	freopen("CON", "w", stdout); // redirects stdout
 	freopen("CON", "w", stderr); // redirects stderr
 #endif
 
 	//Initialize SDL_image for texture and image loading
-	if(IMG_Init(IMG_INIT_PNG) != IMG_INIT_PNG)
+	if(IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != (IMG_INIT_PNG | IMG_INIT_JPG))
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL_image initiation error", IMG_GetError(), NULL);
 		return false;

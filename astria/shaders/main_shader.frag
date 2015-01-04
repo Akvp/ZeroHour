@@ -6,35 +6,51 @@ smooth in vec4 vEyeSpacePos;
 smooth in vec3 vWorldPos;
 out vec4 outputColor;
 
-uniform sampler2D DiffuseSampler;
-uniform sampler2D SpecularSampler;
-uniform vec4 vColor;
+struct Material
+{
+	sampler2D diffuse;
+	sampler2D specular;
+};
 
-#include "dirLight.frag"
+struct DirectionalLight
+{
+	vec3 vColor;
+	vec3 vDirection;
+	float fAmbient;
+	float fBrightness;
+};
+
 
 uniform DirectionalLight sunLight;
 uniform vec3 vEyePosition;
+uniform Material mat;
 
-uniform Material matActive;
+uniform int bSkybox;
 
 void main()
 {
-	glMatrixMode(GL_TEXTURE);
-	glLoadIdentity();
-	glScalef(1.0f, -1.0f, 1.0f);
-	glMatrixMode(GL_MODELVIEW);
+	if (bSkybox == 1)
+	{
+		vec3 vTexColor = sunLight.vColor * vec3(texture2D(mat.diffuse, vTexCoord));
+		outputColor = vec4(vTexColor * sunLight.fBrightness, 1.0f);
+		return;
+	}
 
-   vec4 vDiffuseColor = texture2D(DiffuseSampler, vTexCoord);
-   //vec4 vAmbientColor = vec3(0.1f, 0.1f, 0.1f) * vDiffuseColor;
-   //vec4 vSpecularColor = texture2D(SpecularSampler, vTexCoord) * 0.3;
+	vec3 vNormalized = normalize(vNormal);
 
-   vec4 vMixedColor = vDiffuseColor*vColor;
-   
-   vec3 vNormalized = normalize(vNormal);
+	//Diffuse light
+	float fDiffuseIntensity = max(0.0, dot(vNormal, -sunLight.vDirection));
+	vec3 vDiffuseColor = sunLight.vColor * fDiffuseIntensity * vec3(texture2D(mat.diffuse, vTexCoord));
+	
+	//Ambient
+	vec3 vAmbientColor = sunLight.vColor * sunLight.fAmbient * vec3(texture2D(mat.diffuse, vTexCoord));
+	
+	//Specular
+	vec3 vReflected = normalize(reflect(sunLight.vDirection, vNormalized));
+	vec3 vView = normalize(vEyePosition - vWorldPos);
+	float fSpecularIntensity = dot(vReflected, vView);
+	vec3 vSpecularColor = 0.6 * sunLight.vColor * fSpecularIntensity * vec3(texture2D(mat.specular, vTexCoord));
+	vSpecularColor = clamp(vSpecularColor, 0.0f, 1.0f);
 
-   vDiffuseColor += GetDirectionalLightColor(sunLight, vNormalized);
-   vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
-
-   outputColor = vMixedColor*(vDiffuseColor+vSpecularColor);
-   //outputColor = vec4(vTexCoord, 0.0, 1.0);
+	outputColor = vec4(vAmbientColor + vDiffuseColor + vSpecularColor, 1.0f);
 }

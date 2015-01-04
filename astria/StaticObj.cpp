@@ -9,23 +9,23 @@ glm::vec3 vGround[6] =
 
 void CreateStaticSceneObjects(GLuint* VAO, CVBO& vboDest)
 {
-	vboDest.create();
+	vboDest.Create();
 	glGenVertexArrays(1, VAO);
 	glBindVertexArray(*VAO);
 
-	vboDest.bind();
+	vboDest.Bind();
 
 	//Add ground to VBO
 	for (int i = 0; i < 6; i++)
 	{
-		vboDest.addData(&vGround[i], sizeof(glm::vec3));
+		vboDest.AddData(&vGround[i], sizeof(glm::vec3));
 		glm::vec2 vCoord = vCubeTexCoords[i] * 50.0f;
-		vboDest.addData(&vCoord, sizeof(glm::vec2));
+		vboDest.AddData(&vCoord, sizeof(glm::vec2));
 		glm::vec3 vGroundNormal(0.0f, 1.0f, 0.0f);
-		vboDest.addData(&vGroundNormal, sizeof(glm::vec3));
+		vboDest.AddData(&vGroundNormal, sizeof(glm::vec3));
 	}
 
-	vboDest.uploadGPU(GL_STATIC_DRAW);
+	vboDest.UploadGPU(GL_STATIC_DRAW);
 
 	// Vertex positions
 	glEnableVertexAttribArray(0);

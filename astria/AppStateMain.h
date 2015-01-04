@@ -53,14 +53,7 @@ private:
 	//Shaders & Shader programs
 	CShader mainShader_vertex;
 	CShader mainShader_fragment;
-	//CShader ortho2D_vertex;
-	//CShader ortho2D_fragment;
-	CShader lightShader_fragment;
-	//CShader ptlightShader_fragment;
 	CShaderProgram mainProgram;
-
-	CShader skybox_fragment;
-	CShaderProgram skyboxProgram;
 
 	//Skybox and lighting
 	CSkybox skybox;

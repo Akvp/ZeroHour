@@ -26,14 +26,14 @@ CModel::CModel()
 CModel::CModel(char* file)
 {
 	loaded = false;
-	load(file);
+	Load(file);
 }
 
-bool CModel::load(char* file)
+bool CModel::Load(char* file)
 {
-	if (vboModelData.getID() == 0)
+	if (vboModelData.GetID() == 0)
 	{
-		vboModelData.create();
+		vboModelData.Create();
 		textures.reserve(50);
 	}
 	Assimp::Importer importer;
@@ -42,12 +42,13 @@ bool CModel::load(char* file)
 		aiProcess_Triangulate |
 		aiProcess_JoinIdenticalVertices |
 		aiProcess_SortByPType |
-		aiTextureMapMode_Decal);
+		aiProcess_FlipUVs);
 
 	if (!scene)
 	{
-		std::string errormsg = "Couldn't load model: ";
+		string errormsg = "Couldn't load model: ";
 		errormsg += file;
+		errormsg = errormsg + "\nError code:" + string(importer.GetErrorString());
 		MessageBox(NULL, errormsg.c_str(), "Error Importing Asset", MB_ICONERROR);
 		return false;
 	}
@@ -60,8 +61,13 @@ bool CModel::load(char* file)
 	{
 		aiMesh* mesh = scene->mMeshes[i];
 		int iMeshFaces = mesh->mNumFaces;
-		materialIndices.push_back(mesh->mMaterialIndex);
-		int iSizeBefore = vboModelData.getCurrentSize();
+
+		vector<int> tmpIndex;
+		tmpIndex.push_back(mesh->mMaterialIndex);
+		tmpIndex.push_back(mesh->mMaterialIndex);
+		materialIndices.push_back(tmpIndex);
+
+		int iSizeBefore = vboModelData.GetCurrentSize();
 		meshStartIndices.push_back(iSizeBefore / vertexTotalSize);
 		for (int j = 0; j < iMeshFaces; j++)
 		{
@@ -70,28 +76,26 @@ bool CModel::load(char* file)
 			{
 				aiVector3D pos = mesh->mVertices[face.mIndices[k]];
 				aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
-				//aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
-				uv.y = 1 - uv.y;
 				aiVector3D normal = mesh->mNormals[face.mIndices[k]];
-				vboModelData.addData(&pos, sizeof(aiVector3D));
-				vboModelData.addData(&uv, sizeof(aiVector2D));
-				vboModelData.addData(&normal, sizeof(aiVector3D));
+				vboModelData.AddData(&pos, sizeof(aiVector3D));
+				vboModelData.AddData(&uv, sizeof(aiVector2D));
+				vboModelData.AddData(&normal, sizeof(aiVector3D));
 			}
 		}
 
 		int iMeshVertices = mesh->mNumVertices;
 		totalVertices += iMeshVertices;
-		meshSize.push_back((vboModelData.getCurrentSize() - iSizeBefore) / vertexTotalSize);
+		meshSize.push_back((vboModelData.GetCurrentSize() - iSizeBefore) / vertexTotalSize);
 	}
 
 	numMaterials = scene->mNumMaterials;
 
-	vector<int> materialRemap(numMaterials);
+	vector<int> diffuseRemap(numMaterials); diffuseRemap = { -1, };
+	vector<int> specularRemap(numMaterials); specularRemap = { -1, };
 
 	for (int i = 0; i < numMaterials; i++)
 	{
 		const aiMaterial* material = scene->mMaterials[i];
-		int a = 5;
 		int texIndex = 0;
 		aiString path;  // filename
 
@@ -103,7 +107,7 @@ bool CModel::load(char* file)
 			int iTexFound = -1;
 			for (int j = 0; j < textures.size(); j++)
 			{
-				if (sFullPath == textures[j].getFile())
+				if (sFullPath == textures[j].GetFile())
 				{
 					iTexFound = j;
 					break;
@@ -111,34 +115,59 @@ bool CModel::load(char* file)
 			}
 			if (iTexFound != -1)
 			{
-				materialRemap[i] = iTexFound;
+				diffuseRemap[i] = iTexFound;
 			}
 			else
 			{
 				CTexture tNew;
-				tNew.load_2D(sFullPath, true);
-				materialRemap[i] = textures.size();
+				tNew.Load_2D(sFullPath, true);
+				diffuseRemap[i] = textures.size();
+				textures.push_back(tNew);
+			}
+		}
+		if (material->GetTexture(aiTextureType_SPECULAR, texIndex, &path) == AI_SUCCESS)
+		{
+			string sDir = GetDirectoryPath(file);
+			string sTextureName = path.data;
+			string sFullPath = sDir + sTextureName;
+			int iTexFound = -1;
+			for (int j = 0; j < textures.size(); j++)
+			{
+				if (sFullPath == textures[j].GetFile())
+				{
+					iTexFound = j;
+					break;
+				}
+			}
+			if (iTexFound != -1)
+			{
+				specularRemap[i] = iTexFound;
+			}
+			else
+			{
+				CTexture tNew;
+				tNew.Load_2D(sFullPath, true);
+				specularRemap[i] = textures.size();
 				textures.push_back(tNew);
 			}
 		}
 	}
-
 	for (int i = 0; i < meshSize.size(); i++)
 	{
-		int iOldIndex = materialIndices[i];
-		materialIndices[i] = materialRemap[iOldIndex];
+		materialIndices[i][0] = diffuseRemap[materialIndices[i][0]];
+		materialIndices[i][1] = specularRemap[materialIndices[i][1]];
 	}
 
 	loaded = true;
 	return loaded;
 }
 
-void CModel::finalizeVBO()
+void CModel::UploadVBO()
 {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
-	vboModelData.bind();
-	vboModelData.uploadGPU(GL_STATIC_DRAW);
+	vboModelData.Bind();
+	vboModelData.UploadGPU(GL_STATIC_DRAW);
 
 	//Vertex position
 	glEnableVertexAttribArray(0);
@@ -151,19 +180,31 @@ void CModel::finalizeVBO()
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 2 * sizeof(aiVector3D)+sizeof(aiVector2D), (void*)(sizeof(aiVector3D)+sizeof(aiVector2D)));
 }
 
-void CModel::bindVAO()
+void CModel::BindVAO()
 {
 	glBindVertexArray(VAO);
 }
 
-void CModel::render()
+void CModel::Render()
 {
 	if (!loaded)	return;
 	int numMeshes = meshSize.size();
 	for (int i = 0; i < numMeshes; i++)
 	{
-		int matIndex = materialIndices[i];
-		textures[matIndex].bind();
+		int specIndex = materialIndices[i][1];
+		if (specIndex >= 0) textures[specIndex].Bind(2);
+		int diffIndex = materialIndices[i][0];
+		textures[diffIndex].Bind();
 		glDrawArrays(GL_TRIANGLES, meshStartIndices[i], meshSize[i]);
+
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+}
+
+void CModel::Release()
+{
+	vboModelData.Release();
+	glDeleteVertexArrays(1, &VAO);
+	for (auto tex : textures)	tex.Release();
 }

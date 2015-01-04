@@ -11,22 +11,22 @@ class CVBO
 public:
 	CVBO();
 
-	void create(int size = 0);
-	void release();
+	void Create(int size = 0);
+	void Release();
 
-	void* mapBuffer(int hint);
-	void* mapSubBuffer(int hint, GLuint offset, GLuint length);
-	void unmapBuffer();
+	void* MapBuffer(int hint);
+	void* MapSubBuffer(int hint, GLuint offset, GLuint length);
+	void UnmapBuffer();
 
-	void bind(int type = GL_ARRAY_BUFFER);
-	void uploadGPU(int hint);
+	void Bind(int type = GL_ARRAY_BUFFER);
+	void UploadGPU(int hint);
 
-	void addData(void* ptrData, GLuint size);
+	void AddData(void* ptrData, GLuint size);
 
-	void* getDataPointer();
-	GLuint getID();
+	void* GetDataPointer();
+	GLuint GetID();
 
-	int getCurrentSize();
+	int GetCurrentSize();
 
 private:
 	GLuint buffer;

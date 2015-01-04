@@ -15,12 +15,12 @@ Purpose:	Class for using skybox.
 class CSkybox
 {
 public:
-	void load(std::string a_sDirectory);
-	void render();
+	void Load(std::string a_sDirectory);
+	void Render();
 
-	void release();
+	void Release();
 
-	CTexture* getTextures() { return tTextures; };
+	CTexture* GetTextures() { return tTextures; };
 
 private:
 	UINT uiVAO;

@@ -6,7 +6,7 @@ CVBO::CVBO()
 	buffer = 0;
 }
 
-void CVBO::create(int size)
+void CVBO::Create(int size)
 {
 	glGenBuffers(1, &buffer);
 	data.reserve(size);
@@ -14,14 +14,14 @@ void CVBO::create(int size)
 	currentSize = 0;
 }
 
-void CVBO::release()
+void CVBO::Release()
 {
 	glDeleteBuffers(1, &buffer);
 	dataUploaded = false;
 	data.clear();
 }
 
-void* CVBO::mapBuffer(int hint)
+void* CVBO::MapBuffer(int hint)
 {
 	if (!dataUploaded)
 		return NULL;
@@ -29,7 +29,7 @@ void* CVBO::mapBuffer(int hint)
 	return ptrRes;
 }
 
-void* CVBO::mapSubBuffer(int hint, GLuint offset, GLuint length)
+void* CVBO::MapSubBuffer(int hint, GLuint offset, GLuint length)
 {
 	if (!dataUploaded)
 		return NULL;
@@ -37,43 +37,43 @@ void* CVBO::mapSubBuffer(int hint, GLuint offset, GLuint length)
 	return ptrRes;
 }
 
-void CVBO::unmapBuffer()
+void CVBO::UnmapBuffer()
 {
 	glUnmapBuffer(type);
 }
 
-void CVBO::bind(int type)
+void CVBO::Bind(int type)
 {
 	this->type = type;
 	glBindBuffer(type, buffer);
 }
 
-void CVBO::uploadGPU(int hint)
+void CVBO::UploadGPU(int hint)
 {
 	glBufferData(type, data.size(), &data[0], hint);
 	dataUploaded = true;
 	data.clear();
 }
 
-void CVBO::addData(void* ptrData, GLuint size)
+void CVBO::AddData(void* ptrData, GLuint size)
 {
 	data.insert(data.end(), (BYTE*)ptrData, (BYTE*)ptrData + size);
 	currentSize += size;
 }
 
-void* CVBO::getDataPointer()
+void* CVBO::GetDataPointer()
 {
 	if (dataUploaded)
 		return NULL;
 	return (void*)data[0];
 }
 
-GLuint CVBO::getID()
+GLuint CVBO::GetID()
 {
 	return buffer;
 }
 
-int CVBO::getCurrentSize()
+int CVBO::GetCurrentSize()
 {
 	return currentSize;
 }

@@ -16,10 +16,10 @@ CTexture::CTexture()
 
 CTexture::CTexture(std::string file, bool generateMipMap)
 {
-	load_2D(file, generateMipMap);
+	Load_2D(file, generateMipMap);
 }
 
-bool CTexture::load_2D(std::string file, bool generateMipMap)
+bool CTexture::Load_2D(std::string file, bool generateMipMap)
 {
 	this->mipmap = generateMipMap;
 	this->file = file;
@@ -198,7 +198,7 @@ bool CTexture::load_SDL(std::string file)
 	return true;
 }
 
-void CTexture::createEmpty(int width, int height, GLenum format)
+void CTexture::CreateEmpty(int width, int height, GLenum format)
 {
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -213,7 +213,7 @@ void CTexture::createEmpty(int width, int height, GLenum format)
 	glGenSamplers(1, &sampler);
 }
 
-void CTexture::createFromData(BYTE* data, int width, int height, int BPP, GLenum format, bool generateMipMap)
+void CTexture::CreateFromData(BYTE* data, int width, int height, int BPP, GLenum format, bool generateMipMap)
 {
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -235,12 +235,12 @@ void CTexture::createFromData(BYTE* data, int width, int height, int BPP, GLenum
 	this->BPP = BPP;
 }
 
-void CTexture::setSamplerParameter(GLenum parameter, GLenum value)
+void CTexture::SetSamplerParameter(GLenum parameter, GLenum value)
 {
 	glSamplerParameteri(sampler, parameter, value);
 }
 
-void CTexture::setFiltering(int magnification, int minification)
+void CTexture::SetFiltering(int magnification, int minification)
 {
 	glBindSampler(0, sampler);
 
@@ -266,50 +266,50 @@ void CTexture::setFiltering(int magnification, int minification)
 	magnification = magnification;
 }
 
-void CTexture::bind(int textureUnit)
+void CTexture::Bind(int textureUnit)
 {
 	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glBindSampler(textureUnit, sampler);
 }
 
-void CTexture::release()
+void CTexture::Release()
 {
 	glDeleteSamplers(1, &sampler);
 	glDeleteTextures(1, &texture);
 }
 
-int CTexture::getMagnificationFilter()
+int CTexture::GetMagnificationFilter()
 {
 	return magnification;
 }
 
-int CTexture::getMinificationFilter()
+int CTexture::GetMinificationFilter()
 {
 	return minification;
 }
 
-int CTexture::getWidth()
+int CTexture::GetWidth()
 {
 	return width;
 }
 
-int CTexture::getHeight()
+int CTexture::GetHeight()
 {
 	return height;
 }
 
-int CTexture::getBPP()
+int CTexture::GetBPP()
 {
 	return BPP;
 }
 
-GLuint CTexture::getID()
+GLuint CTexture::GetID()
 {
 	return texture;
 }
 
-std::string CTexture::getFile()
+std::string CTexture::GetFile()
 {
 	return file;
 }

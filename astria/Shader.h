@@ -15,15 +15,13 @@ using namespace std;
 class CShader
 {
 public:
-	bool load(string file, int type);
-	void release();
+	bool Load(string file, int type);
+	void Release();
 
-	bool GetLinesFromFile(string sFile, bool bIncludePart, vector<string>* vResult);
+	bool IsLoaded();
+	GLuint GetID();
 
-	bool isLoaded();
-	GLuint getID();
-
-	string getFile();
+	string GetFile();
 
 	CShader();
 	~CShader();
@@ -33,24 +31,26 @@ private:
 	string file;
 	int type;		//type of shader (e.g. GL_VERTEX_SHADER, GL_FRAGMENT_SHADER)
 	bool loaded;	//loaded and compiled
+
+	bool GetLinesFromFile(string sFile, bool bIncludePart, vector<string>* vResult);
 };
 
 class CShaderProgram
 {
 public:
-	bool initiate(int n_arg, ...);
-	bool initiate(CShader* vertex, CShader* fragment);
+	bool Initiate(int n_arg, ...);
+	bool Initiate(CShader* vertex, CShader* fragment);
 
-	void create();
-	void release();
+	void Create();
+	void Release();
 	
-	bool addShader(CShader* shader);
-	bool link();
+	bool AddShader(CShader* shader);
+	bool Link();
 
-	void use();
-	void interrupt();
+	void Use();
+	void Interrupt();
 
-	GLuint getID();
+	GLuint GetID();
 
 	// Setting vectors
 	void SetUniform(string sName, glm::vec2* vVectors, int iCount = 1);
