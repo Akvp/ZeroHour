@@ -30,10 +30,11 @@ class Texture_SDL {
 
 	public:
 		Texture_SDL();
-		Texture_SDL(SDL_Texture* texture);
 		~Texture_SDL();
 
 		bool Load(SDL_Renderer* Renderer, std::string Filename);
+		//Load texture and color-key a certain pixel
+		bool Load(SDL_Renderer* Renderer, std::string Filename, int r, int g, int b);
 
 		void Render(int X, int Y);
 		void Render(int X, int Y, int Width, int Height);

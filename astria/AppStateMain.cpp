@@ -1,6 +1,7 @@
 #include "AppStateManager.h"
 #include "AppStateMain.h"
 #include "Main.h"
+#include "utils.h"
 
 CAppStateMain CAppStateMain::Instance;
 
@@ -22,8 +23,10 @@ void CAppStateMain::OnActivate()
 	{
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
+		CLoadingScreen::OnActivate(&Loaded);
 		OnInit_GL();
 		Loaded = true;
+		SDL_WaitThread(CLoadingScreen::GetThreadID(), NULL);
 	}
 
 	//Hide mouse cursor
@@ -53,11 +56,13 @@ void CAppStateMain::OnDeactivate()
 void CAppStateMain::OnExit()
 {
 	std::cout << "Releasing CAppStateMain\n";
-	mainShader_vertex.Release();
-	mainShader_fragment.Release();
-	mainProgram.Release();
-	skybox.Release();
-	scene_VBO.Release();
+	CModel::Release();
+	MainShader_vertex.Release();
+	MainShader_fragment.Release();
+	MainProgram.Release();
+	Skybox.Release();
+	VBO_Terrain.Release();
+	glDeleteVertexArrays(1, &VAO_Terrain);
 }
 
 void CAppStateMain::OnEvent(SDL_Event* Event)
@@ -69,17 +74,16 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 
 	CEvent::OnEvent(Event);
 
+	if (Event->type == SDL_WINDOWEVENT)
+	{
+		if (Event->window.type == SDL_WINDOWEVENT_FOCUS_LOST)
+			CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
+	}
+
 	if (Event->type == SDL_MOUSEWHEEL)
 	{
 		FoV -= 5 * Event->wheel.y;
-		if (FoV > 80)
-		{
-			FoV = 80;
-		}
-		if (FoV < 20)
-		{
-			FoV = 20;
-		}
+		Clamp(FoV, 20, 80);
 	}
 
 	//Get mouse position
@@ -96,8 +100,6 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 
 void CAppStateMain::OnUpdate()
 {
-	//clamp(VerticalAngle, -3.14f / 4.0f, 3.14f / 4.0f);
-
 	if (MoveUp)		Position += Direction * Speed * CFPS::FPSControl.GetSpeedFactor();
 	if (MoveDown)	Position -= Direction * Speed *CFPS::FPSControl.GetSpeedFactor();
 	if (MoveLeft)	Position -= Right * Speed *CFPS::FPSControl.GetSpeedFactor();
@@ -120,17 +122,14 @@ void CAppStateMain::OnUpdate()
 	//Up vector
 	glm::vec3 Up = glm::cross(Right, Direction);
 
-	Projection = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
+	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
 
 	//Get the view matrix using lookAt
-	View = glm::lookAt(
+	ViewMatrix = glm::lookAt(
 		Position,
 		Position + Direction,
 		Up
 		);
-
-	ModelView = View * Model;
-	MVP = Projection * View * Model;
 }
 
 void CAppStateMain::OnRender()
@@ -139,42 +138,42 @@ void CAppStateMain::OnRender()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Use shaders
-	mainProgram.Use();
+	MainProgram.Use();
 
-	mainProgram.SetUniform("matrices.projMatrix", &Projection);
-	mainProgram.SetUniform("matrices.viewMatrix", &View);
-	mainProgram.SetUniform("mat.diffuse", 0);
-	mainProgram.SetUniform("mat.specular", 2);
+	MainProgram.SetUniform("matrices.mProjection", &ProjectionMatrix);
+	MainProgram.SetUniform("matrices.mView", &ViewMatrix);
+	MainProgram.SetUniform("mat.diffuse", 0);
+	MainProgram.SetUniform("mat.specular", 2);
 
-	mainProgram.SetUniform("matrices.modelMatrix", Model);
-	mainProgram.SetUniform("matrices.normalMatrix", glm::mat4(1.0));
+	MainProgram.SetUniform("matrices.mModel", ModelMatrix);
+	MainProgram.SetUniform("matrices.mNormal", glm::mat4(1.0));
 
 	//Render light
-	sun.SetUniform(&mainProgram, "sunLight");
+	Sun.SetUniform(&MainProgram, "sunLight");
 
 	//Render Skybox
-	mainProgram.SetUniform("matrices.modelMatrix", glm::translate(glm::mat4(1.0), Position));
-	mainProgram.SetUniform("bSkybox", 1);
-	skybox.Render();
-	mainProgram.SetUniform("bSkybox", 0);
+	MainProgram.SetUniform("matrices.mModel", glm::translate(glm::mat4(1.0), Position));
+	MainProgram.SetUniform("bSkybox", 1);
+	Skybox.Render();
+	MainProgram.SetUniform("bSkybox", 0);
 
 	//Reset model matrix
-	mainProgram.SetUniform("matrices.modelMatrix", glm::mat4(1.0));
+	MainProgram.SetUniform("matrices.mModel", glm::mat4(1.0));
 
 	//Render ground
-	glBindVertexArray(scene_VAO);
-	scene_texture.Bind();
+	glBindVertexArray(VAO_Terrain);
+	Texture_Terrain.Bind();
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	//Render models
 	CModel::BindVAO();
-	mainProgram.SetUniform("vEyePosition", Position);
-	glm::mat4 mModel = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 30.0, -10.0));
-	mModel = glm::scale(mModel, glm::vec3(1,1,1));
-	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
+	MainProgram.SetUniform("vEyePosition", Position);
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 0.0, -10.0));
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0));
+	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[0].Render();
-	mModel = glm::translate(glm::mat4(1.0), glm::vec3(10.0, 0, 0));
-	mainProgram.SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", mModel);
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(10.0, 0, 0));
+	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
 	glEnable(GL_DEPTH_TEST);
@@ -192,15 +191,15 @@ bool CAppStateMain::OnInit_GL()
 	glDepthFunc(GL_LESS);
 
 	//Remove triangles which normal is not towards the camera (do not render the inside of the model)
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 
 
 	//Load shaders and programs
-	if (!mainShader_vertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
+	if (!MainShader_vertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
 		return false;
-	if (!mainShader_fragment.Load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
+	if (!MainShader_fragment.Load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
 		return false;
-	if (!mainProgram.Initiate(&mainShader_vertex, &mainShader_fragment))
+	if (!MainProgram.Initiate(&MainShader_vertex, &MainShader_fragment))
 		return false;
 
 	//Load models
@@ -208,21 +207,24 @@ bool CAppStateMain::OnInit_GL()
 	models[1].Load("gfx/nanosuit/nanosuit.obj");
 	CModel::UploadVBO();
 
+	//Load terrain
+	CreateFlatGround(&VAO_Terrain, VBO_Terrain);
+	Texture_Terrain.Load_2D("gfx/grass.jpg", true);
+	Texture_Terrain.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+
 	//Used for wire frame
 	PolyMode = GL_FILL;
 
 	//Model matrix //Identity matrix
-	Model = glm::mat4(1.0f);
+	ModelMatrix = glm::mat4(1.0f);
 
 	//Load the skybox
-	skybox.Load(CParams::SkyboxFolder);
+	Skybox.Load(CParams::SkyboxFolder);
 
-	sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.3f, 1.0f);
+	//Load sun light
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.2f, 1.0f);
 
-	CreateStaticSceneObjects(&scene_VAO, scene_VBO);
-	scene_texture.Load_2D("gfx/sand_grass_02.jpg", true);
-	scene_texture.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
-
+	//Load camera properties
 	Position = glm::vec3(30, 5, 30);
 	FoV = 45.0f;
 	HorizontalAngle = -3.14f;
@@ -253,20 +255,22 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 
 		//Movement Keys
 	case SDLK_w:
-	case SDLK_UP:
 		MoveUp = true;	//Movement bool variable is needed to counteract the inherent key repeat delay
 		break;
 	case SDLK_s:
-	case SDLK_DOWN:
 		MoveDown = true;
 		break;
 	case SDLK_d:
-	case SDLK_RIGHT:
 		MoveRight = true;
 		break;
 	case SDLK_a:
-	case SDLK_LEFT:
 		MoveLeft = true;
+		break;
+	case SDLK_UP:
+		Sun.Ambient += 0.1;
+		break;
+	case SDLK_DOWN:
+		Sun.Ambient -= 0.1;
 		break;
 
 		//Switch between normal model and wireframe
@@ -314,4 +318,9 @@ void CAppStateMain::OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 		MoveLeft = false;
 		break;
 	}
+}
+
+void CAppStateMain::OnLoseFocus()
+{
+	CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
 }

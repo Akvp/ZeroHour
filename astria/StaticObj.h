@@ -3,6 +3,6 @@
 
 #include "VBO.h"
 
-void CreateStaticSceneObjects(GLuint* VAO, CVBO& vboDest);
+void CreateFlatGround(GLuint* VAO, CVBO& vboDest);
 
 #endif

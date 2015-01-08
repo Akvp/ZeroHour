@@ -132,7 +132,7 @@ bool CTexture::load_SDL(std::string file)
 
 	if (Surf_Load == NULL)
 	{
-		char errorMsg[512] = "";
+		char errorMsg[512];
 		sprintf(errorMsg, "Error loading %s!\nError message: %s\n", file, IMG_GetError());
 		MessageBox(NULL, errorMsg, "Texture loading error", MB_ICONERROR);
 		return false;
@@ -144,6 +144,7 @@ bool CTexture::load_SDL(std::string file)
 
 	GLint nOfColors = Surf_Load->format->BytesPerPixel;
 	GLenum imgFormat;
+
 	//Get output format
 	if (nOfColors == 4)     // contains an alpha channel
 	{
@@ -161,25 +162,11 @@ bool CTexture::load_SDL(std::string file)
 		printf("warning: the image is not truecolor..  this will probably break\n");
 		return false;
 	}
-	//Get input format
-	//if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
-	//{
-	//	if (nOfColors == 4)
-	//		imgFormat = GL_BGRA;
-	//	else
-	//		imgFormat = GL_BGR;
-	//}
-	//else
-	//{
-	//	if (nOfColors == 4)
-	//		imgFormat = GL_RGBA;
-	//	else
-	//		imgFormat = GL_RGB;
-	//}
 	if (nOfColors == 4)
 		imgFormat = GL_RGBA;
 	else
 		imgFormat = GL_RGB;
+
 	//Create the actual openGL texture
 	glTexImage2D(GL_TEXTURE_2D, 0, format, Surf_Load->w, Surf_Load->h, 0, imgFormat, GL_UNSIGNED_BYTE, Surf_Load->pixels);
 
@@ -277,6 +264,11 @@ void CTexture::Release()
 {
 	glDeleteSamplers(1, &sampler);
 	glDeleteTextures(1, &texture);
+}
+
+bool CTexture::Reload()
+{
+	return Load_2D(file, mipmap);
 }
 
 int CTexture::GetMagnificationFilter()

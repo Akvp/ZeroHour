@@ -13,30 +13,6 @@ CEvent::~CEvent() {
 //==============================================================================
 void CEvent::OnEvent(SDL_Event* Event) {
 	switch(Event->type) {
-		//case SDL_ACTIVEEVENT: {
-		//	switch(Event->active.state) {
-		//		case SDL_APPMOUSEFOCUS: {
-		//			if ( Event->active.gain )	OnMouseFocus();
-		//			else				OnMouseBlur();
-
-		//			break;
-		//		}
-		//		case SDL_APPINPUTFOCUS: {
-		//			if ( Event->active.gain )	OnInputFocus();
-		//			else				OnInputBlur();
-
-		//			break;
-		//		}
-		//		case SDL_APPACTIVE:	{
-		//			if ( Event->active.gain )	OnRestore();
-		//			else				OnMinimize();
-
-		//			break;
-		//		}
-		//	}
-		//	break;
-		//}
-
 		case SDL_KEYDOWN: {
 			OnKeyDown(Event->key.keysym.sym,Event->key.keysym.mod,Event->key.keysym.scancode);
 			break;
@@ -88,44 +64,32 @@ void CEvent::OnEvent(SDL_Event* Event) {
 			break;
 		}
 
-		case SDL_JOYAXISMOTION: {
-			OnJoyAxis(Event->jaxis.which,Event->jaxis.axis,Event->jaxis.value);
-			break;
+		case SDL_WINDOWEVENT:
+		{
+			switch (Event->window.type) 
+			{
+			case SDL_WINDOWEVENT_MINIMIZED:
+				OnMinimize();
+				break;
+			case SDL_WINDOWEVENT_MAXIMIZED:
+				OnMaximize();
+				break;
+			case SDL_WINDOWEVENT_RESTORED:
+				OnRestore();
+			case SDL_WINDOWEVENT_RESIZED:
+				OnResize(Event->window.data1, Event->window.data2);
+				break;
+			case SDL_WINDOWEVENT_FOCUS_GAINED:
+				OnGainFocus();
+				break;
+			case SDL_WINDOWEVENT_FOCUS_LOST:
+				OnLoseFocus();
+				break;
+			case SDL_WINDOWEVENT_EXPOSED:
+				OnExpose();
+				break;
+			}
 		}
-
-		case SDL_JOYBALLMOTION: {
-			OnJoyBall(Event->jball.which,Event->jball.ball,Event->jball.xrel,Event->jball.yrel);
-			break;
-		}
-
-		case SDL_JOYHATMOTION: {
-			OnJoyHat(Event->jhat.which,Event->jhat.hat,Event->jhat.value);
-			break;
-		}
-		case SDL_JOYBUTTONDOWN: {
-			OnJoyButtonDown(Event->jbutton.which,Event->jbutton.button);
-			break;
-		}
-
-		case SDL_JOYBUTTONUP: {
-			OnJoyButtonUp(Event->jbutton.which,Event->jbutton.button);
-			break;
-		}
-
-		case SDL_SYSWMEVENT: {
-			//Ignore
-			break;
-		}
-
-		//case SDL_VIDEORESIZE: {
-		//	OnResize(Event->resize.w,Event->resize.h);
-		//	break;
-		//}
-
-		//case SDL_VIDEOEXPOSE: {
-		//	OnExpose();
-		//	break;
-		//}
 
 		default: {
 			OnUser(Event->user.type,Event->user.code,Event->user.data1,Event->user.data2);
@@ -170,11 +134,6 @@ void CEvent::OnMouseMove(int mX, int mY, int relX, int relY, bool Left,bool Righ
 }
 
 //------------------------------------------------------------------------------
-void CEvent::OnMouseWheel(bool Up, bool Down) {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
 void CEvent::OnLButtonDown(int mX, int mY) {
 	//Pure virtual, do nothing
 }
@@ -205,32 +164,12 @@ void CEvent::OnMButtonUp(int mX, int mY) {
 }
 
 //------------------------------------------------------------------------------
-void CEvent::OnJoyAxis(Uint8 which,Uint8 axis,Sint16 value) {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
-void CEvent::OnJoyButtonDown(Uint8 which,Uint8 button) {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
-void CEvent::OnJoyButtonUp(Uint8 which,Uint8 button) {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
-void CEvent::OnJoyHat(Uint8 which,Uint8 hat,Uint8 value) {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
-void CEvent::OnJoyBall(Uint8 which,Uint8 ball,Sint16 xrel,Sint16 yrel) {
-	//Pure virtual, do nothing
-}
-
-//------------------------------------------------------------------------------
 void CEvent::OnMinimize() {
+	//Pure virtual, do nothing
+}
+
+//------------------------------------------------------------------------------
+void CEvent::OnMaximize() {
 	//Pure virtual, do nothing
 }
 
@@ -246,6 +185,16 @@ void CEvent::OnResize(int w,int h) {
 
 //------------------------------------------------------------------------------
 void CEvent::OnExpose() {
+	//Pure virtual, do nothing
+}
+
+//------------------------------------------------------------------------------
+void CEvent::OnGainFocus() {
+	//Pure virtual, do nothing
+}
+
+//------------------------------------------------------------------------------
+void CEvent::OnLoseFocus() {
 	//Pure virtual, do nothing
 }
 

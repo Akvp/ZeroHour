@@ -1,7 +1,7 @@
 #include "HeightMap.h"
 
-CShaderProgram CHeightMap::Terrain;
-CShader CHeightMap::TerrainShaders[NUM_TERRAIN_SHADER];
+CShaderProgram CHeightMap::Program_Terrain;
+CShader CHeightMap::Shader_Terrain[NUM_TERRAIN_SHADER];
 
 CHeightMap::CHeightMap()
 {
@@ -21,24 +21,31 @@ bool CHeightMap::Load(std::string file)
 	if (Surf_Load == NULL)
 	{
 		char errorMsg[512] = "";
-		sprintf(errorMsg, "Error loading height map %s\n Error message: %s\n", file, IMG_GetError());
+		sprintf(errorMsg, "Error loading height map: %s\n Error message: %s\n", file, IMG_GetError());
 		MessageBox(NULL, errorMsg, "Height Map Loading Error", MB_ICONERROR);
 		return false;
 	}
 
-	//Not sure if this works
+	//This should work :S
 	BYTE* DataPtr = (BYTE*)Surf_Load->pixels;
 	rows = Surf_Load->h;
 	cols = Surf_Load->w;
 
-	if (DataPtr == NULL || rows == 0 || cols == 0)
+	//Return false if the image is not in RGB or Luminance
+	if (DataPtr == NULL || rows == 0 || cols == 0 || (Surf_Load->format->BytesPerPixel != 3 && Surf_Load->format->BytesPerPixel != 1))
+	{
+		char errorMsg[512] = "";
+		sprintf(errorMsg, "Error loading height map: %s\n Image format incorrect\n", file);
+		MessageBox(NULL, errorMsg, "Height Map Loading Error", MB_ICONERROR);
 		return false;
+	}
 
+	//Pointer increment depending of bytes per pixel
 	unsigned int ptr_inc = Surf_Load->format->BytesPerPixel;
+	//Length of one row
 	unsigned int row_step = ptr_inc*cols;
 
-	//HeightMapData.create();
-	std::vector<std::vector<glm::vec3>> VertexData(rows, std::vector<glm::vec3>(cols));
+	VertexData = std::vector<std::vector<glm::vec3>>(rows, std::vector<glm::vec3>(cols));
 	std::vector<std::vector<glm::vec2>> CoordsData(rows, std::vector<glm::vec2>(cols));
 
 	float textureU = float(cols)*0.1f;
@@ -188,6 +195,7 @@ void CHeightMap::Release()
 {
 	if (!loaded)
 		return;
+	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	Shader_Terrain[i].Release();
 	HeightMapData.Release();
 	HeightMapIndices.Release();
 	glDeleteVertexArrays(1, &vao);
@@ -197,29 +205,29 @@ void CHeightMap::Release()
 bool CHeightMap::LoadShaderProgram()
 {
 	bool ret = true;
-	ret = ret & TerrainShaders[0].Load("shaders/terrain.vert", GL_VERTEX_SHADER);
-	ret = ret & TerrainShaders[1].Load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
-	ret = ret & TerrainShaders[2].Load("shaders/dirLight.frag", GL_FRAGMENT_SHADER);
+	ret = ret & Shader_Terrain[0].Load("shaders/terrain.vert", GL_VERTEX_SHADER);
+	ret = ret & Shader_Terrain[1].Load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
+	ret = ret & Shader_Terrain[2].Load("shaders/dirLight.frag", GL_FRAGMENT_SHADER);
 
-	Terrain.Create();
-	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	Terrain.AddShader(&TerrainShaders[i]);
-	Terrain.Link();
+	Program_Terrain.Create();
+	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	ret = ret & Program_Terrain.AddShader(&Shader_Terrain[i]);
+	ret = ret & Program_Terrain.Link();
 
 	return ret;
 }
 
 void CHeightMap::ReleaseShaderProgram()
 {
-	Terrain.Release();
+	Program_Terrain.Release();
 	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)
 	{
-		TerrainShaders[i].Release();
+		Shader_Terrain[i].Release();
 	}
 }
 
 CShaderProgram* CHeightMap::GetShaderProgram()
 {
-	return &Terrain;
+	return &Program_Terrain;
 }
 
 void CHeightMap::SetRenderSize(float x, float h, float z)
@@ -244,13 +252,13 @@ int CHeightMap::GetCols()
 
 void CHeightMap::Render()
 {
-	Terrain.Use();
+	Program_Terrain.Use();
 
-	Terrain.SetUniform("fRenderHeight", RenderScale.y);
-	Terrain.SetUniform("fMaxTextureU", float(cols)*0.1f);
-	Terrain.SetUniform("fMaxTextureV", float(rows)*0.1f);
+	Program_Terrain.SetUniform("fRenderHeight", RenderScale.y);
+	Program_Terrain.SetUniform("fMaxTextureU", float(cols)*0.1f);
+	Program_Terrain.SetUniform("fMaxTextureV", float(rows)*0.1f);
 
-	Terrain.SetUniform("HeightmapScaleMatrix", glm::scale(glm::mat4(1.0), glm::vec3(RenderScale)));
+	Program_Terrain.SetUniform("HeightmapScaleMatrix", glm::scale(glm::mat4(1.0), glm::vec3(RenderScale)));
 
 	glBindVertexArray(vao);
 	glEnable(GL_PRIMITIVE_RESTART);

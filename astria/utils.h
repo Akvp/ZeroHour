@@ -19,6 +19,8 @@ inline double RandNormal() { return RandFloat() - RandFloat(); }
 
 //Clamp first argument between 2nd and 3rd arguments
 inline void Clamp(double &arg, double min, double max) { arg = arg <= min ? min : (arg >= max ? max : arg); }
+inline void Clamp(float &arg, float min, float max) { arg = arg <= min ? min : (arg >= max ? max : arg); }
+inline void Clamp(int &arg, int min, int max) { arg = arg <= min ? min : (arg >= max ? max : arg); }
 
 inline double ToDeg(double radian) { return radian * 180 / CParams::Pi; }
 

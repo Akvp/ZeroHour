@@ -34,7 +34,7 @@ void main()
 	const float fRange1 = 0.15f;
 	const float fRange2 = 0.3f;
 	const float fRange3 = 0.65f;
-   const float fRange4 = 0.85f;
+	const float fRange4 = 0.85f;
 
 	if(fScale >= 0.0 && fScale <= fRange1)vTexColor = texture2D(gSampler[0], vTexCoord);
 	else if(fScale <= fRange2)
@@ -71,7 +71,7 @@ void main()
 
 	vec4 vMixedColor = vFinalTexColor*vColor;
 	vec4 vDirLightColor = GetDirectionalLightColor(sunLight, vNormal);
-  vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
+	vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
 
 
 	outputColor = vMixedColor*(vDirLightColor+vSpecularColor);

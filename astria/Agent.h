@@ -1,8 +1,8 @@
 #ifndef _AGENT_H_
 #define _AGENT_H_
 
-#include "Object.h"
 #include "Common.h"
+#include "Object.h"
 
 enum AGENT_STATE
 {

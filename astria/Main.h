@@ -13,8 +13,6 @@
 
 #include "AppStateManager.h"
 
-#define _DEBUG 1
-
 class CMain
 {
 public:

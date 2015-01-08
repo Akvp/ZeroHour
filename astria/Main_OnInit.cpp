@@ -5,10 +5,12 @@ bool CMain::OnInit()
 	//Load parameters
 	CParams::Load(CParams::File);
 
+	srand(time(0));
+
 	//Initialize SDL
 	if(SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL initiation error", SDL_GetError(), NULL);
+		MessageBox(NULL, SDL_GetError(), "SDL initiation error", MB_ICONERROR);
 		return false;
 	}
 
@@ -21,7 +23,7 @@ bool CMain::OnInit()
 	//Initialize SDL_image for texture and image loading
 	if(IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != (IMG_INIT_PNG | IMG_INIT_JPG))
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "SDL_image initiation error", IMG_GetError(), NULL);
+		MessageBox(NULL, IMG_GetError(), "SDL_image initiation error", MB_ICONERROR);
 		return false;
 	}
 	

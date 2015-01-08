@@ -6,8 +6,10 @@
 #include "Light.h"
 #include "Skybox.h"
 #include "StaticObj.h"
+#include "HeightMap.h"
 #include "Params.h"
 #include "Model.h"
+#include "LoadingScreen.h"
 
 class CAppStateMain : public CAppState
 {
@@ -36,9 +38,7 @@ private:
 	const int OPENGL_MINOR_VERSION = 3;
 
 	SDL_Texture* snapshot;
-	//GLuint snapshot;
 
-private:
 	//Event variables
 	int Mouse_X;	//Mouse x position
 	int Mouse_Y;	//Mouse y position
@@ -48,33 +48,32 @@ private:
 	//Event functions
 	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 	void OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
+	void OnLoseFocus();
 
-private:
+
 	//Shaders & Shader programs
-	CShader mainShader_vertex;
-	CShader mainShader_fragment;
-	CShaderProgram mainProgram;
+	CShader MainShader_vertex;
+	CShader MainShader_fragment;
+	CShaderProgram MainProgram;
 
 	//Skybox and lighting
-	CSkybox skybox;
-	CDirectLight sun;
+	CSkybox Skybox;
+	CDirectLight Sun;
 
 	//Scene obj
-	CVBO	scene_VBO;
-	GLuint	scene_VAO;
-	CTexture scene_texture;	//Texture for static scene object
+	CVBO VBO_Terrain;
+	GLuint VAO_Terrain;
+	CTexture Texture_Terrain;
 
 	CModel models[2];
 	GLuint PolyMode;	//Used for wireframe
 
 	//Matrices
-	glm::mat4 Projection;
-	glm::mat4 View;
-	glm::mat4 Model;
-	glm::mat4 MVP;
-	glm::mat4 ModelView;
+	glm::mat4 ProjectionMatrix;
+	glm::mat4 ViewMatrix;
+	glm::mat4 ModelMatrix;
 
-private:	//Movements and related Matrix transformations
+	//Movements and related Matrix transformations
 	glm::vec3 Position;		//Position of the camera
 	float HorizontalAngle;	//Horizontal viewing angle
 	float VerticalAngle;	//Vertical viewing angle
@@ -86,7 +85,7 @@ private:	//Movements and related Matrix transformations
 	float Speed;			//Speed of movements
 	float MouseSpeed;
 
-private:	//HUD & orthogonal projections
+	//HUD & orthogonal projections
 
 };
 

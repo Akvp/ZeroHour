@@ -108,9 +108,6 @@
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
@@ -138,7 +135,7 @@
     <ClCompile Include="Font_SDL.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="AppStateLoading.cpp">
+    <ClCompile Include="LoadingScreen.cpp">
       <Filter>Source Files\AppStates</Filter>
     </ClCompile>
   </ItemGroup>
@@ -188,9 +185,6 @@
     <ClInclude Include="Log.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Header Files\AI</Filter>
     </ClInclude>
@@ -230,14 +224,17 @@
     <ClInclude Include="Font_SDL.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
-    <ClInclude Include="AppStateLoading.h">
-      <Filter>Header Files\AppStates</Filter>
-    </ClInclude>
     <ClInclude Include="FPS.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="MenuTree.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScreen.h">
+      <Filter>Header Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

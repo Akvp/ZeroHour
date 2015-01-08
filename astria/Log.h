@@ -15,7 +15,10 @@
 #ifndef __LOG_H__
 	#define __LOG_H__
 
+	#ifndef _DEBUG
 	#define _DEBUG 1
+	#endif
+
 	#include <cassert>
 		#include <cstdio>
 
@@ -24,7 +27,6 @@
 		#define Log(...) printf(__VA_ARGS__); printf("\n\n");
 	#if !_DEBUG
 		#define NDEBUG
-		#include <Windows.h>
 	#endif
 
 #endif

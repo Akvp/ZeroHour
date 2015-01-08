@@ -72,7 +72,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
-    <ClCompile Include="AppStateLoading.cpp" />
+    <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="AppStateMain.cpp" />
     <ClCompile Include="AppStateIntro.cpp" />
     <ClCompile Include="AppStateManager.cpp" />
@@ -85,7 +85,6 @@
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="NeuralNet.cpp" />
-    <ClCompile Include="Object.cpp" />
     <ClCompile Include="Params.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Main_OnEvent.cpp" />
@@ -107,7 +106,7 @@
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="AppState.h" />
-    <ClInclude Include="AppStateLoading.h" />
+    <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="AppStateManager.h" />
     <ClInclude Include="AppStateMain.h" />
     <ClInclude Include="AppStateIntro.h" />

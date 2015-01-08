@@ -158,6 +158,8 @@ bool CModel::Load(char* file)
 		materialIndices[i][1] = specularRemap[materialIndices[i][1]];
 	}
 
+	for (auto tex : textures) tex.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+
 	loaded = true;
 	return loaded;
 }

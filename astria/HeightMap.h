@@ -5,7 +5,7 @@
 #include "Shader.h"
 #include "VBO.h"
 
-#define NUM_TERRAIN_SHADER 10
+#define NUM_TERRAIN_SHADER 3
 
 class CHeightMap
 {
@@ -35,12 +35,14 @@ private:
 	int cols;
 
 	glm::vec3 RenderScale;
+
+	vector<vector<glm::vec3>> VertexData;
 	
 	CVBO HeightMapData;
 	CVBO HeightMapIndices;
 
-	static CShaderProgram Terrain;
-	static CShader TerrainShaders[NUM_TERRAIN_SHADER];
+	static CShaderProgram Program_Terrain;
+	static CShader Shader_Terrain[NUM_TERRAIN_SHADER];
 };
 
 #endif

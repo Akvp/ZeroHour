@@ -7,7 +7,7 @@ glm::vec3 vGround[6] =
 	glm::vec3(-1000, 0, -1000), glm::vec3(-1000, 0, 1000), glm::vec3(1000, 0, 1000), glm::vec3(1000, 0, 1000), glm::vec3(1000, 0, -1000), glm::vec3(-1000, 0, -1000)
 };
 
-void CreateStaticSceneObjects(GLuint* VAO, CVBO& vboDest)
+void CreateFlatGround(GLuint* VAO, CVBO& vboDest)
 {
 	vboDest.Create();
 	glGenVertexArrays(1, VAO);

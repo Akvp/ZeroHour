@@ -21,16 +21,16 @@ uniform mat4 HeightmapScaleMatrix;
 
 void main()
 {
-  vec4 inPositionScaled = HeightmapScaleMatrix*vec4(inPosition, 1.0);
-  mat4 mMVP = matrices.projMatrix*matrices.viewMatrix*matrices.modelMatrix;
+	vec4 inPositionScaled = HeightmapScaleMatrix*vec4(inPosition, 1.0);
+	mat4 mMVP = matrices.projMatrix*matrices.viewMatrix*matrices.modelMatrix;
    
-  gl_Position = mMVP*inPositionScaled;
-  vEyeSpacePos = matrices.viewMatrix*matrices.modelMatrix*vec4(inPosition, 1.0);
+	gl_Position = mMVP*inPositionScaled;
+	vEyeSpacePos = matrices.viewMatrix*matrices.modelMatrix*vec4(inPosition, 1.0);
   
-  vTexCoord = inCoord;
+	vTexCoord = inCoord;
 	vNormal = inNormal;
    
-  vec4 vWorldPosLocal = matrices.modelMatrix*inPositionScaled;
+	vec4 vWorldPosLocal = matrices.modelMatrix*inPositionScaled;
 	vWorldPos = vWorldPosLocal.xyz;
   
 }

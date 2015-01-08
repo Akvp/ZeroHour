@@ -35,6 +35,7 @@ public:
 
 	void Render();
 
+	//Release all model
 	static void Release();
 
 private:

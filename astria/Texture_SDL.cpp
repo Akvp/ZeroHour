@@ -6,11 +6,6 @@
 Texture_SDL::Texture_SDL() {
 }
 
-Texture_SDL::Texture_SDL(SDL_Texture* texture)
-{
-	SDLTexture = texture;
-}
-
 //------------------------------------------------------------------------------
 Texture_SDL::~Texture_SDL() {
 	if(SDLTexture) {
@@ -44,6 +39,40 @@ bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename) {
 	}
 
     // Grab dimensions
+	SDL_QueryTexture(SDLTexture, NULL, NULL, &Width, &Height);
+
+	SDL_FreeSurface(TempSurface);
+
+	return true;
+}
+
+bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename, int r, int g, int b)
+{
+	if (Renderer == NULL) {
+		Log("Bad SDL renderer passed");
+		return false;
+	}
+
+	this->Renderer = Renderer;
+	this->Filename = Filename;
+
+	assert(fopen(Filename.c_str(), "r") != NULL);
+
+	SDL_Surface* TempSurface = IMG_Load(Filename.c_str());
+	if (TempSurface == NULL) {
+		Log("Unable to load image : %s\nError : %s", Filename.c_str(), IMG_GetError());
+		return false;
+	}
+
+	SDL_SetColorKey(TempSurface, SDL_TRUE, SDL_MapRGB(TempSurface->format, r, g, b));
+
+	// Convert SDL surface to a texture
+	if ((SDLTexture = SDL_CreateTextureFromSurface(Renderer, TempSurface)) == NULL) {
+		Log("Unable to create SDL Texture : %s\nError : %s", Filename.c_str(), IMG_GetError());
+		return false;
+	}
+
+	// Grab dimensions
 	SDL_QueryTexture(SDLTexture, NULL, NULL, &Width, &Height);
 
 	SDL_FreeSurface(TempSurface);

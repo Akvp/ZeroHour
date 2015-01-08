@@ -9,6 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <ctime>
 
 #include <gl\glew.h>
 #include <SDL/SDL.h>
