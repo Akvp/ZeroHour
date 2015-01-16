@@ -11,4 +11,5 @@ void main()
 {
   vec4 vTexColor = texture2D(gSampler, vTexCoord);
   FragColor = vec4(vTexColor.xyz, 1.0)*vColorPart;
+  //FragColor = vColorPart;
 }

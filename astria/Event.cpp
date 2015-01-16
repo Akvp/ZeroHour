@@ -66,7 +66,7 @@ void CEvent::OnEvent(SDL_Event* Event) {
 
 		case SDL_WINDOWEVENT:
 		{
-			switch (Event->window.type) 
+			switch (Event->window.event) 
 			{
 			case SDL_WINDOWEVENT_MINIMIZED:
 				OnMinimize();

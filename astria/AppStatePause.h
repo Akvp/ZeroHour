@@ -68,13 +68,6 @@ private:
 	int mouseX;
 	int mouseY;
 	
-	//Menu callbacks
-	//void OnResume();
-	//void OnOptions();
-	//void OnAbout();
-	//void OnHelp();
-	//void OnExit();
-	
 //private:	
 //	MenuNode* PauseMenu;
 //	MenuNode* CurrentMenu;

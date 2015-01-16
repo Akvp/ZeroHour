@@ -3,6 +3,8 @@
 #include "Main.h"
 #include "utils.h"
 
+int DEBUG_GL = 0;
+
 CAppStateMain CAppStateMain::Instance;
 
 CAppStateMain::CAppStateMain()
@@ -24,8 +26,7 @@ void CAppStateMain::OnActivate()
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
 		CLoadingScreen::OnActivate(&Loaded);
-		OnInit_GL();
-		Loaded = true;
+		Loaded = OnLoad();
 		SDL_WaitThread(CLoadingScreen::GetThreadID(), NULL);
 	}
 
@@ -57,6 +58,7 @@ void CAppStateMain::OnExit()
 {
 	std::cout << "Releasing CAppStateMain\n";
 	CModel::Release();
+	Particle_Test.Release();
 	MainShader_vertex.Release();
 	MainShader_fragment.Release();
 	MainProgram.Release();
@@ -73,12 +75,6 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 	}
 
 	CEvent::OnEvent(Event);
-
-	if (Event->type == SDL_WINDOWEVENT)
-	{
-		if (Event->window.type == SDL_WINDOWEVENT_FOCUS_LOST)
-			CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
-	}
 
 	if (Event->type == SDL_MOUSEWHEEL)
 	{
@@ -120,7 +116,7 @@ void CAppStateMain::OnUpdate()
 		);
 
 	//Up vector
-	glm::vec3 Up = glm::cross(Right, Direction);
+	Up = glm::cross(Right, Direction);
 
 	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
 
@@ -130,6 +126,8 @@ void CAppStateMain::OnUpdate()
 		Position + Direction,
 		Up
 		);
+
+	Particle_Test.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 }
 
 void CAppStateMain::OnRender()
@@ -168,31 +166,51 @@ void CAppStateMain::OnRender()
 	//Render models
 	CModel::BindVAO();
 	MainProgram.SetUniform("vEyePosition", Position);
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-10.0, 0.0, -10.0));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0));
 	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[0].Render();
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(10.0, 0, 0));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(10, 0, 0));
 	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
-	glEnable(GL_DEPTH_TEST);
+	//Render particles
+	Texture_Particle.Bind();
+	float fps = CFPS::FPSControl.GetFPS();
+	float FrameInterval = 1 / fps;
+	Particle_Test.Update(FrameInterval);
+	Particle_Test.Render();
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
 
-bool CAppStateMain::OnInit_GL()
+bool CAppStateMain::OnLoad()
 {
+	//Initialize GLEW
+	glewExperimental = GL_TRUE;
+	GLenum glewInitStatus = glewInit();
+	if (glewInitStatus != GLEW_OK)
+	{
+		Error("Loading error", (char*)(glewGetErrorString(glewInitStatus)));
+		return false;
+	}
+
+	//Disable Vsync to prevent framerate capping at refresh rate
+	if (SDL_GL_SetSwapInterval(0) < 0)
+	{
+		Warning("Loading error", "Warning: Unable to set VSync\n" + string(SDL_GetError()));
+	}
+
 	//Clear the background as dark blue
 	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
 
+	//Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	glClearDepth(1.0);
 	glDepthFunc(GL_LESS);
 
 	//Remove triangles which normal is not towards the camera (do not render the inside of the model)
 	//glEnable(GL_CULL_FACE);
-
 
 	//Load shaders and programs
 	if (!MainShader_vertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
@@ -206,6 +224,21 @@ bool CAppStateMain::OnInit_GL()
 	models[0].Load("gfx/Wolf/Wolf.obj");
 	models[1].Load("gfx/nanosuit/nanosuit.obj");
 	CModel::UploadVBO();
+
+	//Load particles
+	Texture_Particle.Load_2D("gfx/particletexture.jpg", true);
+	Particle_Test.Init();
+	Particle_Test.Set(
+		glm::vec3(20, 0, 20),	//Position
+		glm::vec3(-5, 2, -5),	//Minimum velocity
+		glm::vec3(5, 20, 5),	//Maximum velocity
+		glm::vec3(0, -5, 0),	//Gravity
+		glm::vec3(1, 0.3, 0.3),	//Color
+		1.5f,	//Minimum lifespan in second
+		3.0f,	//Maximum lifespan in second
+		0.25f, 	//Size
+		0.02,	//Spawn interval
+		20);	//Count i.e. number generated per frame
 
 	//Load terrain
 	CreateFlatGround(&VAO_Terrain, VBO_Terrain);
@@ -225,7 +258,7 @@ bool CAppStateMain::OnInit_GL()
 	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.2f, 1.0f);
 
 	//Load camera properties
-	Position = glm::vec3(30, 5, 30);
+	Position = glm::vec3(0, 5, 30);
 	FoV = 45.0f;
 	HorizontalAngle = -3.14f;
 	VerticalAngle = 0.0f;
@@ -251,6 +284,9 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		{
 			CMain::GetInstance()->Running = false;
 		}
+		break;
+	case SDLK_F3:
+		DEBUG_GL = 1 - DEBUG_GL;
 		break;
 
 		//Movement Keys
@@ -286,14 +322,6 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
 		}
 		break;
-
-#ifdef _DEBUG
-	case SDLK_F1:	//Reserved for quick debugging
-		char VersionInfo[1024];
-		sprintf(VersionInfo, "Project ASTRIA\n\nVersion: %s", CParams::VersionNumber);
-		MessageBox(NULL, VersionInfo, "About", MB_ICONINFORMATION);
-		break;
-#endif
 	}
 }
 
@@ -302,19 +330,15 @@ void CAppStateMain::OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 	switch (sym)
 	{
 	case SDLK_w:
-	case SDLK_UP:
 		MoveUp = false;
 		break;
 	case SDLK_s:
-	case SDLK_DOWN:
 		MoveDown = false;
 		break;
 	case SDLK_d:
-	case SDLK_RIGHT:
 		MoveRight = false;
 		break;
 	case SDLK_a:
-	case SDLK_LEFT:
 		MoveLeft = false;
 		break;
 	}
@@ -322,5 +346,6 @@ void CAppStateMain::OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 
 void CAppStateMain::OnLoseFocus()
 {
+	if (!DEBUG_GL)
 	CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
 }

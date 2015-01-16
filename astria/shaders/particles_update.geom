@@ -58,8 +58,8 @@ void main()
 
   vPositionOut = vPositionPass[0];
   vVelocityOut = vVelocityPass[0];
-  if(iTypePass[0] != 0)vPositionOut += vVelocityOut*fTimePassed;
-  if(iTypePass[0] != 0)vVelocityOut += vGenGravityVector*fTimePassed;
+  if(iTypePass[0] != 0)	vPositionOut += vVelocityOut*fTimePassed;
+  if(iTypePass[0] != 0)	vVelocityOut += vGenGravityVector*fTimePassed;
 
   vColorOut = vColorPass[0];
   fLifeTimeOut = fLifeTimePass[0]-fTimePassed;

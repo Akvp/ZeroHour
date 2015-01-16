@@ -8,10 +8,7 @@
 class MenuNode
 {
 public:
-	MenuNode()
-	{
-		
-	}
+	MenuNode()	{	}
 
 	MenuNode(std::string name, Font_SDL* font, SDL_Renderer* renderer, SDL_Color color, MenuNode* parent = NULL) 
 	{

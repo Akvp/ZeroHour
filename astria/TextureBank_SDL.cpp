@@ -2,7 +2,6 @@
 #include "TextureBank_SDL.h"
 #include "Main.h"
 #include "FileManager.h"
-#include "Log.h"
 
 //=============================================================================
 std::map<std::string, Texture_SDL*> TextureBank::TexList;
@@ -52,10 +51,8 @@ void TextureBank::AddTexture(SDL_Renderer* Renderer, std::string ID, std::string
 
 	Texture_SDL* NewTexture = new Texture_SDL();
 
-	assert(fopen(Filename.c_str(), "r") != NULL);
-
     if(NewTexture->Load(Renderer, Filename) == false) {
-		Log("Unable to Load Texture: %s", ID.c_str());
+		printf("Unable to Load Texture: %s", ID.c_str());
 		return;
 	}
 

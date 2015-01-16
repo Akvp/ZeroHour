@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "VBO.h"
 #include "Texture.h"
+#include "utils.h"
 
 class CMesh
 {

@@ -41,16 +41,6 @@ public:
 	static double ActivationResponse;	//For tweaking sigmoid function
 	static double Bias;	//bias value
 
-	CParams()
-	{
-		if (!Load(File))
-		{
-			char* errormsg;
-			sprintf(errormsg, "Cannot find %s", File);
-			MessageBox(NULL, errormsg, "Error", MB_ICONERROR);
-		}
-	}
-
 	static bool Load(char* file);
 	static void Store(char* file);
 };

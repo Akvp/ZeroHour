@@ -49,7 +49,7 @@ bool CModel::Load(char* file)
 		string errormsg = "Couldn't load model: ";
 		errormsg += file;
 		errormsg = errormsg + "\nError code:" + string(importer.GetErrorString());
-		MessageBox(NULL, errormsg.c_str(), "Error Importing Asset", MB_ICONERROR);
+		Error("Error importing asset", errormsg);
 		return false;
 	}
 

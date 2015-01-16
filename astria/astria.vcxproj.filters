@@ -22,9 +22,6 @@
     <Filter Include="Source Files\OpenGL">
       <UniqueIdentifier>{095a9e94-8c41-41fc-aac1-05e8bc3d0173}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Main">
-      <UniqueIdentifier>{28fbec19-8d4f-44e9-b0c0-3385e485540d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{d434d2c6-66b5-4479-9c6e-a5d0684c9652}</UniqueIdentifier>
     </Filter>
@@ -50,21 +47,6 @@
     </ClCompile>
     <ClCompile Include="StaticObj.cpp">
       <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_OnUpdate.cpp">
-      <Filter>Source Files\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_OnEvent.cpp">
-      <Filter>Source Files\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_OnExit.cpp">
-      <Filter>Source Files\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_OnInit.cpp">
-      <Filter>Source Files\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="Main_OnRender.cpp">
-      <Filter>Source Files\Main</Filter>
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\OpenGL</Filter>
@@ -98,9 +80,6 @@
     </ClCompile>
     <ClCompile Include="VBO.cpp">
       <Filter>Source Files\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Source Files\Main</Filter>
     </ClCompile>
     <ClCompile Include="Event.cpp">
       <Filter>Source Files\common</Filter>
@@ -138,6 +117,12 @@
     <ClCompile Include="LoadingScreen.cpp">
       <Filter>Source Files\AppStates</Filter>
     </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Light.h">
@@ -154,9 +139,6 @@
     </ClInclude>
     <ClInclude Include="Shader.h">
       <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="Stringify.h">
       <Filter>Header Files\common</Filter>
@@ -181,9 +163,6 @@
     </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="State.h">
       <Filter>Header Files\AI</Filter>
@@ -235,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utils.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

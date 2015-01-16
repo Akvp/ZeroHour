@@ -69,5 +69,27 @@ bool CParams::Load(char* file)
 
 void CParams::Store(char* file)
 {
+	std::ofstream outFile(file);
 
+	if (!outFile)	return;
+
+	char ParamDescription[40];
+
+	outFile << ParamDescription << ' ' << WindowName << std::endl;
+	outFile << ParamDescription << ' ' << VersionNumber << std::endl;
+	outFile << ParamDescription << ' ' << WindowWidth << std::endl;
+	outFile << ParamDescription << ' ' << WindowHeight << std::endl;
+	outFile << ParamDescription << ' ' << IconImage << std::endl;
+	outFile << ParamDescription << ' ' << IntroImage << std::endl;
+	outFile << ParamDescription << ' ' << IntroDelay << std::endl;
+	outFile << ParamDescription << ' ' << SkyboxFolder << std::endl;
+	outFile << ParamDescription << ' ' << WorldMinX << ' ' << WorldMaxX;
+	outFile << ParamDescription << ' ' << WorldMinY << ' ' << WorldMaxY;
+	outFile << ParamDescription << ' ' << WorldMinZ << ' ' << WorldMaxZ;
+	outFile << ParamDescription << ' ' << GroundLevel << std::endl;
+	outFile << ParamDescription << ' ' << ActivationResponse << std::endl;
+	outFile << ParamDescription << ' ' << Bias << std::endl;
+	outFile << ParamDescription << ' ' << CrossoverRate << std::endl;
+	outFile << ParamDescription << ' ' << MutationRate << std::endl;
+	outFile << ParamDescription << ' ' << MaxPerturbation;
 }

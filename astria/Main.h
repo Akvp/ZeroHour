@@ -5,7 +5,6 @@
 #define _H_MAIN_
 
 #include "Common.h"
-#include "Log.h"
 
 #include "FPS.h"
 #include "Params.h"

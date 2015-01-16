@@ -1,6 +1,5 @@
 //=============================================================================
 #include "FileManager.h"
-#include "Log.h"
 #include "Stringify.h"
 
 #if !(defined(_WIN32) || defined(_WIN64))
@@ -84,15 +83,13 @@ std::vector<std::string> FileManager::GetFilesInFolder(std::string Folder) {
                 if(std::string(FileHandle->d_name) == "..") continue;
 
                 std::string Filename = Path + DIR_SEPARATOR + FileHandle->d_name;
-
-                //Log("Found File: %s", Filename.c_str());
-
+				
                 List.push_back(Filename);
             }
 
             closedir(DirHandle);
         }else{
-            Log("Unable to open directory : %s", Path.c_str());
+            printf("Unable to open directory : %s", Path.c_str());
         }
 	#endif
 

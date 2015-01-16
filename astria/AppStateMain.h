@@ -9,6 +9,7 @@
 #include "HeightMap.h"
 #include "Params.h"
 #include "Model.h"
+#include "ParticleSystem.h"
 #include "LoadingScreen.h"
 
 class CAppStateMain : public CAppState
@@ -31,7 +32,7 @@ public:
 private:
 	static CAppStateMain Instance;
 	bool Loaded;
-	bool OnInit_GL();
+	bool OnLoad();
 	SDL_GLContext glContext;
 
 	const int OPENGL_MAJOR_VERSION = 3;
@@ -66,6 +67,8 @@ private:
 	CTexture Texture_Terrain;
 
 	CModel models[2];
+	CParticleSystem Particle_Test;
+	CTexture Texture_Particle;
 	GLuint PolyMode;	//Used for wireframe
 
 	//Matrices
@@ -81,6 +84,7 @@ private:
 
 	glm::vec3 Direction;
 	glm::vec3 Right;
+	glm::vec3 Up;
 
 	float Speed;			//Speed of movements
 	float MouseSpeed;

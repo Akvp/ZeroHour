@@ -1,6 +1,5 @@
 //==============================================================================
 #include "Texture_SDL.h"
-#include "Log.h"
 
 //==============================================================================
 Texture_SDL::Texture_SDL() {
@@ -17,24 +16,30 @@ Texture_SDL::~Texture_SDL() {
 //==============================================================================
 bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename) {
 	if(Renderer == NULL) {
-		Log("Bad SDL renderer passed");
+		printf("Bad SDL renderer passed");
 		return false;
 	}
 
 	this->Renderer = Renderer;
 	this->Filename = Filename;
 
-	assert(fopen(Filename.c_str(), "r") != NULL);
+	if (fopen(Filename.c_str(), "r") == NULL)
+	{
+		printf("Unable to load image : %s\nCannot open file", Filename.c_str());
+		return false;
+	}
 
 	SDL_Surface* TempSurface = IMG_Load(Filename.c_str());
-	if(TempSurface == NULL) {
-		Log("Unable to load image : %s\nError : %s", Filename.c_str(), IMG_GetError());
+	if(TempSurface == NULL)
+	{
+		printf("Unable to load image : %s\nError : %s", Filename.c_str(), IMG_GetError());
 		return false;
 	}
 
     // Convert SDL surface to a texture
-	if((SDLTexture = SDL_CreateTextureFromSurface(Renderer, TempSurface)) == NULL) {
-		Log("Unable to create SDL Texture : %s\nError : %s", Filename.c_str(), IMG_GetError());
+	if((SDLTexture = SDL_CreateTextureFromSurface(Renderer, TempSurface)) == NULL)
+	{
+		printf("Unable to create SDL Texture : %s\nError : %s", Filename.c_str(), IMG_GetError());
 		return false;
 	}
 
@@ -49,18 +54,22 @@ bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename) {
 bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename, int r, int g, int b)
 {
 	if (Renderer == NULL) {
-		Log("Bad SDL renderer passed");
+		printf("Bad SDL renderer passed");
 		return false;
 	}
 
 	this->Renderer = Renderer;
 	this->Filename = Filename;
 
-	assert(fopen(Filename.c_str(), "r") != NULL);
+	if (fopen(Filename.c_str(), "r") == NULL)
+	{
+		printf("Unable to load image : %s\nCannot open file", Filename.c_str());
+		return false;
+	}
 
 	SDL_Surface* TempSurface = IMG_Load(Filename.c_str());
 	if (TempSurface == NULL) {
-		Log("Unable to load image : %s\nError : %s", Filename.c_str(), IMG_GetError());
+		printf("Unable to load image : %s\nError : %s", Filename.c_str(), IMG_GetError());
 		return false;
 	}
 
@@ -68,7 +77,7 @@ bool Texture_SDL::Load(SDL_Renderer* Renderer, std::string Filename, int r, int 
 
 	// Convert SDL surface to a texture
 	if ((SDLTexture = SDL_CreateTextureFromSurface(Renderer, TempSurface)) == NULL) {
-		Log("Unable to create SDL Texture : %s\nError : %s", Filename.c_str(), IMG_GetError());
+		printf("Unable to create SDL Texture : %s\nError : %s", Filename.c_str(), IMG_GetError());
 		return false;
 	}
 
@@ -123,7 +132,7 @@ void Texture_SDL::Release()
 void Texture_SDL::SetAlpha(Uint8 alpha)
 {
 	if (SDL_SetTextureAlphaMod(SDLTexture, alpha) < 0)
-		Log("cant change alpha");
+		printf("cant change alpha");
 }
 
 void Texture_SDL::SetColorMod(int r, int g, int b)
