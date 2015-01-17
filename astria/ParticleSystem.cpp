@@ -78,7 +78,6 @@ bool CParticleSystem::Init()
 	CurrentReadBuffer = 0;
 	NumParticles = 1;
 	Initialized = true;
-	printf("Particle initialized\n");
 	return true;
 }
 
@@ -93,7 +92,7 @@ void CParticleSystem::Update(float time)
 	Program_Update.SetUniform("vGenVelocityMin", VelocityMin);
 	Program_Update.SetUniform("vGenVelocityRange", VelocityRange);
 	Program_Update.SetUniform("vGenColor", Color);
-	Program_Update.SetUniform("vGenGravityVector", Gravity);
+	Program_Update.SetUniform("vAcceleration", Acceleration);
 	Program_Update.SetUniform("fGenLifeMin", LifeMin);
 	Program_Update.SetUniform("fGenLifeRange", LifeRange);
 	Program_Update.SetUniform("fGenSize", Size);
@@ -129,7 +128,6 @@ void CParticleSystem::Update(float time)
 
 	CurrentReadBuffer = 1 - CurrentReadBuffer;
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
-	printf("Particle updated  | Time: %f  |  Number: %d\n", time, NumParticles);
 }
 
 void CParticleSystem::Render()
@@ -155,7 +153,6 @@ void CParticleSystem::Render()
 
 	glDepthMask(1);
 	glDisable(GL_BLEND);
-	printf("Particle render\n");
 }
 
 void CParticleSystem::Clear()
@@ -190,7 +187,6 @@ void CParticleSystem::SetMatrices(glm::mat4* projection, glm::mat4* view, glm::v
 	Projection = *projection;
 	View = *view;
 
-	//Quad1 = glm::cross(view, up);
 	Quad1 = glm::cross(direction, glm::vec3(0, 1, 0));
 	if (fabsf(direction.y) < 0.0001f) Quad1 = glm::cross(direction, glm::vec3(1, 0, 0));
 	Quad1 = glm::normalize(Quad1);
@@ -198,13 +194,13 @@ void CParticleSystem::SetMatrices(glm::mat4* projection, glm::mat4* view, glm::v
 	Quad2 = glm::normalize(Quad2);
 } 
 
-void CParticleSystem::Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 gravity, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count)
+void CParticleSystem::Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 acceleration, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count)
 {
 	Position = position;
 	VelocityMin = velocitymin;
 	VelocityRange = velocitymax - velocitymin;
 
-	Gravity = gravity;
+	Acceleration = acceleration;
 	Color = color;
 	Size = size;
 

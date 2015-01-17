@@ -20,9 +20,7 @@ bool CHeightMap::Load(std::string file)
 	
 	if (Surf_Load == NULL)
 	{
-		char errorMsg[512] = "";
-		sprintf(errorMsg, "Error loading height map: %s\n Error message: %s\n", file, IMG_GetError());
-		MessageBox(NULL, errorMsg, "Height Map Loading Error", MB_ICONERROR);
+		Error("Height Map Loading Error", "Error loading heightmap: " + file + "\nError message: " + IMG_GetError());
 		return false;
 	}
 
@@ -34,9 +32,7 @@ bool CHeightMap::Load(std::string file)
 	//Return false if the image is not in RGB or Luminance
 	if (DataPtr == NULL || rows == 0 || cols == 0 || (Surf_Load->format->BytesPerPixel != 3 && Surf_Load->format->BytesPerPixel != 1))
 	{
-		char errorMsg[512] = "";
-		sprintf(errorMsg, "Error loading height map: %s\n Image format incorrect\n", file);
-		MessageBox(NULL, errorMsg, "Height Map Loading Error", MB_ICONERROR);
+		Error("Height Map Loading Error", "Error loading heightmap: " + file + "\nIncorrect image format\n");
 		return false;
 	}
 

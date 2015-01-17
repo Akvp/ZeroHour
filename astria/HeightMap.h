@@ -4,6 +4,7 @@
 #include "Common.h"
 #include "Shader.h"
 #include "VBO.h"
+#include "utils.h"
 
 #define NUM_TERRAIN_SHADER 3
 

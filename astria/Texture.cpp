@@ -128,7 +128,11 @@ bool CTexture::load_DDS(std::string file)
 
 bool CTexture::load_SDL(std::string file)
 {
-	SDL_Surface* Surf_Load = IMG_Load(file.c_str());
+	SDL_Surface* Surf_Load = NULL;
+	if (GetFileExtension(file) == "bmp")
+		Surf_Load = SDL_LoadBMP(file.c_str());
+	else
+		Surf_Load = IMG_Load(file.c_str());
 
 	if (Surf_Load == NULL)
 	{

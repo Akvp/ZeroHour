@@ -1,0 +1,21 @@
+- 0.1.8
+  - Added heightmap
+  - Small modification to parameter input file format
+  - temporarily disabled path map on terrain
+
+- 0.1.7
+  - Added particle system
+  - Added error and warning macro functions in utils.h
+
+- 0.1.6
+  - Added animated loading screen running on seperate thread
+  - Removed some unused code
+
+- 0.1.5c
+  - Fixed a specular texture bug
+
+- 0.1.5b
+  - Fixed some naming conventions
+
+- 0.1.5
+  - Added specular texture mapping

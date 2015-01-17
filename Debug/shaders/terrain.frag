@@ -6,7 +6,6 @@ smooth in vec3 vWorldPos;
 smooth in vec4 vEyeSpacePos;
 
 uniform sampler2D gSampler[5];
-uniform sampler2D shadowMap;
 
 uniform vec4 vColor;
 
@@ -21,7 +20,6 @@ out vec4 outputColor;
 uniform vec3 vEyePosition;
 
 uniform Material matActive;
-
 
 void main()
 {
@@ -71,9 +69,8 @@ void main()
 
 	vec4 vMixedColor = vFinalTexColor*vColor;
 	vec4 vDirLightColor = GetDirectionalLightColor(sunLight, vNormal);
-	vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
 
 
-	outputColor = vMixedColor*(vDirLightColor+vSpecularColor);
+	outputColor = vMixedColor*vDirLightColor;
   
 }                      

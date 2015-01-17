@@ -16,6 +16,7 @@ enum
 
 #define PARTICLE_NUM_ATTRIBUTE 6
 
+//
 struct SParticle
 {
 	glm::vec3 Position;
@@ -36,7 +37,7 @@ public:
 	void Render();
 	void Update(float time);
 
-	void Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 gravity, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count);
+	void Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 acceleration, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count);
 
 	void Clear();
 	bool Release();
@@ -65,7 +66,7 @@ private:
 	float ElapsedTime;
 	float NextGenerationTime;
 
-	glm::vec3 Position, VelocityMin, VelocityRange, Gravity, Color;
+	glm::vec3 Position, VelocityMin, VelocityRange, Acceleration, Color;
 
 	float LifeMin, LifeRange;
 	float Size;

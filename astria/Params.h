@@ -29,9 +29,9 @@ public:
 	static char SkyboxFolder[128];
 
 	// ===== World properties =====
-	static float WorldMinX, WorldMaxX;
-	static float WorldMinY, WorldMaxY;
-	static float WorldMinZ, WorldMaxZ;
+	static float WorldX;
+	static float WorldY;
+	static float WorldZ;
 	static float GroundLevel;
 
 	// ===== Genetic algorithm =====

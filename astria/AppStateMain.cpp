@@ -1,4 +1,4 @@
-#include "AppStateManager.h"
+﻿#include "AppStateManager.h"
 #include "AppStateMain.h"
 #include "Main.h"
 #include "utils.h"
@@ -63,8 +63,8 @@ void CAppStateMain::OnExit()
 	MainShader_fragment.Release();
 	MainProgram.Release();
 	Skybox.Release();
-	VBO_Terrain.Release();
-	glDeleteVertexArrays(1, &VAO_Terrain);
+	CHeightMap::ReleaseShaderProgram();
+	Map.Release();
 }
 
 void CAppStateMain::OnEvent(SDL_Event* Event)
@@ -127,6 +127,7 @@ void CAppStateMain::OnUpdate()
 		Up
 		);
 
+	//Set matrices for particle program
 	Particle_Test.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 }
 
@@ -159,18 +160,33 @@ void CAppStateMain::OnRender()
 	MainProgram.SetUniform("matrices.mModel", glm::mat4(1.0));
 
 	//Render ground
-	glBindVertexArray(VAO_Terrain);
-	Texture_Terrain.Bind();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	CShaderProgram* Program_Terrain = CHeightMap::GetShaderProgram();
+	Program_Terrain->Use();
+	Program_Terrain->SetUniform("matrices.projMatrix", ProjectionMatrix);
+	Program_Terrain->SetUniform("matrices.viewMatrix", ViewMatrix);
+	Program_Terrain->SetUniform("vEyePosition", Position);
+	for (int i = 0; i < 5; i++)
+	{
+		char sampler[64];
+		sprintf(sampler, "gSampler[%d]", i);
+		Texture_Terrain[i].Bind(i);
+		Program_Terrain->SetUniform(sampler, i);
+	}
+	Program_Terrain->SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", glm::mat4(1.0));
+	Program_Terrain->SetUniform("vColor", glm::vec4(1, 1, 1, 1));
+	Sun.SetUniform(Program_Terrain, "sunLight");
 
+	Map.Render();
+
+	MainProgram.Use();
 	//Render models
 	CModel::BindVAO();
 	MainProgram.SetUniform("vEyePosition", Position);
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(88, 30, 176));
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0));
 	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[0].Render();
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(10, 0, 0));
+	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(83, 30, 180));
 	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
@@ -226,24 +242,30 @@ bool CAppStateMain::OnLoad()
 	CModel::UploadVBO();
 
 	//Load particles
-	Texture_Particle.Load_2D("gfx/particletexture.jpg", true);
+	Texture_Particle.Load_2D("gfx/particle.bmp", true);
 	Particle_Test.Init();
 	Particle_Test.Set(
-		glm::vec3(20, 0, 20),	//Position
-		glm::vec3(-5, 2, -5),	//Minimum velocity
-		glm::vec3(5, 20, 5),	//Maximum velocity
+		glm::vec3(-138, 85, 165),	//Position
+		glm::vec3(-10, 2, -10),	//Minimum velocity
+		glm::vec3(10, 20, 10),	//Maximum velocity
 		glm::vec3(0, -5, 0),	//Gravity
-		glm::vec3(1, 0.3, 0.3),	//Color
+		glm::vec3(0.8, 0.2, 0.2),	//Color
 		1.5f,	//Minimum lifespan in second
 		3.0f,	//Maximum lifespan in second
 		0.25f, 	//Size
 		0.02,	//Spawn interval
-		20);	//Count i.e. number generated per frame
+		100);	//Count i.e. number generated per frame
 
 	//Load terrain
-	CreateFlatGround(&VAO_Terrain, VBO_Terrain);
-	Texture_Terrain.Load_2D("gfx/grass.jpg", true);
-	Texture_Terrain.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+	string TextureNames[] = { "sand.jpg", "grass.jpg", "snow.jpg", "sand.jpg", "path.png" };
+	for (int i = 0; i < 5; i++)
+	{
+		Texture_Terrain[i].Load_2D("gfx/" + TextureNames[i], true);
+		Texture_Terrain[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+	}
+	Map.Load("gfx/3.jpg");
+	CHeightMap::LoadShaderProgram();
+	Map.SetRenderSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
 
 	//Used for wire frame
 	PolyMode = GL_FILL;
@@ -255,10 +277,10 @@ bool CAppStateMain::OnLoad()
 	Skybox.Load(CParams::SkyboxFolder);
 
 	//Load sun light
-	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(sqrt(2.0f) / 2, -sqrt(2.0f) / 2, 0), 0.2f, 1.0f);
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1, -3, 0), 0.2f, 1.0f);
 
 	//Load camera properties
-	Position = glm::vec3(0, 5, 30);
+	Position = glm::vec3(84, 34, 210);
 	FoV = 45.0f;
 	HorizontalAngle = -3.14f;
 	VerticalAngle = 0.0f;

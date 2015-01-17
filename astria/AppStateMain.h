@@ -62,9 +62,12 @@ private:
 	CDirectLight Sun;
 
 	//Scene obj
-	CVBO VBO_Terrain;
-	GLuint VAO_Terrain;
-	CTexture Texture_Terrain;
+	//CVBO VBO_Terrain;
+	//GLuint VAO_Terrain;
+	//CTexture Texture_Terrain;
+	//CTexture Texture_Heightmap;
+	CHeightMap Map;
+	CTexture Texture_Terrain[5];
 
 	CModel models[2];
 	CParticleSystem Particle_Test;

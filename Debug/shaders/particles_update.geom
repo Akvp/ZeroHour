@@ -23,7 +23,7 @@ out float fSizeOut;
 out int iTypeOut;
 
 uniform vec3 vGenPosition; // Position where new particles are spawned
-uniform vec3 vGenGravityVector; // Gravity vector for particles - updates velocity of particles 
+uniform vec3 vAcceleration; // Acceleration vector for particles - updates velocity of particles 
 uniform vec3 vGenVelocityMin; // Velocity of new particle - from min to (min+range)
 uniform vec3 vGenVelocityRange;
 
@@ -36,7 +36,7 @@ uniform float fTimePassed; // Time passed since last frame
 uniform vec3 vRandomSeed; // Seed number for our random number function
 vec3 vLocalSeed;
 
-uniform int iNumToGenerate; // How many particles will be generated next time, if greater than zero, particles are generated
+uniform int iNumToGenerate; // How many particles will be generated each time, if greater than zero, particles are generated
 
 // This function returns random number from zero to one
 float randZeroOne()
@@ -59,7 +59,7 @@ void main()
   vPositionOut = vPositionPass[0];
   vVelocityOut = vVelocityPass[0];
   if(iTypePass[0] != 0)	vPositionOut += vVelocityOut*fTimePassed;
-  if(iTypePass[0] != 0)	vVelocityOut += vGenGravityVector*fTimePassed;
+  if(iTypePass[0] != 0)	vVelocityOut += vAcceleration*fTimePassed;
 
   vColorOut = vColorPass[0];
   fLifeTimeOut = fLifeTimePass[0]-fTimePassed;

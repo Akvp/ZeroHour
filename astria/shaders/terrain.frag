@@ -6,7 +6,11 @@ smooth in vec3 vWorldPos;
 smooth in vec4 vEyeSpacePos;
 
 uniform sampler2D gSampler[5];
-uniform sampler2D shadowMap;
+//gSampler[0] : low altitude texture
+//gSampler[1] : mid altitude texture
+//gSampler[2] : high altitude texture
+//gSampler[3] : path texture
+//gSampler[4] : path map
 
 uniform vec4 vColor;
 
@@ -19,9 +23,6 @@ uniform float fMaxTextureV;
 out vec4 outputColor;
 
 uniform vec3 vEyePosition;
-
-uniform Material matActive;
-
 
 void main()
 {
@@ -62,18 +63,16 @@ void main()
 	}
 	else vTexColor = texture2D(gSampler[2], vTexCoord);
 
-	vec2 vPathCoord = vec2(vTexCoord.x/fMaxTextureU, vTexCoord.y/fMaxTextureV);
-	vec4 vPathIntensity = texture2D(gSampler[4], vPathCoord);
-	fScale = vPathIntensity.x;
+	//vec2 vPathCoord = vec2(vTexCoord.x/fMaxTextureU, vTexCoord.y/fMaxTextureV);
+	//vec4 vPathIntensity = texture2D(gSampler[4], vPathCoord);
+	//fScale = vPathIntensity.x;
   
-	vec4 vPathColor = texture2D(gSampler[3], vTexCoord); // Black color means there is a path
-	vec4 vFinalTexColor = fScale*vTexColor+(1-fScale)*vPathColor;
+	//vec4 vPathColor = texture2D(gSampler[3], vTexCoord); // Black color means there is a path
+	//vec4 vFinalTexColor = (fScale+0.2)*vTexColor+(1-fScale)*vPathColor;
 
-	vec4 vMixedColor = vFinalTexColor*vColor;
+	//vec4 vMixedColor = vFinalTexColor*vColor;
 	vec4 vDirLightColor = GetDirectionalLightColor(sunLight, vNormal);
-	vec4 vSpecularColor = GetSpecularColor(vWorldPos, vEyePosition, matActive, sunLight, vNormalized);
 
-
-	outputColor = vMixedColor*(vDirLightColor+vSpecularColor);
+	outputColor = vTexColor*vDirLightColor;
   
 }                      
