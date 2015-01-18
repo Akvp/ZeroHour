@@ -1,7 +1,8 @@
 #include "HeightMap.h"
 
 CShaderProgram CHeightMap::Program_Terrain;
-CShader CHeightMap::Shader_Terrain[NUM_TERRAIN_SHADER];
+CShader CHeightMap::Shader_Vertex;
+CShader CHeightMap::Shader_Fragment;
 
 CHeightMap::CHeightMap()
 {
@@ -191,7 +192,6 @@ void CHeightMap::Release()
 {
 	if (!loaded)
 		return;
-	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	Shader_Terrain[i].Release();
 	HeightMapData.Release();
 	HeightMapIndices.Release();
 	glDeleteVertexArrays(1, &vao);
@@ -201,12 +201,12 @@ void CHeightMap::Release()
 bool CHeightMap::LoadShaderProgram()
 {
 	bool ret = true;
-	ret = ret & Shader_Terrain[0].Load("shaders/terrain.vert", GL_VERTEX_SHADER);
-	ret = ret & Shader_Terrain[1].Load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
-	ret = ret & Shader_Terrain[2].Load("shaders/dirLight.frag", GL_FRAGMENT_SHADER);
+	ret = ret & Shader_Vertex.Load("shaders/terrain.vert", GL_VERTEX_SHADER);
+	ret = ret & Shader_Fragment.Load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
 
 	Program_Terrain.Create();
-	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)	ret = ret & Program_Terrain.AddShader(&Shader_Terrain[i]);
+	ret = ret & Program_Terrain.AddShader(&Shader_Vertex);
+	ret = ret & Program_Terrain.AddShader(&Shader_Fragment);
 	ret = ret & Program_Terrain.Link();
 
 	return ret;
@@ -215,10 +215,8 @@ bool CHeightMap::LoadShaderProgram()
 void CHeightMap::ReleaseShaderProgram()
 {
 	Program_Terrain.Release();
-	for (int i = 0; i < NUM_TERRAIN_SHADER; i++)
-	{
-		Shader_Terrain[i].Release();
-	}
+	Shader_Vertex.Release();
+	Shader_Fragment.Release();
 }
 
 CShaderProgram* CHeightMap::GetShaderProgram()

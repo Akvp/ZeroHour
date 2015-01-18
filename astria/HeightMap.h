@@ -6,8 +6,6 @@
 #include "VBO.h"
 #include "utils.h"
 
-#define NUM_TERRAIN_SHADER 3
-
 class CHeightMap
 {
 public:
@@ -43,7 +41,8 @@ private:
 	CVBO HeightMapIndices;
 
 	static CShaderProgram Program_Terrain;
-	static CShader Shader_Terrain[NUM_TERRAIN_SHADER];
+	static CShader Shader_Vertex;
+	static CShader Shader_Fragment;
 };
 
 #endif

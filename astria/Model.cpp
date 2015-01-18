@@ -46,10 +46,7 @@ bool CModel::Load(char* file)
 
 	if (!scene)
 	{
-		string errormsg = "Couldn't load model: ";
-		errormsg += file;
-		errormsg = errormsg + "\nError code:" + string(importer.GetErrorString());
-		Error("Error importing asset", errormsg);
+		Error("Error importing asset", "Error loading model: " + string(file) + "\nError code: " + string(importer.GetErrorString()));
 		return false;
 	}
 
@@ -76,7 +73,7 @@ bool CModel::Load(char* file)
 			{
 				aiVector3D pos = mesh->mVertices[face.mIndices[k]];
 				aiVector3D uv = mesh->mTextureCoords[0][face.mIndices[k]];
-				aiVector3D normal = mesh->mNormals[face.mIndices[k]];
+				aiVector3D normal = mesh->HasNormals() ? mesh->mNormals[face.mIndices[k]] : aiVector3D(1.0f, 1.0f, 1.0f);
 				vboModelData.AddData(&pos, sizeof(aiVector3D));
 				vboModelData.AddData(&uv, sizeof(aiVector2D));
 				vboModelData.AddData(&normal, sizeof(aiVector3D));

@@ -49,7 +49,7 @@ void main()
 	vec3 vReflected = normalize(reflect(sunLight.vDirection, vNormalized));
 	vec3 vView = normalize(vEyePosition - vWorldPos);
 	float fSpecularIntensity = clamp(dot(vReflected, vView), 0, 1);
-	vec3 vSpecularColor = pow(sunLight.fBrightness, 32) * 0.6 * sunLight.vColor * fSpecularIntensity * vec3(texture2D(mat.specular, vTexCoord));
+	vec3 vSpecularColor = pow(sunLight.fBrightness, 2) * 0.6 * sunLight.vColor * fSpecularIntensity * vec3(texture2D(mat.specular, vTexCoord));
 
 	outputColor = vec4(vAmbientColor + vDiffuseColor + vSpecularColor, 1.0f);
 }

@@ -5,11 +5,24 @@ smooth in vec3 vNormal;
 smooth in vec3 vWorldPos;
 smooth in vec4 vEyeSpacePos;
 
-uniform sampler2D gSampler[5];
+struct Material
+{
+	sampler2D diffuse;
+	sampler2D specular;
+};
+uniform Material LowAlt;
+uniform Material MidAlt;
+uniform Material HighAlt;
 
 uniform vec4 vColor;
 
-#include "dirLight.frag"
+struct DirectionalLight
+{
+	vec3 vColor;
+	vec3 vDirection;
+	float fAmbient;
+	float fBrightness;
+};
 uniform DirectionalLight sunLight;
 uniform float fRenderHeight;
 uniform float fMaxTextureU;
@@ -19,13 +32,12 @@ out vec4 outputColor;
 
 uniform vec3 vEyePosition;
 
-uniform Material matActive;
-
 void main()
 {
 	vec3 vNormalized = normalize(vNormal);
 	
-	vec4 vTexColor = vec4(0.0);
+	vec4 vDifColor = vec4(0.0);
+	vec4 vSpeColor = vec4(0.0);
 	
 	float fScale = vWorldPos.y/fRenderHeight;
 
@@ -34,7 +46,11 @@ void main()
 	const float fRange3 = 0.65f;
 	const float fRange4 = 0.85f;
 
-	if(fScale >= 0.0 && fScale <= fRange1)vTexColor = texture2D(gSampler[0], vTexCoord);
+	if(fScale >= 0.0 && fScale <= fRange1)
+	{
+		vDifColor = texture2D(LowAlt.diffuse, vTexCoord);
+		vSpeColor = texture2D(LowAlt.specular, vTexCoord);
+	}
 	else if(fScale <= fRange2)
 	{
 		fScale -= fRange1;
@@ -43,10 +59,16 @@ void main()
 		float fScale2 = fScale;
 		fScale = 1.0-fScale; 
 		
-		vTexColor += texture2D(gSampler[0], vTexCoord)*fScale;
-		vTexColor += texture2D(gSampler[1], vTexCoord)*fScale2;
+		vDifColor += texture2D(LowAlt.diffuse, vTexCoord)*fScale;
+		vDifColor += texture2D(MidAlt.diffuse, vTexCoord)*fScale2;
+		vSpeColor += texture2D(LowAlt.specular, vTexCoord)*fScale;
+		vSpeColor += texture2D(MidAlt.specular, vTexCoord)*fScale2;
 	}
-	else if(fScale <= fRange3)vTexColor = texture2D(gSampler[1], vTexCoord);
+	else if(fScale <= fRange3)
+	{
+		vDifColor = texture2D(MidAlt.diffuse, vTexCoord);
+		vSpeColor = texture2D(MidAlt.specular, vTexCoord);
+	}
 	else if(fScale <= fRange4)
 	{
 		fScale -= fRange3;
@@ -55,22 +77,37 @@ void main()
 		float fScale2 = fScale;
 		fScale = 1.0-fScale; 
 		
-		vTexColor += texture2D(gSampler[1], vTexCoord)*fScale;
-		vTexColor += texture2D(gSampler[2], vTexCoord)*fScale2;		
+		vDifColor += texture2D(MidAlt.diffuse, vTexCoord)*fScale;
+		vDifColor += texture2D(HighAlt.diffuse, vTexCoord)*fScale2;	
+		vSpeColor += texture2D(MidAlt.specular, vTexCoord)*fScale;
+		vSpeColor += texture2D(HighAlt.specular, vTexCoord)*fScale2;	
 	}
-	else vTexColor = texture2D(gSampler[2], vTexCoord);
+	else 
+	{
+		vDifColor = texture2D(HighAlt.diffuse, vTexCoord);	
+		vSpeColor = texture2D(HighAlt.specular, vTexCoord);
+	}
 
-	vec2 vPathCoord = vec2(vTexCoord.x/fMaxTextureU, vTexCoord.y/fMaxTextureV);
-	vec4 vPathIntensity = texture2D(gSampler[4], vPathCoord);
-	fScale = vPathIntensity.x;
+	//vec2 vPathCoord = vec2(vTexCoord.x/fMaxTextureU, vTexCoord.y/fMaxTextureV);
+	//vec4 vPathIntensity = texture2D(gSampler[4], vPathCoord);
+	//fScale = vPathIntensity.x;
   
-	vec4 vPathColor = texture2D(gSampler[3], vTexCoord); // Black color means there is a path
-	vec4 vFinalTexColor = fScale*vTexColor+(1-fScale)*vPathColor;
+	//vec4 vPathColor = texture2D(gSampler[3], vTexCoord); // Black color means there is a path
+	//vec4 vFinalTexColor = (fScale+0.2)*vDifColor+(1-fScale)*vPathColor;
 
-	vec4 vMixedColor = vFinalTexColor*vColor;
-	vec4 vDirLightColor = GetDirectionalLightColor(sunLight, vNormal);
+	//vec4 vMixedColor = vFinalTexColor*vColor;
+	//vec4 vDirLightColor = GetDirectionalLightColor(sunLight, vNormal);
 
+	float fDiffuseIntensity = clamp(dot(vNormal, -sunLight.vDirection), 0.0f, 1.5f);
+	vec4 vDiffuseColor = pow(sunLight.fBrightness,2) * 0.8 * vec4(sunLight.vColor, 1.0f) * fDiffuseIntensity * vDifColor;
 
-	outputColor = vMixedColor*vDirLightColor;
+	vec4 vAmbientColor = vec4(sunLight.vColor, 1.0f) * sunLight.fAmbient * vDifColor;
+
+	vec3 vReflected = normalize(reflect(sunLight.vDirection, vNormalized));
+	vec3 vView = normalize(vEyePosition - vWorldPos);
+	float fSpecularIntensity = clamp(dot(vReflected, vView), 0, 1);
+	vec4 vSpecularColor = pow(sunLight.fBrightness, 2) * 0.6 * vec4(sunLight.vColor, 1.0f) * fSpecularIntensity * vSpeColor;
+
+	outputColor = vDiffuseColor + vAmbientColor + vSpecularColor;
   
 }                      

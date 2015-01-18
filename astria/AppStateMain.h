@@ -67,7 +67,7 @@ private:
 	//CTexture Texture_Terrain;
 	//CTexture Texture_Heightmap;
 	CHeightMap Map;
-	CTexture Texture_Terrain[5];
+	CTexture Texture_Terrain[6];
 
 	CModel models[2];
 	CParticleSystem Particle_Test;

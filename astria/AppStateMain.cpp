@@ -165,17 +165,16 @@ void CAppStateMain::OnRender()
 	Program_Terrain->SetUniform("matrices.projMatrix", ProjectionMatrix);
 	Program_Terrain->SetUniform("matrices.viewMatrix", ViewMatrix);
 	Program_Terrain->SetUniform("vEyePosition", Position);
-	for (int i = 0; i < 5; i++)
-	{
-		char sampler[64];
-		sprintf(sampler, "gSampler[%d]", i);
-		Texture_Terrain[i].Bind(i);
-		Program_Terrain->SetUniform(sampler, i);
-	}
+	Program_Terrain->SetUniform("LowAlt.diffuse", 0);	Program_Terrain->SetUniform("LowAlt.specular", 1);
+	Program_Terrain->SetUniform("MidAlt.diffuse", 2);	Program_Terrain->SetUniform("MidAlt.specular", 3);
+	Program_Terrain->SetUniform("HighAlt.diffuse", 4);	Program_Terrain->SetUniform("HighAlt.specular", 5);
 	Program_Terrain->SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", glm::mat4(1.0));
 	Program_Terrain->SetUniform("vColor", glm::vec4(1, 1, 1, 1));
 	Sun.SetUniform(Program_Terrain, "sunLight");
-
+	//Diffuse textures			//Specular textures
+	Texture_Terrain[0].Bind(0);	Texture_Terrain[1].Bind(1);
+	Texture_Terrain[2].Bind(2); Texture_Terrain[3].Bind(3);
+	Texture_Terrain[4].Bind(4);	Texture_Terrain[5].Bind(5);
 	Map.Render();
 
 	MainProgram.Use();
@@ -257,8 +256,8 @@ bool CAppStateMain::OnLoad()
 		100);	//Count i.e. number generated per frame
 
 	//Load terrain
-	string TextureNames[] = { "sand.jpg", "grass.jpg", "snow.jpg", "sand.jpg", "path.png" };
-	for (int i = 0; i < 5; i++)
+	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png"};
+	for (int i = 0; i < 6; i++)
 	{
 		Texture_Terrain[i].Load_2D("gfx/" + TextureNames[i], true);
 		Texture_Terrain[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
@@ -307,7 +306,12 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 			CMain::GetInstance()->Running = false;
 		}
 		break;
+	case SDLK_F2:
+		//Faster movement speed for quicker debugging xD
+		Speed = (Speed == 0.5) ? 5 : 0.5;
+		break;
 	case SDLK_F3:
+		//Disable pause on alt-tab
 		DEBUG_GL = 1 - DEBUG_GL;
 		break;
 
