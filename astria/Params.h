@@ -33,6 +33,7 @@ public:
 	static float WorldY;
 	static float WorldZ;
 	static float GroundLevel;
+	static float Gravity;
 
 	// ===== Genetic algorithm =====
 	static double CrossoverRate;

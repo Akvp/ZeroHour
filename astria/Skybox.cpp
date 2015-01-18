@@ -3,16 +3,6 @@
 #include "Skybox.h"
 #include "FileManager.h"
 
-/*-----------------------------------------------
-
-Name:	LoadSkybox
-
-Params:	paths of skybox pictures
-
-Result:	Loads skybox and creates VAO and VBO for it.
-
-/*---------------------------------------------*/
-
 void CSkybox::Load(std::string a_sDirectory)
 {
 	std::vector<std::string> files = FileManager::GetFilesInFolder(a_sDirectory);
@@ -123,16 +113,6 @@ void CSkybox::Load(std::string a_sDirectory)
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 2*sizeof(glm::vec3)+sizeof(glm::vec2), (void*)(sizeof(glm::vec3)+sizeof(glm::vec2)));
 }
 
-/*-----------------------------------------------
-
-Name:	RenderSkybox
-
-Params:	none
-
-Result: Guess what it does :)
-
-/*---------------------------------------------*/
-
 void CSkybox::Render()
 {
 	glDepthMask(0);
@@ -144,16 +124,6 @@ void CSkybox::Render()
 	}
 	glDepthMask(1);
 }
-
-/*-----------------------------------------------
-
-Name:	DeleteSkybox
-
-Params:	none
-
-Result:	Deletes skybox and all associated memory.
-
-/*---------------------------------------------*/
 
 void CSkybox::Release()
 {

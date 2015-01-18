@@ -51,7 +51,6 @@ private:
 	void OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 	void OnLoseFocus();
 
-
 	//Shaders & Shader programs
 	CShader MainShader_vertex;
 	CShader MainShader_fragment;
@@ -62,10 +61,6 @@ private:
 	CDirectLight Sun;
 
 	//Scene obj
-	//CVBO VBO_Terrain;
-	//GLuint VAO_Terrain;
-	//CTexture Texture_Terrain;
-	//CTexture Texture_Heightmap;
 	CHeightMap Map;
 	CTexture Texture_Terrain[6];
 
@@ -89,11 +84,10 @@ private:
 	glm::vec3 Right;
 	glm::vec3 Up;
 
+	bool GravityEnabled;
+
 	float Speed;			//Speed of movements
 	float MouseSpeed;
-
-	//HUD & orthogonal projections
-
 };
 
 

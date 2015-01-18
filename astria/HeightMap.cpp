@@ -1,4 +1,5 @@
 #include "HeightMap.h"
+#include <algorithm>
 
 CShaderProgram CHeightMap::Program_Terrain;
 CShader CHeightMap::Shader_Vertex;
@@ -260,4 +261,18 @@ void CHeightMap::Render()
 
 	int NumIndices = (rows - 1) * cols * 2 + rows - 1;
 	glDrawElements(GL_TRIANGLE_STRIP, NumIndices, GL_UNSIGNED_INT, 0);
+}
+
+float CHeightMap::GetHeight(glm::vec3 position)
+{
+	int column = int((position.x + RenderScale.x*0.5f)*float(cols) / RenderScale.x);
+	int row = int((position.z + RenderScale.z*0.5f)*float(rows) / RenderScale.z);
+
+	column = min(column, cols - 1);
+	row = min(row, rows - 1);
+
+	column = max(column, 0);
+	row = max(row, 0);
+
+	return VertexData[row][column].y*RenderScale.y;
 }

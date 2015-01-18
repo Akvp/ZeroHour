@@ -199,6 +199,9 @@ void CAppStatePause::OnSelect()
 			MessageBox(NULL, AboutInfo, "About", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_HELP:
+			char HelpInfo[2048];
+			sprintf(HelpInfo, "\tProject ASTRIA\t\n\n\tWASD:\tMovement\n\tQ:\tWireframe mode\t\n\tF2:\tChange movement speed\t\n\tF3:\tToggle gravity\t");
+			MessageBox(NULL, HelpInfo, "Help", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_EXIT:
 			CMain::GetInstance()->Running = false;

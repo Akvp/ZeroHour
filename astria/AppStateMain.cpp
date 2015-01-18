@@ -3,8 +3,6 @@
 #include "Main.h"
 #include "utils.h"
 
-int DEBUG_GL = 0;
-
 CAppStateMain CAppStateMain::Instance;
 
 CAppStateMain::CAppStateMain()
@@ -25,6 +23,7 @@ void CAppStateMain::OnActivate()
 	{
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
+		GravityEnabled = false;
 		CLoadingScreen::OnActivate(&Loaded);
 		Loaded = OnLoad();
 		SDL_WaitThread(CLoadingScreen::GetThreadID(), NULL);
@@ -100,6 +99,12 @@ void CAppStateMain::OnUpdate()
 	if (MoveDown)	Position -= Direction * Speed *CFPS::FPSControl.GetSpeedFactor();
 	if (MoveLeft)	Position -= Right * Speed *CFPS::FPSControl.GetSpeedFactor();
 	if (MoveRight)	Position += Right * Speed *CFPS::FPSControl.GetSpeedFactor();
+
+	if (GravityEnabled)
+	{
+		Position.y += CParams::Gravity * CFPS::FPSControl.GetSpeedFactor();
+		Position.y = max(Position.y, Map.GetHeight(Position) + 5);
+	}
 
 	//Direction : Spherical coordinates to cartesian coordinates conversion
 	Direction = glm::vec3(
@@ -311,8 +316,8 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		Speed = (Speed == 0.5) ? 5 : 0.5;
 		break;
 	case SDLK_F3:
-		//Disable pause on alt-tab
-		DEBUG_GL = 1 - DEBUG_GL;
+		//Disable gravity
+		GravityEnabled = !GravityEnabled;
 		break;
 
 		//Movement Keys
@@ -372,6 +377,5 @@ void CAppStateMain::OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 
 void CAppStateMain::OnLoseFocus()
 {
-	if (!DEBUG_GL)
 	CAppStateManager::SetActiveAppState(APPSTATE_PAUSE);
 }

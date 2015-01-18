@@ -20,6 +20,7 @@ float CParams::WorldX = 300;
 float CParams::WorldY =  30;
 float CParams::WorldZ = 300;
 float CParams::GroundLevel = 0;
+float CParams::Gravity = -1;
 double CParams::ActivationResponse = 0;
 double CParams::Bias = 0;
 double CParams::CrossoverRate = 0;
@@ -53,6 +54,7 @@ bool CParams::Load(char* file)
 	inFile >> ParamDescription >> WorldY;
 	inFile >> ParamDescription >> WorldZ;
 	inFile >> ParamDescription >> GroundLevel;
+	inFile >> ParamDescription >> Gravity;
 	inFile >> ParamDescription >> ActivationResponse;
 	inFile >> ParamDescription >> Bias;
 	inFile >> ParamDescription >> CrossoverRate;
@@ -84,6 +86,7 @@ void CParams::Store(char* file)
 	outFile << ParamDescription << ' ' << WorldY << std::endl;
 	outFile << ParamDescription << ' ' << WorldZ << std::endl;
 	outFile << ParamDescription << ' ' << GroundLevel << std::endl;
+	outFile << ParamDescription << ' ' << Gravity << std::endl;
 	outFile << ParamDescription << ' ' << ActivationResponse << std::endl;
 	outFile << ParamDescription << ' ' << Bias << std::endl;
 	outFile << ParamDescription << ' ' << CrossoverRate << std::endl;

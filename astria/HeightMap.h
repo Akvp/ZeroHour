@@ -26,6 +26,8 @@ public:
 	int GetRows();
 	int GetCols();
 
+	float GetHeight(glm::vec3 position);
+
 private:
 	UINT vao;
 	bool loaded;
