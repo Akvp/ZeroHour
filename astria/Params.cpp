@@ -16,6 +16,7 @@ char CParams::IconImage[128] = "gfx/img/icon.png";
 char CParams::IntroImage[128] = "gfx/img/splash.jpg";
 int CParams::IntroDelay = 2000;
 char CParams::SkyboxFolder[128] = "/gfx/skybox";
+char CParams::Heightmap[128] = "/gfx/2.jpg";
 float CParams::WorldX = 300;
 float CParams::WorldY =  30;
 float CParams::WorldZ = 300;
@@ -50,6 +51,7 @@ bool CParams::Load(char* file)
 	inFile >> ParamDescription >> IntroImage;
 	inFile >> ParamDescription >> IntroDelay;
 	inFile >> ParamDescription >> SkyboxFolder;
+	inFile >> ParamDescription >> Heightmap;
 	inFile >> ParamDescription >> WorldX;
 	inFile >> ParamDescription >> WorldY;
 	inFile >> ParamDescription >> WorldZ;
@@ -82,6 +84,7 @@ void CParams::Store(char* file)
 	outFile << ParamDescription << ' ' << IntroImage << std::endl;
 	outFile << ParamDescription << ' ' << IntroDelay << std::endl;
 	outFile << ParamDescription << ' ' << SkyboxFolder << std::endl;
+	outFile << ParamDescription << ' ' << Heightmap << std::endl;
 	outFile << ParamDescription << ' ' << WorldX << std::endl;
 	outFile << ParamDescription << ' ' << WorldY << std::endl;
 	outFile << ParamDescription << ' ' << WorldZ << std::endl;

@@ -27,6 +27,7 @@ public:
 	static int IntroDelay;
 
 	static char SkyboxFolder[128];
+	static char Heightmap[128];
 
 	// ===== World properties =====
 	static float WorldX;

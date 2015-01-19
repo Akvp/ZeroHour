@@ -186,11 +186,15 @@ void CAppStateMain::OnRender()
 	//Render models
 	CModel::BindVAO();
 	MainProgram.SetUniform("vEyePosition", Position);
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(88, 30, 176));
+	glm::vec3 newPos(88, 0, 176);
+	newPos.y = Map.GetHeight(newPos);
+	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0));
 	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[0].Render();
-	ModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(83, 30, 180));
+	newPos = glm::vec3(83, 0, 180);
+	newPos.y = Map.GetHeight(newPos);
+	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
 	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
@@ -245,11 +249,24 @@ bool CAppStateMain::OnLoad()
 	models[1].Load("gfx/nanosuit/nanosuit.obj");
 	CModel::UploadVBO();
 
+	//Load terrain
+	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png"};
+	for (int i = 0; i < 6; i++)
+	{
+		Texture_Terrain[i].Load_2D("gfx/" + TextureNames[i], true);
+		Texture_Terrain[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+	}
+	Map.Load(CParams::Heightmap);
+	CHeightMap::LoadShaderProgram();
+	Map.SetRenderSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
+
 	//Load particles
 	Texture_Particle.Load_2D("gfx/particle.bmp", true);
 	Particle_Test.Init();
+	glm::vec3 partPos(-138, 0, 165);
+	partPos.y = Map.GetHeight(partPos);
 	Particle_Test.Set(
-		glm::vec3(-138, 85, 165),	//Position
+		partPos,				//Position
 		glm::vec3(-10, 2, -10),	//Minimum velocity
 		glm::vec3(10, 20, 10),	//Maximum velocity
 		glm::vec3(0, -5, 0),	//Gravity
@@ -259,17 +276,6 @@ bool CAppStateMain::OnLoad()
 		0.25f, 	//Size
 		0.02,	//Spawn interval
 		100);	//Count i.e. number generated per frame
-
-	//Load terrain
-	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png"};
-	for (int i = 0; i < 6; i++)
-	{
-		Texture_Terrain[i].Load_2D("gfx/" + TextureNames[i], true);
-		Texture_Terrain[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
-	}
-	Map.Load("gfx/3.jpg");
-	CHeightMap::LoadShaderProgram();
-	Map.SetRenderSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
 
 	//Used for wire frame
 	PolyMode = GL_FILL;

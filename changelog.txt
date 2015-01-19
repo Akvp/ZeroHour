@@ -1,3 +1,6 @@
+- 0.1.8d
+  - Heightmap texture now interchangeable within params.ini file
+
 - 0.1.8c
   - Implemented a very basic gravity system for the camera
 
