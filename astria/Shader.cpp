@@ -1,9 +1,6 @@
 #include "Shader.h"
-#include <fstream>
-#include <string>
 #include <sstream>
 #include <cstdarg>
-#include <Windows.h>
 
 using namespace std;
 
@@ -24,7 +21,10 @@ bool CShader::Load(string file, int type)
 	if (!GetLinesFromFile(file, false, &sLines))return false;
 
 	const char** sShader = new const char*[sLines.size()];
-	for (int i = 0; i < sLines.size(); i++)sShader[i] = sLines[i].c_str();
+	for (int i = 0; i < sLines.size(); i++)
+	{
+		sShader[i] = sLines[i].c_str();
+	}
 
 	shader = glCreateShader(type);
 
@@ -39,11 +39,9 @@ bool CShader::Load(string file, int type)
 	if (iCompilationStatus == GL_FALSE)
 	{
 		char sInfoLog[512];
-		char sFinalMessage[1024];
 		int iLogLength;
 		glGetShaderInfoLog(shader, 1024, &iLogLength, sInfoLog);
-		sprintf(sFinalMessage, "Error! Shader file %s wasn't compiled! The compiler returned:\n\n%s", file.c_str(), sInfoLog);
-		MessageBox(NULL, sFinalMessage, "Error", MB_ICONERROR);
+		Error("Error loading shader", "Error! Shader file: " + file + " wasn't compiled! The compiler returned:\n\n" + string(sInfoLog));
 		return false;
 	}
 	this->file = file;

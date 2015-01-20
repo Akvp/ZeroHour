@@ -99,14 +99,13 @@ void main()
 	//vec4 vDirLightColor = GetDirectionalLightColor(sunLight, vNormal);
 
 	float fDiffuseIntensity = clamp(dot(vNormal, -sunLight.vDirection), 0.0f, 1.5f);
-	vec4 vDiffuseColor = pow(sunLight.fBrightness,2) * 0.8 * vec4(sunLight.vColor, 1.0f) * fDiffuseIntensity * vDifColor;
+	vec4 vDiffuseColor = pow(sunLight.fBrightness,2) * vec4(sunLight.vColor, 1.0f) * fDiffuseIntensity * vDifColor;
 
 	vec4 vAmbientColor = vec4(sunLight.vColor, 1.0f) * sunLight.fAmbient * vDifColor;
 
 	vec3 vReflected = normalize(reflect(sunLight.vDirection, vNormalized));
 	vec3 vView = normalize(vEyePosition - vWorldPos);
 	float fSpecularIntensity = clamp(dot(vReflected, vView), 0, 1);
-	//fSpecularIntensity = pow(fSpecularIntensity, 5);
 	vec4 vSpecularColor = pow(sunLight.fBrightness, 2) * 0.6 * vec4(sunLight.vColor, 1.0f) * fSpecularIntensity * vSpeColor;
 
 	outputColor = vDiffuseColor + vAmbientColor + vSpecularColor;

@@ -1,12 +1,10 @@
 #ifndef _SHADER_H_
 #define _SHADER_H_
 
-#include <gl/glew.h>
-#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <string>
-#include <vector>
+#include "Common.h"
+#include "utils.h"
 
 using namespace std;
 

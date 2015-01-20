@@ -11,6 +11,7 @@ std::string GetFileExtension(const std::string& FileName)
 CTexture::CTexture()
 {
 	mipmap = false;
+	loaded = false;
 	file = "";
 }
 
@@ -21,6 +22,7 @@ CTexture::CTexture(std::string file, bool generateMipMap)
 
 bool CTexture::Load_2D(std::string file, bool generateMipMap)
 {
+	if (loaded) Release();
 	this->mipmap = generateMipMap;
 	this->file = file;
 	std::string ext = GetFileExtension(file);
@@ -123,6 +125,8 @@ bool CTexture::load_DDS(std::string file)
 	}
 
 	free(buffer);
+
+	loaded = true;
 	return true;
 }
 
@@ -186,6 +190,7 @@ bool CTexture::load_SDL(std::string file)
 
 	SDL_FreeSurface(Surf_Load);
 
+	loaded = true;
 	return true;
 }
 
@@ -272,6 +277,7 @@ void CTexture::Release()
 
 bool CTexture::Reload()
 {
+	if (!loaded)	return false;
 	return Load_2D(file, mipmap);
 }
 

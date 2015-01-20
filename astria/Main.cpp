@@ -99,11 +99,20 @@ bool CMain::OnInit()
 		return false;
 	}
 
+	int attrib = 0;
 	//Set OpenGL 3.3 core
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);				//Enable core profil
+	attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
+	attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
+	attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);				//Enable core profil
 	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);	//Backward compatibility
+
+	attrib += SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);	//Add multisample buffer
+	attrib += SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);	//4 samples per pixels for 4xMSAA
+
+	if (attrib < 0)
+	{
+		Error("OpenGL attributes error", "Failed to set OpenGL attributes!\nError code: " + string(SDL_GetError()));
+	}
 
 	//Create the main window
 	Window_Main = SDL_CreateWindow(CParams::WindowName, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, CParams::WindowWidth, CParams::WindowHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);

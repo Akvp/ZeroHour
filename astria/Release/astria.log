@@ -1,14 +1,8 @@
-﻿Build started 1/18/2015 8:54:14 PM.
+﻿Build started 1/20/2015 12:28:03 AM.
      1>Project "C:\Users\kvp_\astria\astria\astria.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_SECURE_NO_DEPRECATE /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt AppStateMain.cpp
-         AppStateMain.cpp
-     1>AppStateMain.cpp(203): warning C4244: 'initializing' : conversion from 'int' to 'float', possible loss of data
-     1>AppStateMain.cpp(278): warning C4305: 'argument' : truncation from 'double' to 'float'
-     1>AppStateMain.cpp(322): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
-     1>AppStateMain.cpp(343): warning C4305: '+=' : truncation from 'double' to 'float'
-     1>AppStateMain.cpp(346): warning C4305: '-=' : truncation from 'double' to 'float'
-         GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_SECURE_NO_DEPRECATE /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Water.cpp
+         Water.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kvp_\astria\Release\astria.exe" /NOLOGO SDL2.lib SDL2main.lib SDL2_image.lib SDL2_ttf.lib opengl32.lib glu32.lib glew32.lib assimp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\kvp_\astria\Release\astria.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\kvp_\astria\Release\astria.lib" /MACHINE:X86 /SAFESEH Release\Agent.obj
          Release\LoadingScreen.obj
@@ -37,11 +31,13 @@
          Release\TextureBank_SDL.obj
          Release\Texture_SDL.obj
          Release\VBO.obj
+         Release\Water.obj
          Generating code
+     1>c:\users\kvp_\astria\astria\water.cpp(44): warning C4715: 'CWaterPlane::Load' : not all control paths return a value
          Finished generating code
          astria.vcxproj -> C:\Users\kvp_\astria\Release\astria.exe
      1>Done Building Project "C:\Users\kvp_\astria\astria\astria.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:03.46
+Time Elapsed 00:00:03.24

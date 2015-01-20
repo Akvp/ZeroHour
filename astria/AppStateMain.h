@@ -9,6 +9,7 @@
 #include "HeightMap.h"
 #include "Params.h"
 #include "Model.h"
+#include "Water.h"
 #include "ParticleSystem.h"
 #include "LoadingScreen.h"
 
@@ -52,9 +53,9 @@ private:
 	void OnLoseFocus();
 
 	//Shaders & Shader programs
-	CShader MainShader_vertex;
-	CShader MainShader_fragment;
-	CShaderProgram MainProgram;
+	CShader ShaderVertex;
+	CShader ShaderFragment;
+	CShaderProgram ProgramMain;
 
 	//Skybox and lighting
 	CSkybox Skybox;
@@ -62,11 +63,13 @@ private:
 
 	//Scene obj
 	CHeightMap Map;
-	CTexture Texture_Terrain[6];
+	CTexture TextureTerrain[6];
+
+	CWaterPlane WaterTest;
 
 	CModel models[2];
-	CParticleSystem Particle_Test;
-	CTexture Texture_Particle;
+	CParticleSystem ParticleEruption;
+	CTexture TextureParticle;
 	GLuint PolyMode;	//Used for wireframe
 
 	//Matrices

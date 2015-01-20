@@ -57,10 +57,10 @@ void CAppStateMain::OnExit()
 {
 	std::cout << "Releasing CAppStateMain\n";
 	CModel::Release();
-	Particle_Test.Release();
-	MainShader_vertex.Release();
-	MainShader_fragment.Release();
-	MainProgram.Release();
+	ParticleEruption.Release();
+	ShaderVertex.Release();
+	ShaderFragment.Release();
+	ProgramMain.Release();
 	Skybox.Release();
 	CHeightMap::ReleaseShaderProgram();
 	Map.Release();
@@ -123,7 +123,7 @@ void CAppStateMain::OnUpdate()
 	//Up vector
 	Up = glm::cross(Right, Direction);
 
-	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 1000.0f);
+	ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 5000.0f);
 
 	//Get the view matrix using lookAt
 	ViewMatrix = glm::lookAt(
@@ -133,7 +133,7 @@ void CAppStateMain::OnUpdate()
 		);
 
 	//Set matrices for particle program
-	Particle_Test.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
+	ParticleEruption.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 }
 
 void CAppStateMain::OnRender()
@@ -142,68 +142,76 @@ void CAppStateMain::OnRender()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Use shaders
-	MainProgram.Use();
+	ProgramMain.Use();
 
-	MainProgram.SetUniform("matrices.mProjection", &ProjectionMatrix);
-	MainProgram.SetUniform("matrices.mView", &ViewMatrix);
-	MainProgram.SetUniform("mat.diffuse", 0);
-	MainProgram.SetUniform("mat.specular", 2);
+	ProgramMain.SetUniform("matrices.mProjection", &ProjectionMatrix);
+	ProgramMain.SetUniform("matrices.mView", &ViewMatrix);
+	ProgramMain.SetUniform("mat.diffuse", 0);
+	ProgramMain.SetUniform("mat.specular", 2);
 
-	MainProgram.SetUniform("matrices.mModel", ModelMatrix);
-	MainProgram.SetUniform("matrices.mNormal", glm::mat4(1.0));
+	ProgramMain.SetUniform("matrices.mModel", ModelMatrix);
+	ProgramMain.SetUniform("matrices.mNormal", glm::mat4(1.0));
 
 	//Render light
-	Sun.SetUniform(&MainProgram, "sunLight");
+	Sun.SetUniform(&ProgramMain, "sunLight");
 
 	//Render Skybox
-	MainProgram.SetUniform("matrices.mModel", glm::translate(glm::mat4(1.0), Position));
-	MainProgram.SetUniform("bSkybox", 1);
+	ProgramMain.SetUniform("matrices.mModel", glm::translate(glm::mat4(1.0), Position));
+	ProgramMain.SetUniform("bSkybox", 1);
 	Skybox.Render();
-	MainProgram.SetUniform("bSkybox", 0);
+	ProgramMain.SetUniform("bSkybox", 0);
 
 	//Reset model matrix
-	MainProgram.SetUniform("matrices.mModel", glm::mat4(1.0));
+	ProgramMain.SetUniform("matrices.mModel", glm::mat4(1.0));
 
 	//Render ground
 	CShaderProgram* Program_Terrain = CHeightMap::GetShaderProgram();
 	Program_Terrain->Use();
-	Program_Terrain->SetUniform("matrices.projMatrix", ProjectionMatrix);
-	Program_Terrain->SetUniform("matrices.viewMatrix", ViewMatrix);
+	Program_Terrain->SetUniform("matrices.mProjection", ProjectionMatrix);
+	Program_Terrain->SetUniform("matrices.mView", ViewMatrix);
 	Program_Terrain->SetUniform("vEyePosition", Position);
 	Program_Terrain->SetUniform("LowAlt.diffuse", 0);	Program_Terrain->SetUniform("LowAlt.specular", 1);
 	Program_Terrain->SetUniform("MidAlt.diffuse", 2);	Program_Terrain->SetUniform("MidAlt.specular", 3);
 	Program_Terrain->SetUniform("HighAlt.diffuse", 4);	Program_Terrain->SetUniform("HighAlt.specular", 5);
-	Program_Terrain->SetModelAndNormalMatrix("matrices.modelMatrix", "matrices.normalMatrix", glm::mat4(1.0));
+	Program_Terrain->SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", glm::mat4(1.0));
 	Program_Terrain->SetUniform("vColor", glm::vec4(1, 1, 1, 1));
 	Sun.SetUniform(Program_Terrain, "sunLight");
 	//Diffuse textures			//Specular textures
-	Texture_Terrain[0].Bind(0);	Texture_Terrain[1].Bind(1);
-	Texture_Terrain[2].Bind(2); Texture_Terrain[3].Bind(3);
-	Texture_Terrain[4].Bind(4);	Texture_Terrain[5].Bind(5);
+	TextureTerrain[0].Bind(0);	TextureTerrain[1].Bind(1);
+	TextureTerrain[2].Bind(2);	TextureTerrain[3].Bind(3);
+	TextureTerrain[4].Bind(4);	TextureTerrain[5].Bind(5);
 	Map.Render();
 
-	MainProgram.Use();
+	CShaderProgram* ProgramWater = CWaterPlane::GetProgram();
+	ProgramWater->Use();
+	ProgramWater->SetUniform("matrices.mProjection", ProjectionMatrix);
+	ProgramWater->SetUniform("matrices.mView", ViewMatrix);
+	ProgramWater->SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", glm::mat4(1.0));
+	Sun.SetUniform(ProgramWater, "sunLight");
+	WaterTest.Render();
+
+	ProgramMain.Use();
 	//Render models
 	CModel::BindVAO();
-	MainProgram.SetUniform("vEyePosition", Position);
+	ProgramMain.SetUniform("vEyePosition", Position);
 	glm::vec3 newPos(88, 0, 176);
 	newPos.y = Map.GetHeight(newPos);
 	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0));
-	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[0].Render();
 	newPos = glm::vec3(83, 0, 180);
 	newPos.y = Map.GetHeight(newPos);
 	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
-	MainProgram.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
 	//Render particles
-	Texture_Particle.Bind();
+	TextureParticle.Bind();
 	float fps = CFPS::FPSControl.GetFPS();
 	float FrameInterval = 1 / fps;
-	Particle_Test.Update(FrameInterval);
-	Particle_Test.Render();
+	ParticleEruption.Update(FrameInterval);
+	ParticleEruption.Render();
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
@@ -228,6 +236,11 @@ bool CAppStateMain::OnLoad()
 	//Clear the background as dark blue
 	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
 
+	//Enable MSAA (4xMSAA as define in the main OnInit() function in Main.cpp)
+	glEnable(GL_MULTISAMPLE);
+	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	glEnable(GL_LINE_SMOOTH);
+
 	//Enable depth test
 	glEnable(GL_DEPTH_TEST);
 	glClearDepth(1.0);
@@ -237,11 +250,11 @@ bool CAppStateMain::OnLoad()
 	//glEnable(GL_CULL_FACE);
 
 	//Load shaders and programs
-	if (!MainShader_vertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
+	if (!ShaderVertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
 		return false;
-	if (!MainShader_fragment.Load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
+	if (!ShaderFragment.Load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
 		return false;
-	if (!MainProgram.Initiate(&MainShader_vertex, &MainShader_fragment))
+	if (!ProgramMain.Initiate(&ShaderVertex, &ShaderFragment))
 		return false;
 
 	//Load models
@@ -253,19 +266,22 @@ bool CAppStateMain::OnLoad()
 	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png"};
 	for (int i = 0; i < 6; i++)
 	{
-		Texture_Terrain[i].Load_2D("gfx/" + TextureNames[i], true);
-		Texture_Terrain[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+		TextureTerrain[i].Load_2D("gfx/" + TextureNames[i], true);
+		TextureTerrain[i].SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
 	}
 	Map.Load(CParams::Heightmap);
-	CHeightMap::LoadShaderProgram();
-	Map.SetRenderSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
+	CHeightMap::LoadShaderProgram("shaders/terrain.vert", "shaders/terrain.frag");
+	Map.SetSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
+
+	WaterTest.Load("gfx/img/water_normal.jpg", "gfx/img/water_dudv.jpg", glm::vec3(83, 40, 180), 20, 20);
+	CWaterPlane::LoadProgram("shaders/water.vert", "shaders/water.frag");
 
 	//Load particles
-	Texture_Particle.Load_2D("gfx/particle.bmp", true);
-	Particle_Test.Init();
+	TextureParticle.Load_2D("gfx/particle.bmp", true);
+	ParticleEruption.Init();
 	glm::vec3 partPos(-138, 0, 165);
 	partPos.y = Map.GetHeight(partPos);
-	Particle_Test.Set(
+	ParticleEruption.Set(
 		partPos,				//Position
 		glm::vec3(-10, 2, -10),	//Minimum velocity
 		glm::vec3(10, 20, 10),	//Maximum velocity
@@ -287,7 +303,7 @@ bool CAppStateMain::OnLoad()
 	Skybox.Load(CParams::SkyboxFolder);
 
 	//Load sun light
-	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1, -3, 0), 0.2f, 1.0f);
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1, -1, 0), 0.2f, 1.0f);
 
 	//Load camera properties
 	Position = glm::vec3(84, 34, 210);

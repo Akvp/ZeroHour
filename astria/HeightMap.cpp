@@ -1,9 +1,9 @@
 #include "HeightMap.h"
 #include <algorithm>
 
-CShaderProgram CHeightMap::Program_Terrain;
-CShader CHeightMap::Shader_Vertex;
-CShader CHeightMap::Shader_Fragment;
+CShaderProgram CHeightMap::ProgramTerrain;
+CShader CHeightMap::ShaderVertex;
+CShader CHeightMap::ShaderFragment;
 
 CHeightMap::CHeightMap()
 {
@@ -85,6 +85,7 @@ bool CHeightMap::Load(std::string file)
 				VertexData[i][j]
 			};
 
+			//Cross product to find the normal
 			glm::vec3 TriangleNorm0 = glm::cross(Triangle0[0] - Triangle0[1], Triangle0[1] - Triangle0[2]);
 			glm::vec3 TriangleNorm1 = glm::cross(Triangle1[0] - Triangle1[1], Triangle1[1] - Triangle1[2]);
 
@@ -199,40 +200,44 @@ void CHeightMap::Release()
 	loaded = false;
 }
 
-bool CHeightMap::LoadShaderProgram()
+bool CHeightMap::LoadShaderProgram(string vertex, string fragment)
 {
 	bool ret = true;
-	ret = ret & Shader_Vertex.Load("shaders/terrain.vert", GL_VERTEX_SHADER);
-	ret = ret & Shader_Fragment.Load("shaders/terrain.frag", GL_FRAGMENT_SHADER);
+	ret = ret & ShaderVertex.Load(vertex, GL_VERTEX_SHADER);
+	ret = ret & ShaderFragment.Load(fragment, GL_FRAGMENT_SHADER);
 
-	Program_Terrain.Create();
-	ret = ret & Program_Terrain.AddShader(&Shader_Vertex);
-	ret = ret & Program_Terrain.AddShader(&Shader_Fragment);
-	ret = ret & Program_Terrain.Link();
+	ProgramTerrain.Create();
+	ret = ret & ProgramTerrain.AddShader(&ShaderVertex);
+	ret = ret & ProgramTerrain.AddShader(&ShaderFragment);
+	ret = ret & ProgramTerrain.Link();
 
 	return ret;
 }
 
 void CHeightMap::ReleaseShaderProgram()
 {
-	Program_Terrain.Release();
-	Shader_Vertex.Release();
-	Shader_Fragment.Release();
+	ProgramTerrain.Release();
+	ShaderVertex.Release();
+	ShaderFragment.Release();
 }
 
 CShaderProgram* CHeightMap::GetShaderProgram()
 {
-	return &Program_Terrain;
+	return &ProgramTerrain;
 }
 
-void CHeightMap::SetRenderSize(float x, float h, float z)
+void CHeightMap::SetSize(float x, float h, float z)
 {
 	RenderScale = glm::vec3(x, h, z);
+	RenderScaleMatrix = glm::scale(glm::mat4(1.0), glm::vec3(RenderScale));
+	NormalScaleMatrix = glm::mat3(x / rows, 0, 0, 0, h / cols, 0, 0, 0, z / rows);
 }
 
-void CHeightMap::SetRenderSize(float QuadSize, float Height)
+void CHeightMap::SetSize(float QuadSize, float Height)
 {
 	RenderScale = glm::vec3(float(cols)*QuadSize, Height, float(rows)*QuadSize);
+	RenderScaleMatrix = glm::scale(glm::mat4(1.0), glm::vec3(RenderScale));
+	NormalScaleMatrix = glm::mat3(QuadSize / rows, 0, 0, 0, Height / cols, 0, 0, 0, QuadSize / rows);
 }
 
 int CHeightMap::GetRows()
@@ -247,13 +252,14 @@ int CHeightMap::GetCols()
 
 void CHeightMap::Render()
 {
-	Program_Terrain.Use();
+	ProgramTerrain.Use();
 
-	Program_Terrain.SetUniform("fRenderHeight", RenderScale.y);
-	Program_Terrain.SetUniform("fMaxTextureU", float(cols)*0.1f);
-	Program_Terrain.SetUniform("fMaxTextureV", float(rows)*0.1f);
+	ProgramTerrain.SetUniform("fRenderHeight", RenderScale.y);
+	ProgramTerrain.SetUniform("fMaxTextureU", float(cols)*0.1f);
+	ProgramTerrain.SetUniform("fMaxTextureV", float(rows)*0.1f);
 
-	Program_Terrain.SetUniform("HeightmapScaleMatrix", glm::scale(glm::mat4(1.0), glm::vec3(RenderScale)));
+	ProgramTerrain.SetUniform("HeightmapScaleMatrix", RenderScaleMatrix);
+	ProgramTerrain.SetUniform("NormalScaleMatrix", NormalScaleMatrix);
 
 	glBindVertexArray(vao);
 	glEnable(GL_PRIMITIVE_RESTART);

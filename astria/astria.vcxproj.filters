@@ -123,6 +123,9 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Water.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Light.h">
@@ -221,6 +224,9 @@
     <ClInclude Include="ParticleSystem.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="Water.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\blaze_gen_common.geom">
@@ -296,6 +302,12 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="shaders\skybox.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\water.vert">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="shaders\water.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

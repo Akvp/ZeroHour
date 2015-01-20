@@ -11,7 +11,7 @@ class CHeightMap
 public:
 	CHeightMap();
 
-	static bool LoadShaderProgram();
+	static bool LoadShaderProgram(string vertex, string fragment);
 	static void ReleaseShaderProgram();
 	static CShaderProgram* GetShaderProgram();
 
@@ -20,8 +20,8 @@ public:
 
 	void Render();
 
-	void SetRenderSize(float QuadSize, float Height);
-	void SetRenderSize(float x, float h, float z);
+	void SetSize(float QuadSize, float Height);
+	void SetSize(float x, float h, float z);
 
 	int GetRows();
 	int GetCols();
@@ -36,15 +36,17 @@ private:
 	int cols;
 
 	glm::vec3 RenderScale;
+	glm::mat4 RenderScaleMatrix;
+	glm::mat3 NormalScaleMatrix;
 
 	vector<vector<glm::vec3>> VertexData;
 	
 	CVBO HeightMapData;
 	CVBO HeightMapIndices;
 
-	static CShaderProgram Program_Terrain;
-	static CShader Shader_Vertex;
-	static CShader Shader_Fragment;
+	static CShaderProgram ProgramTerrain;
+	static CShader ShaderVertex;
+	static CShader ShaderFragment;
 };
 
 #endif

@@ -49,6 +49,8 @@ private:
 	bool load_DDS(std::string file);
 
 private:
+	bool loaded;
+
 	std::string file;
 	GLuint texture;
 	GLuint sampler;
