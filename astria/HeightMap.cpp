@@ -31,8 +31,7 @@ bool CHeightMap::Load(std::string file)
 	rows = Surf_Load->h;
 	cols = Surf_Load->w;
 
-	//Return false if the image is not in RGB or Luminance
-	if (DataPtr == NULL || rows == 0 || cols == 0 || (Surf_Load->format->BytesPerPixel != 3 && Surf_Load->format->BytesPerPixel != 1))
+	if (DataPtr == NULL || rows == 0 || cols == 0 || (Surf_Load->format->BytesPerPixel != 3 && Surf_Load->format->BytesPerPixel != 1 && Surf_Load->format->BytesPerPixel != 4))
 	{
 		Error("Height Map Loading Error", "Error loading heightmap: " + file + "\nIncorrect image format\n");
 		return false;

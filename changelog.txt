@@ -1,3 +1,8 @@
+- 0.1.9
+  - Added an introduction screen
+  - Added Help and Credits text
+  - Added some scenery models to make more demo-like
+
 - 0.1.8d
   - Heightmap texture now interchangeable within params.ini file
 

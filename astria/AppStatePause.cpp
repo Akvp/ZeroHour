@@ -15,8 +15,9 @@ CAppStatePause* CAppStatePause::GetInstance()
 
 void CAppStatePause::OnActivate()
 {
-	selection = PAUSE_MENU_NONE;
+	Selection = PAUSE_MENU_NONE;
 
+	OffsetX = 50; OffsetY = 50;
 	//Only load once
 	if (!loaded)
 	{
@@ -24,36 +25,22 @@ void CAppStatePause::OnActivate()
 		SDL_SetTextureBlendMode(CAppStateMain::GetInstance()->GetSnapshot(), SDL_BLENDMODE_BLEND);
 		SDL_SetTextureColorMod(CAppStateMain::GetInstance()->GetSnapshot(), 100, 100, 100);
 
-		//Load font
-		font.Load("ttf/after_shok.ttf", 25);
-		SDL_Color color = { 212, 175, 55, 1 };
+		//Load Font
+		Font.Load("ttf/after_shok.ttf", 25);
+		SDL_Color Color = { 204, 204, 204, 1 };
+
+		SDL_Renderer* MainRenderer = CMain::GetInstance()->GetRenderer();
+
+		std::string MenuText[] = { "resume", "credits", "about", "help", "exit" };
+
 		//Load all the text textures
-		menu[PAUSE_MENU_RESUME].Load(font.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), color);
-		menu[PAUSE_MENU_OPTIONS].Load(font.GetFont(), "options", CMain::GetInstance()->GetRenderer(), color);
-		menu[PAUSE_MENU_ABOUT].Load(font.GetFont(), "about", CMain::GetInstance()->GetRenderer(), color);
-		menu[PAUSE_MENU_HELP].Load(font.GetFont(), "help", CMain::GetInstance()->GetRenderer(), color);
-		menu[PAUSE_MENU_EXIT].Load(font.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), color);
+		for (int i = 0; i < PAUSE_MENU_COUNT; i++)	Menu[i].Load(&Font, MenuText[i], MainRenderer, Color);
 
 		//Load textures of text when mouse is over the text
-		font.SetOutline(1);
-		menu_hover[PAUSE_MENU_RESUME].Load(font.GetFont(), "resume", CMain::GetInstance()->GetRenderer(), color);
-		menu_hover[PAUSE_MENU_OPTIONS].Load(font.GetFont(), "options", CMain::GetInstance()->GetRenderer(), color);
-		menu_hover[PAUSE_MENU_ABOUT].Load(font.GetFont(), "about", CMain::GetInstance()->GetRenderer(), color);
-		menu_hover[PAUSE_MENU_HELP].Load(font.GetFont(), "help", CMain::GetInstance()->GetRenderer(), color);
-		menu_hover[PAUSE_MENU_EXIT].Load(font.GetFont(), "exit", CMain::GetInstance()->GetRenderer(), color);
+		Font.SetOutline(1);
+		for (int i = 0; i < PAUSE_MENU_COUNT; i++)	MenuHover[i].Load(&Font, MenuText[i], MainRenderer, Color);
 
-		//PauseMenu = new MenuNode();
-		//MenuNode* ResumeNode = new MenuNode("resume", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
-		//PauseMenu->AddSubMenu(ResumeNode);
-		//MenuNode* OptionMode = new MenuNode("options", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
-		//PauseMenu->AddSubMenu(OptionMode);
-		//MenuNode* AboutNode = new MenuNode("about", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
-		//PauseMenu->AddSubMenu(AboutNode);
-		//MenuNode* HelpNode = new MenuNode("help", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
-		//PauseMenu->AddSubMenu(HelpNode);
-		//MenuNode* ExitNode = new MenuNode("exit", &font, CMain::GetInstance()->GetRenderer(), color, PauseMenu);
-		//PauseMenu->AddSubMenu(ExitNode);
-		
+
 	}
 }
 
@@ -64,41 +51,35 @@ void CAppStatePause::OnDeactivate()
 
 void CAppStatePause::OnExit()
 {
-	font.Release();
-	for (auto op : menu)
-	{
-		op.Release();
-	}
-	for (auto op : menu_hover)
-	{
-		op.Release();
-	}
+	Font.Release();
+	for (auto op : Menu)		op.Release();
+	for (auto op : MenuHover)	op.Release();
 }
 
 void CAppStatePause::OnEvent(SDL_Event* Event)
 {
 	CEvent::OnEvent(Event);
-	SDL_GetMouseState(&mouseX, &mouseY);
+	SDL_GetMouseState(&MouseX, &MouseY);
 
-	//Only change selection when mouse is moving
-	//Useful for keyboard selection
+	//Only change Selection when mouse is moving
+	//Useful for keyboard Selection
 	if (Event->type == SDL_MOUSEMOTION)
 	{
 		//Should probably change the coordinates to a better place
 		for (int i = 0; i < PAUSE_MENU_COUNT; i++)
 		{
-			if (mouseX >= 50 &&
-				mouseX <= 50 + menu[i].GetWidth() &&
-				mouseY >= i * 50 + 50 &&
-				mouseY <= (i * 50 + 50) + menu[i].GetHeight()
+			if (MouseX >= OffsetX &&
+				MouseX <= OffsetX + Menu[i].GetWidth() &&
+				MouseY >= i * 50 + OffsetY &&
+				MouseY <= (i * 50 + OffsetY) + Menu[i].GetHeight()
 				)
 			{
-				selection = PAUSE_MENU(i);
+				Selection = PAUSE_MENU(i);
 				break;
 			}
 			else
 			{
-				selection = PAUSE_MENU_NONE;
+				Selection = PAUSE_MENU_NONE;
 			}
 		}
 	}
@@ -120,12 +101,12 @@ void CAppStatePause::OnRender()
 	//Text textures
 	for (int i = 0; i < PAUSE_MENU_COUNT; i++)
 	{
-		if (i == selection)
+		if (i == Selection)
 		{
-			menu_hover[i].Render(50, i * 50 + 50);
+			MenuHover[i].Render(OffsetX, i * 50 + OffsetY);
 			continue;
 		}
-		menu[i].Render(50, i * 50 + 50);
+		Menu[i].Render(OffsetX, i * 50 + OffsetY);
 	}
 
 	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
@@ -141,27 +122,27 @@ void CAppStatePause::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancod
 		CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
 		break;
 	case SDLK_UP:
-		if (selection == PAUSE_MENU_NONE)
+		if (Selection == PAUSE_MENU_NONE)
 		{
-			selection = PAUSE_MENU_EXIT;
+			Selection = PAUSE_MENU_EXIT;
 			break;
 		}
-		selection = PAUSE_MENU(selection - 1);
-		if (selection < PAUSE_MENU_RESUME)
+		Selection = PAUSE_MENU(Selection - 1);
+		if (Selection < PAUSE_MENU_RESUME)
 		{
-			selection = PAUSE_MENU(PAUSE_MENU_COUNT + selection);
+			Selection = PAUSE_MENU(PAUSE_MENU_COUNT + Selection);
 		}
 		break;
 	case SDLK_DOWN:
-		if (selection == PAUSE_MENU_NONE)
+		if (Selection == PAUSE_MENU_NONE)
 		{
-			selection = PAUSE_MENU_RESUME;
+			Selection = PAUSE_MENU_RESUME;
 			break;
 		}
-		selection = PAUSE_MENU((selection + 1) % PAUSE_MENU_COUNT);
+		Selection = PAUSE_MENU((Selection + 1) % PAUSE_MENU_COUNT);
 		break;
 	case SDLK_RETURN:
-		if (selection < PAUSE_MENU_COUNT)
+		if (Selection < PAUSE_MENU_COUNT)
 		{
 			OnSelect();
 		}
@@ -170,28 +151,19 @@ void CAppStatePause::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancod
 
 void CAppStatePause::OnLButtonDown(int mX, int mY)
 {
-	for (int i = 0; i < PAUSE_MENU_COUNT; i++)
-	{
-		if (mX >= 50 &&
-			mX <= 50 + menu[i].GetWidth() &&
-			mY >= i * 50 + 50 &&
-			mY <= (i * 50 + 50) + menu[i].GetHeight()
-			)
-		{
-			OnSelect();
-			break;
-		}
-	}
+	if (Selection != PAUSE_MENU_NONE)
+		OnSelect();
 }
 
 void CAppStatePause::OnSelect()
 {
-	switch (selection)
+	switch (Selection)
 	{
 		case PAUSE_MENU_RESUME:
 			CAppStateManager::SetActiveAppState(APPSTATE_MAIN);
 			break;
-		case PAUSE_MENU_OPTIONS:
+		case PAUSE_MENU_CREDITS:
+			MessageBox(NULL, CreditsText.c_str(), "Credits", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_ABOUT:
 			char AboutInfo[1024];
@@ -199,9 +171,7 @@ void CAppStatePause::OnSelect()
 			MessageBox(NULL, AboutInfo, "About", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_HELP:
-			char HelpInfo[2048];
-			sprintf(HelpInfo, "\tProject ASTRIA\t\n\n\tWASD:\tMovement\n\tQ:\tWireframe mode\t\n\tF2:\tChange movement speed\t\n\tF3:\tToggle gravity\t");
-			MessageBox(NULL, HelpInfo, "Help", MB_ICONINFORMATION);
+			MessageBox(NULL, HelpText.c_str(), "Help", MB_ICONINFORMATION);
 			break;
 		case PAUSE_MENU_EXIT:
 			CMain::GetInstance()->Running = false;

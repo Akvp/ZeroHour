@@ -111,9 +111,6 @@
     <ClCompile Include="HeightMap.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Font_SDL.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="LoadingScreen.cpp">
       <Filter>Source Files\AppStates</Filter>
     </ClCompile>
@@ -125,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="Water.cpp">
       <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="Font.cpp">
+      <Filter>Source Files\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,13 +203,7 @@
     <ClInclude Include="HeightMap.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Font_SDL.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="FPS.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuTree.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScreen.h">
@@ -226,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="Water.h">
       <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="DemoParticle.h">
+      <Filter>Source Files\AppStates</Filter>
+    </ClInclude>
+    <ClInclude Include="Font.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

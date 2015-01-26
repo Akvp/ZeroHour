@@ -61,6 +61,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_NONSTDC_NO_DEPRECATE;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -69,9 +70,13 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;opengl32.lib;glu32.lib;glew32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bscmake>
+      <PreserveSbr>true</PreserveSbr>
+    </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Agent.cpp" />
+    <ClCompile Include="Font.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="AppStateMain.cpp" />
     <ClCompile Include="AppStateIntro.cpp" />
@@ -79,7 +84,6 @@
     <ClCompile Include="AppStatePause.cpp" />
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileManager.cpp" />
-    <ClCompile Include="Font_SDL.cpp" />
     <ClCompile Include="FPS.cpp" />
     <ClCompile Include="Gene.cpp" />
     <ClCompile Include="HeightMap.cpp" />
@@ -103,6 +107,8 @@
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="AppState.h" />
+    <ClInclude Include="DemoParticle.h" />
+    <ClInclude Include="Font.h" />
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="AppStateManager.h" />
     <ClInclude Include="AppStateMain.h" />
@@ -110,14 +116,12 @@
     <ClInclude Include="AppStatePause.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="FileManager.h" />
-    <ClInclude Include="Font_SDL.h" />
     <ClInclude Include="FPS.h" />
     <ClInclude Include="Gene.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Main.h" />
-    <ClInclude Include="MenuTree.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="NeuralNet.h" />
     <ClInclude Include="Object.h" />

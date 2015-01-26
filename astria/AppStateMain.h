@@ -12,6 +12,7 @@
 #include "Water.h"
 #include "ParticleSystem.h"
 #include "LoadingScreen.h"
+#include "Font.h"
 
 class CAppStateMain : public CAppState
 {
@@ -65,12 +66,20 @@ private:
 	CHeightMap Map;
 	CTexture TextureTerrain[6];
 
-	CWaterPlane WaterTest;
-
+	std::vector<glm::vec3> TreeAPosition;
+	std::vector<glm::vec3> TreeBPosition;
+	std::vector<glm::vec3> TreeCPosition;
 	CModel models[2];
-	CParticleSystem ParticleEruption;
-	CTexture TextureParticle;
+	CModel Trees[6];
 	GLuint PolyMode;	//Used for wireframe
+
+	//Particles
+	CParticleSystem ParticleEruption;
+	CTexture TextureParticleEruption;
+	CParticleSystem ParticleSmoke;
+	CTexture TextureParticleSmoke;
+	CParticleSystem ParticleFire;
+	CTexture TextureParticleFire;
 
 	//Matrices
 	glm::mat4 ProjectionMatrix;
@@ -88,6 +97,8 @@ private:
 	glm::vec3 Up;
 
 	bool GravityEnabled;
+	
+	int NumScene;
 
 	float Speed;			//Speed of movements
 	float MouseSpeed;

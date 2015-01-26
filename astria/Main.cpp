@@ -104,10 +104,10 @@ bool CMain::OnInit()
 	attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, OPENGL_MAJOR_VERSION);
 	attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, OPENGL_MINOR_VERSION);
 	attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);				//Enable core profil
-	//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);	//Backward compatibility
+	//attrib += SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);	//Backward compatibility
 
-	attrib += SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);	//Add multisample buffer
-	attrib += SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);	//4 samples per pixels for 4xMSAA
+	//attrib += SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);	//Add multisample buffer
+	//attrib += SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);	//4 samples per pixels for 4xMSAA
 
 	if (attrib < 0)
 	{

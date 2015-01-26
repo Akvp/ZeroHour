@@ -3,11 +3,23 @@
 
 #include "AppState.h"
 #include "Texture_SDL.h"
+#include "Main.h"
+#include "Font.h"
+
+enum INTRO_MENU
+{
+	INTRO_MENU_START,
+	INTRO_MENU_ABOUT,
+	INTRO_MENU_HELP,
+	INTRO_MENU_CREDITS,
+	INTRO_MENU_EXIT,
+	INTRO_MENU_COUNT,
+	INTRO_MENU_NONE
+};
 
 class CAppStateIntro : public CAppState
 {
 public:
-	CAppStateIntro();
 	static CAppStateIntro* GetInstance();
 
 	void OnActivate();
@@ -18,11 +30,25 @@ public:
 	void OnRender();
 
 private:
+	void LoadFontTextures();
+	
 	void OnLButtonDown(int mX, int mY);
+	void OnSelect();
 
 private:
 	static CAppStateIntro Instance;
-	int StartTime;
+
+	INTRO_MENU Selection;
+
+	Font_SDL Font;
+	Text_SDL Menu[INTRO_MENU_COUNT];
+	Text_SDL MenuHover[INTRO_MENU_COUNT];
+
+	int MouseX;
+	int MouseY;
+
+	int OffsetX, OffsetY;
+
 	Texture_SDL splash;
 };
 

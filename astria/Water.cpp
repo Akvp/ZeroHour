@@ -13,8 +13,8 @@ bool CWaterPlane::Load(string normal, string derivative, glm::vec3 position, flo
 {
 	glm::vec2 UV[4] = { glm::vec2(0, 0), glm::vec2(1, 0), glm::vec2(1, 1), glm::vec2(0, 1) };
 	glm::vec3 p0 = position; p0.x += sizex;
-	glm::vec3 p1 = position; p1.x += sizex; p1.z += sizez;
-	glm::vec3 p2 = position; p2.z += sizez;
+	glm::vec3 p1 = position; p1.z += sizez;
+	glm::vec3 p2 = position; p2.x += sizex; p2.z += sizez;
 	glm::vec3 Plane[4] = { position, p0, p1, p2 };
 	VBO.Create();
 	glGenVertexArrays(1, &VAO);
@@ -41,6 +41,7 @@ bool CWaterPlane::Load(string normal, string derivative, glm::vec3 position, flo
 	TextureNormal.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
 	TextureDerivative.Load_2D(derivative, true);
 	TextureDerivative.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+	return true;
 }
 
 void CWaterPlane::Render()

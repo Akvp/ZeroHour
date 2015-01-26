@@ -29,9 +29,8 @@ void main()
 	vEyeSpacePos = matrices.mView*matrices.mModel*vec4(inPosition, 1.0);
   
 	vTexCoord = inCoord;
-	vNormal = mat3(NormalScaleMatrix) * inNormal;
+	vNormal = inNormal;
    
 	vec4 vWorldPosLocal = matrices.mModel*inPositionScaled;
 	vWorldPos = vWorldPosLocal.xyz;
-  
 }

@@ -29,7 +29,7 @@ bool FileManager::SetContents(std::string Filename, std::string Content, bool Re
 std::string FileManager::GetContents(std::string Filename, bool Relative) {
 	if(Filename == "") return "";
 
-	if(Relative) Filename = GetCWD() + DIR_SEPARATOR + Filename;
+	//if(Relative) Filename = GetCWD() + DIR_SEPARATOR + Filename;
 
 	std::string Content;
 	std::ifstream FileHandle;

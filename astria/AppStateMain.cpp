@@ -24,6 +24,7 @@ void CAppStateMain::OnActivate()
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
 		GravityEnabled = false;
+		NumScene = 1;
 		CLoadingScreen::OnActivate(&Loaded);
 		Loaded = OnLoad();
 		SDL_WaitThread(CLoadingScreen::GetThreadID(), NULL);
@@ -32,7 +33,7 @@ void CAppStateMain::OnActivate()
 	//Hide mouse cursor
 	if (SDL_ShowCursor(SDL_DISABLE) < 0)
 	{
-		MessageBox(NULL, SDL_GetError(), "Warning: Unable to hide cursor", MB_ICONWARNING);
+		Warning("Unable to hide cursor", "Warning: Unable to hide cursor\n" + string(SDL_GetError()));
 	}
 
 	//Center mouse cursor
@@ -55,15 +56,26 @@ void CAppStateMain::OnDeactivate()
 
 void CAppStateMain::OnExit()
 {
-	std::cout << "Releasing CAppStateMain\n";
-	CModel::Release();
-	ParticleEruption.Release();
-	ShaderVertex.Release();
-	ShaderFragment.Release();
-	ProgramMain.Release();
-	Skybox.Release();
-	CHeightMap::ReleaseShaderProgram();
-	Map.Release();
+	if (Loaded)
+	{
+		std::cout << "Releasing CAppStateMain\n";
+		CModel::Release();
+		ParticleEruption.Release();
+		TextureParticleEruption.Release();
+		ParticleSmoke.Release();
+		TextureParticleSmoke.Release();
+		ParticleFire.Release();
+		TextureParticleFire.Release();
+		ShaderVertex.Release();
+		ShaderFragment.Release();
+		ProgramMain.Release();
+		Skybox.Release();
+		CHeightMap::ReleaseShaderProgram();
+		for (int i = 0; i < 6; i++) TextureTerrain[i].Release();
+		for (CModel model : models) model.Release();
+		for (CModel model : Trees)	model.Release();
+		Map.Release();
+	}
 }
 
 void CAppStateMain::OnEvent(SDL_Event* Event)
@@ -134,6 +146,10 @@ void CAppStateMain::OnUpdate()
 
 	//Set matrices for particle program
 	ParticleEruption.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
+	ParticleSmoke.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
+	ParticleFire.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
+	
+	printf("%d\n", NumScene);
 }
 
 void CAppStateMain::OnRender()
@@ -182,36 +198,68 @@ void CAppStateMain::OnRender()
 	TextureTerrain[4].Bind(4);	TextureTerrain[5].Bind(5);
 	Map.Render();
 
-	CShaderProgram* ProgramWater = CWaterPlane::GetProgram();
-	ProgramWater->Use();
-	ProgramWater->SetUniform("matrices.mProjection", ProjectionMatrix);
-	ProgramWater->SetUniform("matrices.mView", ViewMatrix);
-	ProgramWater->SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", glm::mat4(1.0));
-	Sun.SetUniform(ProgramWater, "sunLight");
-	WaterTest.Render();
-
 	ProgramMain.Use();
 	//Render models
 	CModel::BindVAO();
 	ProgramMain.SetUniform("vEyePosition", Position);
-	glm::vec3 newPos(88, 0, 176);
+
+	for (int i = 0; i < NumScene * 5; i++)
+	{
+		ModelMatrix = glm::translate(glm::mat4(1.0), TreeAPosition[i]);
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0));
+		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
+		ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+		Trees[0].Render();
+	}
+
+	for (int i = 0; i < NumScene * 5; i++)
+	{
+		ModelMatrix = glm::translate(glm::mat4(1.0), TreeBPosition[i]);
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0));
+		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
+		ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+		Trees[1].Render();
+	}
+
+	for (int i = 0; i < NumScene * 5; i++)
+	{
+		ModelMatrix = glm::translate(glm::mat4(1.0), TreeCPosition[i]);
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0));
+		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
+		ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+		Trees[2].Render();
+	}
+
+	glm::vec3 newPos(83, 0, 180);
 	newPos.y = Map.GetHeight(newPos);
 	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(3.0));
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[0].Render();
-	newPos = glm::vec3(83, 0, 180);
+
+	newPos = glm::vec3(64, 0, 193);
 	newPos.y = Map.GetHeight(newPos);
 	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(5.0));
+	ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
+	RenderText("asfd", { 200, 200, 200, 1 }, 150, 150, 20);
+
 	//Render particles
-	TextureParticle.Bind();
 	float fps = CFPS::FPSControl.GetFPS();
 	float FrameInterval = 1 / fps;
+	TextureParticleEruption.Bind();
 	ParticleEruption.Update(FrameInterval);
 	ParticleEruption.Render();
+
+	TextureParticleSmoke.Bind();
+	ParticleSmoke.Update(FrameInterval);
+	ParticleSmoke.Render();
+
+	TextureParticleFire.Bind();
+	ParticleFire.Update(FrameInterval);
+	ParticleFire.Render();
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
@@ -237,9 +285,9 @@ bool CAppStateMain::OnLoad()
 	glClearColor(0.1f, 0.1f, 0.4f, 0.0f);
 
 	//Enable MSAA (4xMSAA as define in the main OnInit() function in Main.cpp)
-	glEnable(GL_MULTISAMPLE);
-	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-	glEnable(GL_LINE_SMOOTH);
+	//glEnable(GL_MULTISAMPLE);
+	//glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+	//glEnable(GL_LINE_SMOOTH);
 
 	//Enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -258,8 +306,11 @@ bool CAppStateMain::OnLoad()
 		return false;
 
 	//Load models
-	models[0].Load("gfx/Wolf/Wolf.obj");
-	models[1].Load("gfx/nanosuit/nanosuit.obj");
+	models[0].Load("gfx/nanosuit/nanosuit.obj");
+	models[1].Load("gfx/barrel/barrel.3ds");
+	Trees[0].Load("gfx/coffee_tree/TR08a.obj");
+	Trees[1].Load("gfx/coffee_tree/TR08y.obj");
+	Trees[2].Load("gfx/coffee_tree/TR08m.obj");
 	CModel::UploadVBO();
 
 	//Load terrain
@@ -273,25 +324,63 @@ bool CAppStateMain::OnLoad()
 	CHeightMap::LoadShaderProgram("shaders/terrain.vert", "shaders/terrain.frag");
 	Map.SetSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
 
-	WaterTest.Load("gfx/img/water_normal.jpg", "gfx/img/water_dudv.jpg", glm::vec3(83, 40, 180), 20, 20);
-	CWaterPlane::LoadProgram("shaders/water.vert", "shaders/water.frag");
+	//WaterTest.Load("gfx/img/water_normal.jpg", "gfx/img/water_dudv.jpg", glm::vec3(83, 50, 180), 100, 100);
+	//CWaterPlane::LoadProgram("shaders/water.vert", "shaders/water.frag");
 
 	//Load particles
-	TextureParticle.Load_2D("gfx/particle.bmp", true);
+	TextureParticleEruption.Load_2D("gfx/particle.bmp", true);
 	ParticleEruption.Init();
-	glm::vec3 partPos(-138, 0, 165);
+	glm::vec3 partPos(64, 0, 193);
 	partPos.y = Map.GetHeight(partPos);
 	ParticleEruption.Set(
-		partPos,				//Position
-		glm::vec3(-10, 2, -10),	//Minimum velocity
-		glm::vec3(10, 20, 10),	//Maximum velocity
-		glm::vec3(0, -5, 0),	//Gravity
-		glm::vec3(0.8, 0.2, 0.2),	//Color
+		partPos,					//Position
+		glm::vec3(-8, 15, -8),		//Minimum velocity
+		glm::vec3(8, 20, 8),		//Maximum velocity
+		glm::vec3(0, -10, 0),		//Acceleration
+		glm::vec3(0.8, 0.3, 0.1),	//Color
 		1.5f,	//Minimum lifespan in second
-		3.0f,	//Maximum lifespan in second
+		2.0f,	//Maximum lifespan in second
 		0.25f, 	//Size
 		0.02,	//Spawn interval
-		100);	//Count i.e. number generated per frame
+		1000);	//Count i.e. number generated per frame
+
+	TextureParticleFire.Load_2D("gfx/img/FireParticle.jpg", true);
+	ParticleFire.Init();
+	ParticleFire.Set(
+		partPos,
+		glm::vec3(-7, 8, -7),
+		glm::vec3(7, 20, 7),
+		glm::vec3(0, -8, 0),
+		glm::vec3(0.3, 0.3, 0.3),
+		0.5f,
+		1.5f,
+		2.0f,
+		0.2,
+		50);
+
+	partPos.y += 3;
+	TextureParticleSmoke.Load_2D("gfx/img/SmokeParticle.jpg", true);
+	ParticleSmoke.Init();
+	ParticleSmoke.Set(
+		partPos,
+		glm::vec3(-5, 8, -5),
+		glm::vec3(5, 20, 5),
+		glm::vec3(0, -8, 0),
+		glm::vec3(0.3, 0.3, 0.5),
+		1.5f,
+		2.0f,
+		2.0f,
+		0.2,
+		10);
+
+	//Load model positions
+	TreeAPosition.reserve(15); TreeBPosition.reserve(15); TreeCPosition.reserve(15);
+	for (int i = 0; i < 15; i++) TreeAPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
+	for (int i = 0; i < 15; i++) TreeBPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
+	for (int i = 0; i < 15; i++) TreeCPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
+	for (int i = 0; i < TreeAPosition.size(); i++)	TreeAPosition[i].y = Map.GetHeight(TreeAPosition[i]);
+	for (int i = 0; i < TreeBPosition.size(); i++)	TreeBPosition[i].y = Map.GetHeight(TreeBPosition[i]);
+	for (int i = 0; i < TreeCPosition.size(); i++)	TreeCPosition[i].y = Map.GetHeight(TreeCPosition[i]);
 
 	//Used for wire frame
 	PolyMode = GL_FILL;
@@ -306,7 +395,8 @@ bool CAppStateMain::OnLoad()
 	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1, -1, 0), 0.2f, 1.0f);
 
 	//Load camera properties
-	Position = glm::vec3(84, 34, 210);
+	Position = glm::vec3(84, 0, 210);
+	Position.y = 5 + Map.GetHeight(Position);
 	FoV = 45.0f;
 	HorizontalAngle = -3.14f;
 	VerticalAngle = 0.0f;
@@ -341,6 +431,12 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		//Disable gravity
 		GravityEnabled = !GravityEnabled;
 		break;
+	case SDLK_PAGEUP:
+		NumScene = min(NumScene + 1, 3);
+		break;
+	case SDLK_PAGEDOWN:
+		NumScene = max(NumScene - 1, 0);
+		break;
 
 		//Movement Keys
 	case SDLK_w:
@@ -354,12 +450,6 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		break;
 	case SDLK_a:
 		MoveLeft = true;
-		break;
-	case SDLK_UP:
-		Sun.Ambient += 0.1;
-		break;
-	case SDLK_DOWN:
-		Sun.Ambient -= 0.1;
 		break;
 
 		//Switch between normal model and wireframe

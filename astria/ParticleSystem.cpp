@@ -10,7 +10,6 @@ bool CParticleSystem::Init()
 {
 	if (Initialized)
 	{
-		printf("Particle system reinitialization\n");
 		return false;
 	}
 

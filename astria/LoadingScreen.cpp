@@ -45,7 +45,6 @@ void CLoadingScreen::OnLoad()
 
 void CLoadingScreen::OnUpdate()
 {
-	std::cout << "loading..\n";
 	if (RandNormal() > 0.5)
 	{
 		CSpark::AddRandomSpark();

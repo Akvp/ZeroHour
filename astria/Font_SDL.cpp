@@ -1,4 +1,5 @@
-#include "Font_SDL.h"
+#include "Font.h"
+#include "Main.h"
 
 Font_SDL::Font_SDL()
 {
@@ -55,7 +56,7 @@ Text_SDL::Text_SDL()
 	FontTexture = NULL;
 }
 
-bool Text_SDL::Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, SDL_Color color, TTF_RENDER_TYPE type)
+bool Text_SDL::Load(Font_SDL* font, std::string text, SDL_Renderer* renderer, SDL_Color color, TTF_RENDER_TYPE type)
 {
 	Renderer = renderer;
 	
@@ -64,13 +65,13 @@ bool Text_SDL::Load(TTF_Font* font, std::string text, SDL_Renderer* renderer, SD
 	switch (type)
 	{
 	case TTF_SOLID:
-		Surf_Load = TTF_RenderText_Solid(font, text.c_str(), color);
+		Surf_Load = TTF_RenderText_Solid(font->GetFont(), text.c_str(), color);
 		break;
 	case TTF_SHADED:
-		Surf_Load = TTF_RenderText_Shaded(font, text.c_str(), color, { 1, 1, 1, 1 });
+		Surf_Load = TTF_RenderText_Shaded(font->GetFont(), text.c_str(), color, { 1, 1, 1, 1 });
 		break;
 	case TTF_BLENDED:
-		Surf_Load = TTF_RenderText_Blended(font, text.c_str(), color);
+		Surf_Load = TTF_RenderText_Blended(font->GetFont(), text.c_str(), color);
 		break;
 	}
 	if (Surf_Load == NULL)
@@ -110,4 +111,54 @@ int Text_SDL::GetWidth()
 int Text_SDL::GetHeight()
 {
 	return height;
+}
+
+void RenderText(std::string message, SDL_Color color, int x, int y, int size) 
+{
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glLoadIdentity();
+
+	gluOrtho2D(0, CMain::GetInstance()->GetWindowWidth(), 0, CMain::GetInstance()->GetWindowHeight()); // m_Width and m_Height is the resolution of window
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	TTF_Font * font = TTF_OpenFont("ttf/complex.ttf", size);
+	SDL_Surface * sFont = TTF_RenderText_Blended(font, message.c_str(), color);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sFont->w, sFont->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, sFont->pixels);
+
+	glBegin(GL_QUADS);
+	{
+		glTexCoord2f(0, 0); glVertex2f(x, y);
+		glTexCoord2f(1, 0); glVertex2f(x + sFont->w, y);
+		glTexCoord2f(1, 1); glVertex2f(x + sFont->w, y + sFont->h);
+		glTexCoord2f(0, 1); glVertex2f(x, y + sFont->h);
+	}
+	glEnd();
+
+	glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+
+	glDeleteTextures(1, &texture);
+	TTF_CloseFont(font);
+	SDL_FreeSurface(sFont);
 }

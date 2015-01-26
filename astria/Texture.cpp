@@ -140,9 +140,7 @@ bool CTexture::load_SDL(std::string file)
 
 	if (Surf_Load == NULL)
 	{
-		char errorMsg[512];
-		sprintf(errorMsg, "Error loading %s!\nError message: %s\n", file, IMG_GetError());
-		MessageBox(NULL, errorMsg, "Texture loading error", MB_ICONERROR);
+		Error("Texture Loading Error", "Error loading: " + file + "\nError message: " + std::string(IMG_GetError()));
 		return false;
 	}
 
@@ -168,7 +166,6 @@ bool CTexture::load_SDL(std::string file)
 	}
 	else {
 		printf("warning: the image is not truecolor..  this will probably break\n");
-		return false;
 	}
 	if (nOfColors == 4)
 		imgFormat = GL_RGBA;

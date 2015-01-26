@@ -35,12 +35,12 @@ void CSkybox::Load(std::string a_sDirectory)
 		}
 	}
 
-	tTextures[0].Load_2D(sFront);
-	tTextures[1].Load_2D(sBack);
-	tTextures[2].Load_2D(sLeft);
-	tTextures[3].Load_2D(sRight);
-	tTextures[4].Load_2D(sTop);
-	tTextures[5].Load_2D(sBottom);
+	tTextures[0].Load_2D(sFront, true);
+	tTextures[1].Load_2D(sBack, true);
+	tTextures[2].Load_2D(sLeft, true);
+	tTextures[3].Load_2D(sRight, true);
+	tTextures[4].Load_2D(sTop, true);
+	tTextures[5].Load_2D(sBottom, true);
 
 	sDirectory = a_sDirectory;
 
