@@ -92,6 +92,13 @@ bool CMain::OnInit()
 		return false;
 	}
 
+	//Initialize SDL_mixer for music and sound effects
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		Error("Initialization error", "SDL_mixer initialization error\n" + string(Mix_GetError()));
+		return false;
+	}
+
 	//Initialize SDL_ttf for font 
 	if (TTF_Init() < 0)
 	{
@@ -184,6 +191,7 @@ void CMain::OnExit()
 	Renderer = NULL;
 	SDL_GL_DeleteContext(glContext);
 
+	Mix_Quit();
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
