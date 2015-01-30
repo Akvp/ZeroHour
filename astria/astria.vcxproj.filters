@@ -25,12 +25,6 @@
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{d434d2c6-66b5-4479-9c6e-a5d0684c9652}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\AI">
-      <UniqueIdentifier>{de154463-4981-4d4c-b947-f3126ebded77}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\AI">
-      <UniqueIdentifier>{ffecb7e9-9cd0-4c80-9540-edd24182b9bc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\AppStates">
       <UniqueIdentifier>{4f1c957a-e068-4956-9561-3b6a6c5e5d84}</UniqueIdentifier>
     </Filter>
@@ -51,12 +45,6 @@
     <ClCompile Include="Light.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="Gene.cpp">
-      <Filter>Source Files\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="NeuralNet.cpp">
-      <Filter>Source Files\AI</Filter>
-    </ClCompile>
     <ClCompile Include="Stringify.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -66,14 +54,8 @@
     <ClCompile Include="FPS.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="Agent.cpp">
-      <Filter>Source Files\AI</Filter>
-    </ClCompile>
     <ClCompile Include="FileManager.cpp">
       <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="State.cpp">
-      <Filter>Source Files\AI</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Source Files\OpenGL</Filter>
@@ -158,20 +140,8 @@
     <ClInclude Include="StaticObj.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="Gene.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="NeuralNet.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="State.h">
-      <Filter>Header Files\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="Agent.h">
-      <Filter>Header Files\AI</Filter>
     </ClInclude>
     <ClInclude Include="Event.h">
       <Filter>Header Files\common</Filter>
@@ -209,9 +179,6 @@
     <ClInclude Include="LoadingScreen.h">
       <Filter>Header Files\AppStates</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -220,9 +187,6 @@
     </ClInclude>
     <ClInclude Include="Water.h">
       <Filter>Header Files\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="DemoParticle.h">
-      <Filter>Source Files\AppStates</Filter>
     </ClInclude>
     <ClInclude Include="Font.h">
       <Filter>Header Files\common</Filter>

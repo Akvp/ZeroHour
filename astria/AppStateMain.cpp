@@ -244,8 +244,6 @@ void CAppStateMain::OnRender()
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
 	models[1].Render();
 
-	RenderText("asfd", { 200, 200, 200, 1 }, 150, 150, 20);
-
 	//Render particles
 	float fps = CFPS::FPSControl.GetFPS();
 	float FrameInterval = 1 / fps;
@@ -324,9 +322,6 @@ bool CAppStateMain::OnLoad()
 	CHeightMap::LoadShaderProgram("shaders/terrain.vert", "shaders/terrain.frag");
 	Map.SetSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
 
-	//WaterTest.Load("gfx/img/water_normal.jpg", "gfx/img/water_dudv.jpg", glm::vec3(83, 50, 180), 100, 100);
-	//CWaterPlane::LoadProgram("shaders/water.vert", "shaders/water.frag");
-
 	//Load particles
 	TextureParticleEruption.Load_2D("gfx/particle.bmp", true);
 	ParticleEruption.Init();
@@ -392,7 +387,7 @@ bool CAppStateMain::OnLoad()
 	Skybox.Load(CParams::SkyboxFolder);
 
 	//Load sun light
-	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1, -1, 0), 0.2f, 1.0f);
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-1, -1.2, 0), 0.2f, 1.0f);
 
 	//Load camera properties
 	Position = glm::vec3(84, 0, 210);

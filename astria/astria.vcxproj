@@ -75,7 +75,6 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Agent.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="AppStateMain.cpp" />
@@ -85,10 +84,8 @@
     <ClCompile Include="Event.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="FPS.cpp" />
-    <ClCompile Include="Gene.cpp" />
     <ClCompile Include="HeightMap.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="NeuralNet.cpp" />
     <ClCompile Include="Params.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -96,7 +93,6 @@
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="StaticObj.cpp" />
-    <ClCompile Include="State.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Stringify.cpp" />
     <ClCompile Include="TextureBank_SDL.cpp" />
@@ -105,9 +101,7 @@
     <ClCompile Include="Water.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Agent.h" />
     <ClInclude Include="AppState.h" />
-    <ClInclude Include="DemoParticle.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="AppStateManager.h" />
@@ -117,20 +111,16 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="FPS.h" />
-    <ClInclude Include="Gene.h" />
     <ClInclude Include="Event.h" />
     <ClInclude Include="HeightMap.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Main.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="NeuralNet.h" />
-    <ClInclude Include="Object.h" />
     <ClInclude Include="Params.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Sound.h" />
-    <ClInclude Include="State.h" />
     <ClInclude Include="StaticObj.h" />
     <ClInclude Include="Stringify.h" />
     <ClInclude Include="Texture.h" />
