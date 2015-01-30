@@ -1,5 +1,6 @@
 # OpenGL demo
-Made in C++ using OpenGL API <br>
+Made in C++ using OpenGL API 
+
 This is an OpenGL demo showcasing many rasterizing techniques used in games such as
 
  - Phong Shading
@@ -9,14 +10,16 @@ This is an OpenGL demo showcasing many rasterizing techniques used in games such
  - Multiple lighting techniques such as directional sun light, point light and spotlight
 
 ##(Ready to go)
-To run the demo, go to the Release folder and execute astria.exe <br> <br>
-**Disclaimer: the project has only been extensively tested on nVidia GPU <br> 
-May cause unexpected graphical glitches on AMD or Intel GPU**
-<br><br>
+To run the demo, go to the Release folder and execute astria.exe 
+
+**Disclaimer: the project has only been extensively tested on nVidia GPU 
+and may cause unexpected graphical glitches on AMD or Intel GPU**
+
 A video demo will be available soon
 
 ##(Development-friendly)
-This project was built using Visual Studio 2013 <br>
+This project was built using Visual Studio 2013 
+
 Requirement to build this project:
 
  * SDL 2.0
@@ -30,7 +33,8 @@ Requirement to build this project:
 Many loading parameters can be modified in params.ini file located in the same folder as the executable
 
 ##Version
-__0.1.9__<br><br>
+__0.1.9__
+
 For more information please refer to changelog.txt file 
 
 ##TODO List
