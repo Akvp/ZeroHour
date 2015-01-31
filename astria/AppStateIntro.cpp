@@ -79,6 +79,8 @@ void CAppStateIntro::OnRender()
 		Menu[i].Render(OffsetX, i * 50 + OffsetY);
 	}	
 
+	IntroText.Render(50, 50);
+
 	SDL_RenderPresent(CMain::GetInstance()->GetRenderer());
 }
 
@@ -90,10 +92,14 @@ void CAppStateIntro::LoadFontTextures()
 	SDL_Renderer* MainRenderer = CMain::GetInstance()->GetRenderer();
 
 	std::string MenuText[] = { "start", "about", "help", "credits", "exit" };
-
 	for (int i = 0; i < INTRO_MENU_COUNT; i++)	Menu[i].Load(&Font, MenuText[i], MainRenderer, Color);
 	Font.SetOutline(1);
 	for (int i = 0; i < INTRO_MENU_COUNT; i++)	MenuHover[i].Load(&Font, MenuText[i], MainRenderer, Color);
+	
+	//Load splash font
+	Font.Load("ttf/after_shok.ttf", 90);
+	Color = { 120, 120, 120, 1 };
+	IntroText.Load(&Font, "desolation", MainRenderer, Color);
 }
 
 void CAppStateIntro::OnLButtonDown(int mX, int mY)

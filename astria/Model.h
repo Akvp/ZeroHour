@@ -13,33 +13,23 @@
 #include "Texture.h"
 #include "utils.h"
 
-class CMesh
-{
-public:
-	void Draw();
-
-private:
-	static CVBO vboMeshData;
-	static GLuint VAO;
-};
-
 class CModel
 {
 public:
 	CModel();
-	CModel(char* file);
+	CModel(std::string file);
 
-	bool Load(char* file);
+	bool Load(std::string file);
 
 	static void UploadVBO();
 	static void BindVAO();
 
-	void Render();
+	void Render(bool texture = true);
 
 	//Release all model
-	static void Release();
+	static void ReleaseAll();
 
-private:
+protected:
 	bool loaded;
 	static CVBO vboModelData;
 	static GLuint VAO;
@@ -48,6 +38,22 @@ private:
 	vector<int> meshSize;
 	vector<vector<int>> materialIndices;	
 	int numMaterials;
+};
+
+class CInstancedModel : public CModel
+{
+public:
+	CInstancedModel();
+
+	void UploadMatrices(int count, glm::mat4* model);
+	//If count is 0, render as many as Model matrices available
+	void RenderInstanced(int count = 0, bool texture = true);
+
+	static void ReleaseAllInstanced();
+private:
+	int Count;
+	static CVBO vboMatrixData;
+	glm::mat4* ModelMatrices;
 };
 
 #endif

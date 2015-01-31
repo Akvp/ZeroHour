@@ -4,8 +4,9 @@ www.mbsoftworks.sk
 www.opengl-tutorial.org
 www.learnopengl.com
 
-SplashScreen	- 
-Models		- My equally dear friend Simon Peloquin
-		- tf3dm.com
+SplashScreen	- Perilous Ice Shape by tobylewin 
+		  at tobylewin.deviantart.com
+Models		- tf3dm.com
 		- www.turbosquid.com
 Font		- After shok by eightface
+Music		- Self Esteem Fund from Portal

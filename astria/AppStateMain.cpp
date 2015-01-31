@@ -2,6 +2,7 @@
 #include "AppStateMain.h"
 #include "Main.h"
 #include "utils.h"
+#include "Stringify.h"
 
 CAppStateMain CAppStateMain::Instance;
 
@@ -30,6 +31,9 @@ void CAppStateMain::OnActivate()
 		SDL_WaitThread(CLoadingScreen::GetThreadID(), NULL);
 	}
 
+	//Resume all sound effects for when we return from pause
+	CSoundEffect::ResumeAll();
+
 	//Hide mouse cursor
 	if (SDL_ShowCursor(SDL_DISABLE) < 0)
 	{
@@ -51,6 +55,9 @@ void CAppStateMain::OnDeactivate()
 	snapshot = SDL_CreateTextureFromSurface(CMain::GetInstance()->GetRenderer(), Surf_Tmp);
 	SDL_FreeSurface(Surf_Tmp);
 
+	//Pause all sound effects
+	CSoundEffect::PauseAll();
+
 	SDL_ShowCursor(SDL_ENABLE);
 }
 
@@ -59,22 +66,22 @@ void CAppStateMain::OnExit()
 	if (Loaded)
 	{
 		std::cout << "Releasing CAppStateMain\n";
-		CModel::Release();
-		ParticleEruption.Release();
-		TextureParticleEruption.Release();
-		ParticleSmoke.Release();
-		TextureParticleSmoke.Release();
-		ParticleFire.Release();
-		TextureParticleFire.Release();
+		CModel::ReleaseAll();
+		CInstancedModel::ReleaseAllInstanced();
+		ParticleEruption.Release();	TextureParticleEruption.Release();
+		ParticleSmoke.Release();	TextureParticleSmoke.Release();
+		ParticleFire.Release();		TextureParticleFire.Release();
 		ShaderVertex.Release();
 		ShaderFragment.Release();
+		ShaderInstancing.Release();
 		ProgramMain.Release();
+		ProgramInstancing.Release();
 		Skybox.Release();
 		CHeightMap::ReleaseShaderProgram();
 		for (int i = 0; i < 6; i++) TextureTerrain[i].Release();
-		for (CModel model : models) model.Release();
-		for (CModel model : Trees)	model.Release();
 		Map.Release();
+		SoundFire.Release();
+		MusicMain.Release();
 	}
 }
 
@@ -148,8 +155,10 @@ void CAppStateMain::OnUpdate()
 	ParticleEruption.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 	ParticleSmoke.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 	ParticleFire.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
-	
-	printf("%d\n", NumScene);
+
+	float dist = Distance(FirePosition, Position);
+	int vol = 1/(dist - 50) * MIX_MAX_VOLUME;
+	SoundFire.SetVolume(vol);
 }
 
 void CAppStateMain::OnRender()
@@ -165,10 +174,10 @@ void CAppStateMain::OnRender()
 	ProgramMain.SetUniform("mat.diffuse", 0);
 	ProgramMain.SetUniform("mat.specular", 2);
 
-	ProgramMain.SetUniform("matrices.mModel", ModelMatrix);
+	ProgramMain.SetUniform("matrices.mModel", glm::mat4(1.0));
 	ProgramMain.SetUniform("matrices.mNormal", glm::mat4(1.0));
 
-	//Render light
+	//Set light uniform
 	Sun.SetUniform(&ProgramMain, "sunLight");
 
 	//Render Skybox
@@ -179,6 +188,33 @@ void CAppStateMain::OnRender()
 
 	//Reset model matrix
 	ProgramMain.SetUniform("matrices.mModel", glm::mat4(1.0));
+
+	//Render models
+	CModel::BindVAO();
+	ProgramMain.SetUniform("vEyePosition", Position);
+
+	glm::vec3 newPos(83, 0, 180);
+	newPos.y = Map.GetHeight(newPos);
+	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
+	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	models[0].Render();
+
+	newPos = glm::vec3(64, 0, 193);
+	newPos.y = Map.GetHeight(newPos);
+	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
+	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(5.0));
+	ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
+	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	models[1].Render();
+
+	//Render instanced models
+	ProgramInstancing.Use();
+	ProgramInstancing.SetUniform("matrices.mProjection", ProjectionMatrix);
+	ProgramInstancing.SetUniform("matrices.mView", ViewMatrix);
+	ProgramInstancing.SetUniform("mat.diffuse", 0);
+	ProgramInstancing.SetUniform("mat.specular", 2);
+	Sun.SetUniform(&ProgramInstancing, "sunLight");
+	SmallTree.RenderInstanced();
 
 	//Render ground
 	CShaderProgram* Program_Terrain = CHeightMap::GetShaderProgram();
@@ -197,52 +233,6 @@ void CAppStateMain::OnRender()
 	TextureTerrain[2].Bind(2);	TextureTerrain[3].Bind(3);
 	TextureTerrain[4].Bind(4);	TextureTerrain[5].Bind(5);
 	Map.Render();
-
-	ProgramMain.Use();
-	//Render models
-	CModel::BindVAO();
-	ProgramMain.SetUniform("vEyePosition", Position);
-
-	for (int i = 0; i < NumScene * 5; i++)
-	{
-		ModelMatrix = glm::translate(glm::mat4(1.0), TreeAPosition[i]);
-		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0));
-		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
-		ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-		Trees[0].Render();
-	}
-
-	for (int i = 0; i < NumScene * 5; i++)
-	{
-		ModelMatrix = glm::translate(glm::mat4(1.0), TreeBPosition[i]);
-		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0));
-		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
-		ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-		Trees[1].Render();
-	}
-
-	for (int i = 0; i < NumScene * 5; i++)
-	{
-		ModelMatrix = glm::translate(glm::mat4(1.0), TreeCPosition[i]);
-		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(1.0));
-		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
-		ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-		Trees[2].Render();
-	}
-
-	glm::vec3 newPos(83, 0, 180);
-	newPos.y = Map.GetHeight(newPos);
-	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
-	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-	models[0].Render();
-
-	newPos = glm::vec3(64, 0, 193);
-	newPos.y = Map.GetHeight(newPos);
-	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
-	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(5.0));
-	ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
-	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-	models[1].Render();
 
 	//Render particles
 	float fps = CFPS::FPSControl.GetFPS();
@@ -302,17 +292,13 @@ bool CAppStateMain::OnLoad()
 		return false;
 	if (!ProgramMain.Initiate(&ShaderVertex, &ShaderFragment))
 		return false;
-
-	//Load models
-	models[0].Load("gfx/nanosuit/nanosuit.obj");
-	models[1].Load("gfx/barrel/barrel.3ds");
-	Trees[0].Load("gfx/coffee_tree/TR08a.obj");
-	Trees[1].Load("gfx/coffee_tree/TR08y.obj");
-	Trees[2].Load("gfx/coffee_tree/TR08m.obj");
-	CModel::UploadVBO();
+	if (!ShaderInstancing.Load("shaders/instancing.vert", GL_VERTEX_SHADER))
+		return false;
+	if (!ProgramInstancing.Initiate(&ShaderInstancing, &ShaderFragment))
+		return false;
 
 	//Load terrain
-	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png"};
+	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png" };
 	for (int i = 0; i < 6; i++)
 	{
 		TextureTerrain[i].Load_2D("gfx/" + TextureNames[i], true);
@@ -322,13 +308,38 @@ bool CAppStateMain::OnLoad()
 	CHeightMap::LoadShaderProgram("shaders/terrain.vert", "shaders/terrain.frag");
 	Map.SetSize(CParams::WorldX, CParams::WorldY, CParams::WorldZ);
 
+	//Load models
+	models[0].Load("gfx/nanosuit/nanosuit.obj");
+	models[1].Load("gfx/barrel/barrel.3ds");
+
+	SmallTree.Load("gfx/coffee_tree/TR08y.obj");
+
+	//Generate some random positions for environment objects
+	int SceneObjCount = 75;
+	SceneObjPosition.reserve(SceneObjCount);
+	for (int i = 0; i < SceneObjCount; i++) SceneObjPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
+	for (int i = 0; i < SceneObjPosition.size(); i++)	SceneObjPosition[i].y = Map.GetHeight(SceneObjPosition[i]);
+
+	ModelMatrices.reserve(SceneObjCount);
+	for (int i = 0; i < SceneObjCount; i++)
+	{
+		ModelMatrix = glm::translate(glm::mat4(1.0), SceneObjPosition[i]);
+		ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
+		ModelMatrices.push_back(ModelMatrix);
+	}
+	SmallTree.UploadMatrices(SceneObjCount, ModelMatrices.data());
+
+	CModel::UploadVBO();
+
+	ModelMatrices.clear(); ModelMatrices.shrink_to_fit();
+
 	//Load particles
 	TextureParticleEruption.Load_2D("gfx/particle.bmp", true);
 	ParticleEruption.Init();
-	glm::vec3 partPos(64, 0, 193);
-	partPos.y = Map.GetHeight(partPos);
+	FirePosition = glm::vec3(64, 0, 193);
+	FirePosition.y = Map.GetHeight(FirePosition);
 	ParticleEruption.Set(
-		partPos,					//Position
+		FirePosition,				//Position
 		glm::vec3(-8, 15, -8),		//Minimum velocity
 		glm::vec3(8, 20, 8),		//Maximum velocity
 		glm::vec3(0, -10, 0),		//Acceleration
@@ -342,7 +353,7 @@ bool CAppStateMain::OnLoad()
 	TextureParticleFire.Load_2D("gfx/img/FireParticle.jpg", true);
 	ParticleFire.Init();
 	ParticleFire.Set(
-		partPos,
+		FirePosition,
 		glm::vec3(-7, 8, -7),
 		glm::vec3(7, 20, 7),
 		glm::vec3(0, -8, 0),
@@ -353,11 +364,11 @@ bool CAppStateMain::OnLoad()
 		0.2,
 		50);
 
-	partPos.y += 3;
+	FirePosition.y += 3;
 	TextureParticleSmoke.Load_2D("gfx/img/SmokeParticle.jpg", true);
 	ParticleSmoke.Init();
 	ParticleSmoke.Set(
-		partPos,
+		FirePosition,
 		glm::vec3(-5, 8, -5),
 		glm::vec3(5, 20, 5),
 		glm::vec3(0, -8, 0),
@@ -367,15 +378,6 @@ bool CAppStateMain::OnLoad()
 		2.0f,
 		0.2,
 		10);
-
-	//Load model positions
-	TreeAPosition.reserve(15); TreeBPosition.reserve(15); TreeCPosition.reserve(15);
-	for (int i = 0; i < 15; i++) TreeAPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
-	for (int i = 0; i < 15; i++) TreeBPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
-	for (int i = 0; i < 15; i++) TreeCPosition.push_back(glm::vec3(RandNormal()*CParams::WorldX / 2, 0, RandNormal()*CParams::WorldZ / 2));
-	for (int i = 0; i < TreeAPosition.size(); i++)	TreeAPosition[i].y = Map.GetHeight(TreeAPosition[i]);
-	for (int i = 0; i < TreeBPosition.size(); i++)	TreeBPosition[i].y = Map.GetHeight(TreeBPosition[i]);
-	for (int i = 0; i < TreeCPosition.size(); i++)	TreeCPosition[i].y = Map.GetHeight(TreeCPosition[i]);
 
 	//Used for wire frame
 	PolyMode = GL_FILL;
@@ -387,14 +389,20 @@ bool CAppStateMain::OnLoad()
 	Skybox.Load(CParams::SkyboxFolder);
 
 	//Load sun light
-	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-1, -1.2, 0), 0.2f, 1.0f);
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.1, -1.2, 1), 0.2f, 0.8f);
 
 	//Load camera properties
-	Position = glm::vec3(84, 0, 210);
+	Position = glm::vec3(-78, 135, 76);
 	Position.y = 5 + Map.GetHeight(Position);
 	FoV = 45.0f;
-	HorizontalAngle = -3.14f;
-	VerticalAngle = 0.0f;
+	HorizontalAngle = 0.5f;
+	VerticalAngle = -0.1f;
+
+	MusicMain.Load("sound/PortalSelfEsteemFund.mp3");
+	MusicMain.Play();
+
+	SoundFire.Load("sound/fireplace.wav", 1);
+	SoundFire.Play(-1);
 
 	return true;
 }
@@ -406,6 +414,7 @@ SDL_Texture* CAppStateMain::GetSnapshot()
 
 void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 {
+	string pos;
 	switch (sym)
 	{
 		//Terminate the program if the user press Esc or LeftAlt+F4
@@ -425,6 +434,11 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 	case SDLK_F3:
 		//Disable gravity
 		GravityEnabled = !GravityEnabled;
+		break;
+	case SDLK_F12:
+		//Prompt current position
+		pos = Stringify::Float(Position.x) + " " + Stringify::Float(Position.y) + " " + Stringify::Float(Position.z) + "\n";
+		Warning("Position", pos);
 		break;
 	case SDLK_PAGEUP:
 		NumScene = min(NumScene + 1, 3);

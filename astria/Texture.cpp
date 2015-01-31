@@ -167,11 +167,21 @@ bool CTexture::load_SDL(std::string file)
 	else {
 		printf("warning: the image is not truecolor..  this will probably break\n");
 	}
+	//Get input format
 	if (nOfColors == 4)
-		imgFormat = GL_RGBA;
+	{
+		if (Surf_Load->format->Rmask == 255)
+			imgFormat = GL_RGBA;
+		else
+			imgFormat = GL_BGRA;
+	}
 	else
-		imgFormat = GL_RGB;
-
+	{
+		if (Surf_Load->format->Rmask == 255)
+			imgFormat = GL_RGB;
+		else
+			imgFormat = GL_BGR;
+	}
 	//Create the actual openGL texture
 	glTexImage2D(GL_TEXTURE_2D, 0, format, Surf_Load->w, Surf_Load->h, 0, imgFormat, GL_UNSIGNED_BYTE, Surf_Load->pixels);
 

@@ -41,6 +41,7 @@ private:
 	INTRO_MENU Selection;
 
 	Font_SDL Font;
+	Text_SDL IntroText;
 	Text_SDL Menu[INTRO_MENU_COUNT];
 	Text_SDL MenuHover[INTRO_MENU_COUNT];
 

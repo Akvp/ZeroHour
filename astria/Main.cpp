@@ -79,21 +79,21 @@ bool CMain::OnInit()
 	srand(time(0));
 
 	//Initialize SDL
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		Error("Initialization error", "SDL initialization error\n" + string(SDL_GetError()));
 		return false;
 	}
 
 	//Initialize SDL_image for texture and image loading
-	if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG) != (IMG_INIT_PNG | IMG_INIT_JPG))
+	if (IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_TIF | IMG_INIT_WEBP) != (IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_TIF | IMG_INIT_WEBP))
 	{
 		Error("Initialization error", "SDL_image initialization error\n" + string(IMG_GetError()));
 		return false;
 	}
 
 	//Initialize SDL_mixer for music and sound effects
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	if (!((Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == 0) && (Mix_Init(MIX_INIT_MP3))))
 	{
 		Error("Initialization error", "SDL_mixer initialization error\n" + string(Mix_GetError()));
 		return false;
@@ -190,6 +190,8 @@ void CMain::OnExit()
 	SDL_DestroyRenderer(Renderer);
 	Renderer = NULL;
 	SDL_GL_DeleteContext(glContext);
+	
+	Mix_CloseAudio();
 
 	Mix_Quit();
 	TTF_Quit();

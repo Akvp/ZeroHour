@@ -1,7 +1,7 @@
 WASD		- Movement
+Mouse		- Look
 MouseWheel	- Zoom In/Out
 Q		- Toggle Wireframe mode
-PageUp/PageDn	- Increase/Decrease scene models
-F2		- Toggle Faster movement speed
+F2		- Toggle faster movement speed
 F3		- Toggle gravity (also collision with map)
 Escape		- Pause

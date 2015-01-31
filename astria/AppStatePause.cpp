@@ -21,10 +21,6 @@ void CAppStatePause::OnActivate()
 	//Only load once
 	if (!loaded)
 	{
-		//Color mod the snapshot to make it darker
-		SDL_SetTextureBlendMode(CAppStateMain::GetInstance()->GetSnapshot(), SDL_BLENDMODE_BLEND);
-		SDL_SetTextureColorMod(CAppStateMain::GetInstance()->GetSnapshot(), 100, 100, 100);
-
 		//Load Font
 		Font.Load("ttf/after_shok.ttf", 25);
 		SDL_Color Color = { 204, 204, 204, 1 };
@@ -40,8 +36,12 @@ void CAppStatePause::OnActivate()
 		Font.SetOutline(1);
 		for (int i = 0; i < PAUSE_MENU_COUNT; i++)	MenuHover[i].Load(&Font, MenuText[i], MainRenderer, Color);
 
-
+		loaded = true;
 	}
+
+	//Color mod the snapshot to make it darker
+	SDL_SetTextureBlendMode(CAppStateMain::GetInstance()->GetSnapshot(), SDL_BLENDMODE_BLEND);
+	SDL_SetTextureColorMod(CAppStateMain::GetInstance()->GetSnapshot(), 100, 100, 100);
 }
 
 void CAppStatePause::OnDeactivate()

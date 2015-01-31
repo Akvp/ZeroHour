@@ -27,6 +27,12 @@ inline void Clamp(int &arg, int min, int max) { arg = arg <= min ? min : (arg >=
 
 inline double ToDeg(double radian) { return radian * 180 / CParams::Pi; }
 
+inline float Distance(glm::vec3 v1, glm::vec3 v2)
+{
+	glm::vec3 diff = v1 - v2;
+	return sqrt(diff.x*diff.x + diff.y*diff.y + diff.z*diff.z);
+}
+
 //Output functions
 inline void Error(const char* title, const char* text) { MessageBox(NULL, text, title, MB_ICONERROR); }
 inline void Error(const char* title, std::string text) { MessageBox(NULL, text.c_str(), title, MB_ICONERROR); }

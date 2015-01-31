@@ -5,13 +5,13 @@
 #include "Shader.h"
 #include "Light.h"
 #include "Skybox.h"
-#include "StaticObj.h"
 #include "HeightMap.h"
 #include "Params.h"
 #include "Model.h"
 #include "Water.h"
 #include "ParticleSystem.h"
 #include "LoadingScreen.h"
+#include "Sound.h"
 #include "Font.h"
 
 class CAppStateMain : public CAppState
@@ -57,6 +57,8 @@ private:
 	CShader ShaderVertex;
 	CShader ShaderFragment;
 	CShaderProgram ProgramMain;
+	CShader ShaderInstancing;
+	CShaderProgram ProgramInstancing;
 
 	//Skybox and lighting
 	CSkybox Skybox;
@@ -66,14 +68,16 @@ private:
 	CHeightMap Map;
 	CTexture TextureTerrain[6];
 
-	std::vector<glm::vec3> TreeAPosition;
-	std::vector<glm::vec3> TreeBPosition;
-	std::vector<glm::vec3> TreeCPosition;
+	std::vector<glm::vec3> SceneObjPosition;
 	CModel models[2];
-	CModel Trees[6];
+
+	CInstancedModel SmallTree;
+	std::vector<glm::mat4> ModelMatrices;
+
 	GLuint PolyMode;	//Used for wireframe
 
 	//Particles
+	glm::vec3 FirePosition;
 	CParticleSystem ParticleEruption;
 	CTexture TextureParticleEruption;
 	CParticleSystem ParticleSmoke;
@@ -102,6 +106,9 @@ private:
 
 	float Speed;			//Speed of movements
 	float MouseSpeed;
+
+	CMusic MusicMain;
+	CSoundEffect SoundFire;
 };
 
 

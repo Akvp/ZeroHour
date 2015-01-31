@@ -2,6 +2,8 @@
 #define _FONT_SDL_H_
 
 #include "Common.h"
+#include "Shader.h"
+#include "VBO.h"
 
 enum TTF_RENDER_TYPE
 {
@@ -17,6 +19,11 @@ public:
 
 	bool Load(const char* file, int ptsize);
 
+	//Style can be 
+	//TTF_STYLE_BOLD
+	//TTF_STYLE_ITALIC
+	//TTF_STYLE_UNDERLINE
+	//TTF_STYLE_STRIKETHROUGH
 	void SetStyle(int style);
 	int GetStyle();
 
@@ -54,4 +61,17 @@ private:
 	int height;
 };
 
+class Text_GL
+{
+public:
+	Text_GL();
+	bool Load(Font_SDL* font, std::string text, SDL_Color color, TTF_RENDER_TYPE type);
+private:
+	GLuint Texture;
+
+	GLuint VAO;
+	CVBO VBO;
+
+	CShaderProgram* Program;
+};
 #endif

@@ -23,13 +23,13 @@ CModel::CModel()
 	loaded = false;
 }
 
-CModel::CModel(char* file)
+CModel::CModel(std::string file)
 {
 	loaded = false;
 	Load(file);
 }
 
-bool CModel::Load(char* file)
+bool CModel::Load(std::string file)
 {
 	if (vboModelData.GetID() == 0)
 	{
@@ -46,7 +46,7 @@ bool CModel::Load(char* file)
 
 	if (!scene)
 	{
-		Error("Error importing asset", "Error loading model: " + string(file) + "\nError code: " + string(importer.GetErrorString()));
+		Error("Error importing asset", "Error loading model: " + file + "\nError code: " + string(importer.GetErrorString()));
 		return false;
 	}
 
@@ -157,13 +157,14 @@ bool CModel::Load(char* file)
 
 	for (auto tex : textures) tex.SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
 
+	glGenVertexArrays(1, &VAO);
+
 	loaded = true;
 	return loaded;
 }
 
 void CModel::UploadVBO()
 {
-	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	vboModelData.Bind();
 	vboModelData.UploadGPU(GL_STATIC_DRAW);
@@ -184,26 +185,106 @@ void CModel::BindVAO()
 	glBindVertexArray(VAO);
 }
 
-void CModel::Render()
+void CModel::Render(bool texture)
 {
 	if (!loaded)	return;
 	int numMeshes = meshSize.size();
 	for (int i = 0; i < numMeshes; i++)
 	{
-		int specIndex = materialIndices[i][1];
-		if (specIndex >= 0) textures[specIndex].Bind(2);
-		int diffIndex = materialIndices[i][0];
-		textures[diffIndex].Bind();
+		if (texture)
+		{
+			int specIndex = materialIndices[i][1];
+			if (specIndex >= 0) textures[specIndex].Bind(2);
+			int diffIndex = materialIndices[i][0];
+			if (diffIndex >= 0) textures[diffIndex].Bind();
+		}
+
 		glDrawArrays(GL_TRIANGLES, meshStartIndices[i], meshSize[i]);
 
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 
-void CModel::Release()
+void CModel::ReleaseAll()
 {
 	vboModelData.Release();
 	glDeleteVertexArrays(1, &VAO);
 	for (auto tex : textures)	tex.Release();
+}
+
+//================================================================
+
+CVBO CInstancedModel::vboMatrixData;
+
+CInstancedModel::CInstancedModel()
+{
+
+}
+
+void CInstancedModel::UploadMatrices(int count, glm::mat4* model)
+{
+	if (vboMatrixData.GetID() == 0)
+	{
+		vboMatrixData.Create();
+	}
+
+	Count = count;
+	ModelMatrices = model;
+
+	glBindVertexArray(VAO);
+
+	
+	vboMatrixData.AddData(model, count*sizeof(glm::mat4));
+	
+
+	vboMatrixData.Bind();
+	vboMatrixData.UploadGPU(GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)0);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(sizeof(glm::vec4)));
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(2 * sizeof(glm::vec4)));
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(3 * sizeof(glm::vec4)));
+
+	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
+	glVertexAttribDivisor(5, 1);
+	glVertexAttribDivisor(6, 1);
+
+	glBindVertexArray(0);
+}
+
+void CInstancedModel::RenderInstanced(int count, bool texture)
+{
+	if (!loaded)	return;
+	int RenderCount = (count == 0) ? Count : count;
+	int numMeshes = meshSize.size();
+	for (int i = 0; i < numMeshes; i++)
+	{
+		if (texture)
+		{
+			int specIndex = materialIndices[i][1];
+			if (specIndex >= 0) textures[specIndex].Bind(2);
+			int diffIndex = materialIndices[i][0];
+			if (diffIndex >= 0) textures[diffIndex].Bind();
+		}
+
+		glDrawArraysInstanced(GL_TRIANGLES, meshStartIndices[i], meshSize[i], RenderCount);
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glActiveTexture(GL_TEXTURE2);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+}
+
+void CInstancedModel::ReleaseAllInstanced()
+{
+	vboMatrixData.Release();
 }
