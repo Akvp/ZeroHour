@@ -13,6 +13,7 @@
 #include "LoadingScreen.h"
 #include "Sound.h"
 #include "Font.h"
+#include "Fog.h"
 
 class CAppStateMain : public CAppState
 {
@@ -60,6 +61,8 @@ private:
 	CShader ShaderInstancing;
 	CShaderProgram ProgramInstancing;
 
+	GLuint PolyMode;	//Used for wireframe
+
 	//Skybox and lighting
 	CSkybox Skybox;
 	CDirectLight Sun;
@@ -68,13 +71,11 @@ private:
 	CHeightMap Map;
 	CTexture TextureTerrain[6];
 
-	std::vector<glm::vec3> SceneObjPosition;
+	//Models
 	CModel models[2];
-
 	CInstancedModel SmallTree;
+	std::vector<glm::vec3> SceneObjPosition;
 	std::vector<glm::mat4> ModelMatrices;
-
-	GLuint PolyMode;	//Used for wireframe
 
 	//Particles
 	glm::vec3 FirePosition;
@@ -84,6 +85,8 @@ private:
 	CTexture TextureParticleSmoke;
 	CParticleSystem ParticleFire;
 	CTexture TextureParticleFire;
+	CParticleSystem ParticleSnow;
+	CTexture TextureParticleSnow;
 
 	//Matrices
 	glm::mat4 ProjectionMatrix;
@@ -96,17 +99,19 @@ private:
 	float VerticalAngle;	//Vertical viewing angle
 	float FoV;				//Field of view
 
+	//Camera coordinates
 	glm::vec3 Direction;
 	glm::vec3 Right;
 	glm::vec3 Up;
 
 	bool GravityEnabled;
+	int FogEnabled;
 	
-	int NumScene;
-
+	//Control parameters
 	float Speed;			//Speed of movements
 	float MouseSpeed;
 
+	//Music and sound effects
 	CMusic MusicMain;
 	CSoundEffect SoundFire;
 };

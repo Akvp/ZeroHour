@@ -39,6 +39,8 @@ public:
 
 	void Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 acceleration, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count);
 
+	void ChangePosition(glm::vec3 position);
+
 	void Clear();
 	bool Release();
 

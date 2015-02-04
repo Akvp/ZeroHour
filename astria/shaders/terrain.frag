@@ -10,11 +10,6 @@ struct Material
 	sampler2D diffuse;
 	sampler2D specular;
 };
-uniform Material LowAlt;
-uniform Material MidAlt;
-uniform Material HighAlt;
-
-uniform vec4 vColor;
 
 struct DirectionalLight
 {
@@ -23,14 +18,45 @@ struct DirectionalLight
 	float fAmbient;
 	float fBrightness;
 };
+
+struct FogParameters
+{
+	vec4 vFogColor; // Fog color
+	float fStart; // This is only for linear fog
+	float fEnd; // This is only for linear fog
+	float fDensity; // For exp and exp2 equation
+	
+	int iEquation; // 0 = linear, 1 = exp, 2 = exp2
+};
+
+float getFogFactor(FogParameters params, float fFogCoord)
+{
+	float fResult = 0.0;
+	if(params.iEquation == 0)
+		fResult = (params.fEnd-fFogCoord)/(params.fEnd-params.fStart);
+	else if(params.iEquation == 1)
+		fResult = exp(-params.fDensity*fFogCoord);
+	else if(params.iEquation == 2)
+		fResult = exp(-pow(params.fDensity*fFogCoord, 2.0));
+		
+	fResult = 1.0-clamp(fResult, 0.0, 1.0);
+	
+	return fResult;
+}
+
 uniform DirectionalLight sunLight;
 uniform float fRenderHeight;
 uniform float fMaxTextureU;
 uniform float fMaxTextureV;
+uniform Material LowAlt;
+uniform Material MidAlt;
+uniform Material HighAlt;
+uniform vec4 vColor;
+uniform vec3 vEyePosition;
+uniform FogParameters fogParams;
+uniform int bFog;
 
 out vec4 outputColor;
-
-uniform vec3 vEyePosition;
 
 void main()
 {
@@ -109,5 +135,10 @@ void main()
 	vec4 vSpecularColor = pow(sunLight.fBrightness, 2) * 0.6 * vec4(sunLight.vColor, 1.0f) * fSpecularIntensity * vSpeColor;
 
 	outputColor = vDiffuseColor + vAmbientColor + vSpecularColor;
-  
+
+	if(bFog == 1)
+	{	
+		float fFogCoord = distance(vEyePosition, vWorldPos);
+		outputColor = mix(outputColor, fogParams.vFogColor, getFogFactor(fogParams, fFogCoord));
+	}
 }                      

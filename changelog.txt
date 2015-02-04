@@ -1,4 +1,8 @@
-- 0.1.10
+- 0.2.1
+  - Added fog effect
+  - Fixed an old texture mapping bug
+
+- 0.2.0
   - Added music and sound effects
   - Added model instancing to render many trees without cpu bottleneck
 

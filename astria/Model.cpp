@@ -87,8 +87,8 @@ bool CModel::Load(std::string file)
 
 	numMaterials = scene->mNumMaterials;
 
-	vector<int> diffuseRemap(numMaterials); diffuseRemap = { -1, };
-	vector<int> specularRemap(numMaterials); specularRemap = { -1, };
+	vector<int> diffuseRemap(numMaterials); diffuseRemap.assign(numMaterials, -1);
+	vector<int> specularRemap(numMaterials); specularRemap.assign(numMaterials, -1);
 
 	for (int i = 0; i < numMaterials; i++)
 	{
@@ -194,9 +194,12 @@ void CModel::Render(bool texture)
 		if (texture)
 		{
 			int specIndex = materialIndices[i][1];
-			if (specIndex >= 0) textures[specIndex].Bind(2);
+			if (specIndex >= 0) 
+				textures[specIndex].Bind(2);
+
 			int diffIndex = materialIndices[i][0];
-			if (diffIndex >= 0) textures[diffIndex].Bind();
+			if (diffIndex >= 0) 
+				textures[diffIndex].Bind();
 		}
 
 		glDrawArrays(GL_TRIANGLES, meshStartIndices[i], meshSize[i]);

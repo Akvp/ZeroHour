@@ -110,6 +110,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Fog.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
     <ClCompile Include="AppStateMain.cpp" />
@@ -137,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppState.h" />
+    <ClInclude Include="Fog.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="LoadingScreen.h" />
     <ClInclude Include="AppStateManager.h" />

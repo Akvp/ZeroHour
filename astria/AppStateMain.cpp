@@ -25,9 +25,10 @@ void CAppStateMain::OnActivate()
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
 		GravityEnabled = false;
-		NumScene = 1;
+		FogEnabled = 1;
 		CLoadingScreen::OnActivate(&Loaded);
 		Loaded = OnLoad();
+		if (!Loaded)	CMain::GetInstance()->Running = false;
 		SDL_WaitThread(CLoadingScreen::GetThreadID(), NULL);
 	}
 
@@ -71,6 +72,7 @@ void CAppStateMain::OnExit()
 		ParticleEruption.Release();	TextureParticleEruption.Release();
 		ParticleSmoke.Release();	TextureParticleSmoke.Release();
 		ParticleFire.Release();		TextureParticleFire.Release();
+		ParticleSnow.Release();		TextureParticleSnow.Release();
 		ShaderVertex.Release();
 		ShaderFragment.Release();
 		ShaderInstancing.Release();
@@ -109,7 +111,7 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 	//Compute new orientation
 	HorizontalAngle += MouseSpeed * float(CMain::GetInstance()->GetWindowWidth() / 2 - Mouse_X);
 	VerticalAngle += MouseSpeed * float(CMain::GetInstance()->GetWindowHeight() / 2 - Mouse_Y);
-
+	Clamp(VerticalAngle, -CParams::Pi / 2.0, CParams::Pi / 2.0);
 }
 
 void CAppStateMain::OnUpdate()
@@ -155,6 +157,8 @@ void CAppStateMain::OnUpdate()
 	ParticleEruption.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 	ParticleSmoke.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 	ParticleFire.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
+	ParticleSnow.ChangePosition(glm::vec3(Position.x, Position.y + 200, Position.z));
+	ParticleSnow.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 
 	float dist = Distance(FirePosition, Position);
 	int vol = 1/(dist - 50) * MIX_MAX_VOLUME;
@@ -173,10 +177,9 @@ void CAppStateMain::OnRender()
 	ProgramMain.SetUniform("matrices.mView", &ViewMatrix);
 	ProgramMain.SetUniform("mat.diffuse", 0);
 	ProgramMain.SetUniform("mat.specular", 2);
-
 	ProgramMain.SetUniform("matrices.mModel", glm::mat4(1.0));
 	ProgramMain.SetUniform("matrices.mNormal", glm::mat4(1.0));
-
+	CFog::SetUniforms(&ProgramMain, FogEnabled);
 	//Set light uniform
 	Sun.SetUniform(&ProgramMain, "sunLight");
 
@@ -214,6 +217,7 @@ void CAppStateMain::OnRender()
 	ProgramInstancing.SetUniform("mat.diffuse", 0);
 	ProgramInstancing.SetUniform("mat.specular", 2);
 	Sun.SetUniform(&ProgramInstancing, "sunLight");
+	CFog::SetUniforms(&ProgramInstancing, FogEnabled);
 	SmallTree.RenderInstanced();
 
 	//Render ground
@@ -228,6 +232,7 @@ void CAppStateMain::OnRender()
 	Program_Terrain->SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", glm::mat4(1.0));
 	Program_Terrain->SetUniform("vColor", glm::vec4(1, 1, 1, 1));
 	Sun.SetUniform(Program_Terrain, "sunLight");
+	CFog::SetUniforms(Program_Terrain, FogEnabled);
 	//Diffuse textures			//Specular textures
 	TextureTerrain[0].Bind(0);	TextureTerrain[1].Bind(1);
 	TextureTerrain[2].Bind(2);	TextureTerrain[3].Bind(3);
@@ -248,6 +253,10 @@ void CAppStateMain::OnRender()
 	TextureParticleFire.Bind();
 	ParticleFire.Update(FrameInterval);
 	ParticleFire.Render();
+
+	TextureParticleSnow.Bind();
+	ParticleSnow.Update(FrameInterval);
+	ParticleSnow.Render();
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
@@ -379,6 +388,20 @@ bool CAppStateMain::OnLoad()
 		0.2,
 		10);
 
+	TextureParticleSnow.Load_2D("gfx/img/SnowParticle.png", true);
+	ParticleSnow.Init();
+	ParticleSnow.Set(
+		glm::vec3(0, 500, 0),
+		glm::vec3(-30, -20, -30),
+		glm::vec3(30, -50, 30),
+		glm::vec3(0, -50, 0),
+		glm::vec3(0.2, 0.2, 0.2),
+		50.0f,
+		80.0f,
+		1.0f,
+		0.1f,
+		30);
+
 	//Used for wire frame
 	PolyMode = GL_FILL;
 
@@ -389,7 +412,10 @@ bool CAppStateMain::OnLoad()
 	Skybox.Load(CParams::SkyboxFolder);
 
 	//Load sun light
-	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.1, -1.2, 1), 0.2f, 0.8f);
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.1, -1.2, 1), 0.2f, 0.5f);
+
+	//Enable fog
+	CFog::Properties(0.005, glm::vec4(0.8, 0.8, 0.8, 1.0));
 
 	//Load camera properties
 	Position = glm::vec3(-78, 135, 76);
@@ -440,12 +466,6 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		pos = Stringify::Float(Position.x) + " " + Stringify::Float(Position.y) + " " + Stringify::Float(Position.z) + "\n";
 		Warning("Position", pos);
 		break;
-	case SDLK_PAGEUP:
-		NumScene = min(NumScene + 1, 3);
-		break;
-	case SDLK_PAGEDOWN:
-		NumScene = max(NumScene - 1, 0);
-		break;
 
 		//Movement Keys
 	case SDLK_w:
@@ -473,6 +493,9 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 			PolyMode = GL_FILL;
 			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
 		}
+		break;
+	case SDLK_f:
+		FogEnabled = 1 - FogEnabled;
 		break;
 	}
 }

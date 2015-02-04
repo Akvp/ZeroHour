@@ -11,10 +11,13 @@ This is an OpenGL demo showcasing many rasterizing techniques used in games such
  - Multiple lighting techniques such as directional sun light, point light and spotlight
 
 ##(Ready to go)
-To run the demo, go to the Release folder and execute astria.exe 
+Download the demo [**HERE**](https://drive.google.com/file/d/0BwiufLZ-yoAOb0xZZ2hFRjNkeTQ/view?usp=sharing)
+**OR**
+Clone this repo and run the executable in Release folder
 
-**Disclaimer: the project has only been extensively tested on nVidia GPU 
-and may cause unexpected graphical glitches on AMD or Intel GPU**
+
+**Disclaimer:** This demo has only been extensively tested on nVidia GPUs 
+and may cause unexpected visual artifacts on AMD or Intel GPUs
 
 A video demo will be available soon
 
@@ -34,7 +37,7 @@ Requirement to build this project:
 Many loading parameters can be modified in params.ini file located in the same folder as the executable
 
 ##Version
-__0.2.0__
+__0.2.1__
 
 For more information please refer to changelog.txt file 
 

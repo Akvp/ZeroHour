@@ -154,6 +154,11 @@ void CParticleSystem::Render()
 	glDisable(GL_BLEND);
 }
 
+void CParticleSystem::ChangePosition(glm::vec3 position)
+{
+	Position = position;
+}
+
 void CParticleSystem::Clear()
 {
 

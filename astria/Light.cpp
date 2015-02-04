@@ -24,6 +24,8 @@ void CDirectLight::SetUniform(CShaderProgram* program, std::string lightVarName)
 	program->SetUniform(lightVarName + ".fBrightness", Brightness);
 }
 
+//=============================================================================================
+
 CPointLight::CPointLight()
 {
 	Color = glm::vec3(1.0f, 1.0f, 1.0f);

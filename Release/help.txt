@@ -1,0 +1,8 @@
+WASD		- Movement
+Mouse		- Look
+MouseWheel	- Zoom In/Out
+Q		- Toggle Wireframe mode
+F		- Toggle fog (to see the beautiful skybox)
+F2		- Toggle faster movement speed
+F3		- Toggle gravity (also collision with map)
+Escape		- Pause
