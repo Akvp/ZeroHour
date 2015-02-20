@@ -3,10 +3,11 @@ I learned most of OpenGL techniques present in this program from
 www.mbsoftworks.sk
 www.opengl-tutorial.org
 www.learnopengl.com
-
 SplashScreen	- Perilous Ice Shape by tobylewin 
 		  at tobylewin.deviantart.com
+Skybox		- from www.custommapmakers.org/skyboxes.php
 Models		- tf3dm.com
 		- www.turbosquid.com
 Font		- After shok by eightface
+		- Gunplay by Typodermic Fonts
 Music		- Self Esteem Fund from Portal

@@ -1,3 +1,7 @@
+- 0.2.2
+  - Added FreeTypeFont
+  - Changed some key mappings
+
 - 0.2.1
   - Added fog effect
   - Fixed an old texture mapping bug

@@ -37,6 +37,8 @@ public:
 	void Render();
 	void Update(float time);
 
+	void SetMaxParticles(int count);
+
 	void Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 acceleration, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count);
 
 	void ChangePosition(glm::vec3 position);
@@ -48,7 +50,7 @@ public:
 	void SetMatrices(glm::mat4* projection, glm::mat4* view, glm::vec3 direction);
 
 private:
-	static const int MAX_PARTICLES = 100000;
+	static int MAX_PARTICLES;
 
 	bool Initialized;
 	GLuint TransformFeedbackBuffer;

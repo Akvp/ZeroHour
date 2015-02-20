@@ -34,8 +34,8 @@ public:
 
 private:
 	static CAppStateMain Instance;
-	bool Loaded;
-	bool OnLoad();
+	int Loaded;
+	int OnLoad();
 	SDL_GLContext glContext;
 
 	const int OPENGL_MAJOR_VERSION = 3;
@@ -60,6 +60,9 @@ private:
 	CShaderProgram ProgramMain;
 	CShader ShaderInstancing;
 	CShaderProgram ProgramInstancing;
+	CShader ShaderFontVertex;
+	CShader ShaderFontFragment;
+	CShaderProgram ProgramFont;
 
 	GLuint PolyMode;	//Used for wireframe
 
@@ -92,6 +95,7 @@ private:
 	glm::mat4 ProjectionMatrix;
 	glm::mat4 ViewMatrix;
 	glm::mat4 ModelMatrix;
+	glm::mat4 OrthogonalMatrix;
 
 	//Movements and related Matrix transformations
 	glm::vec3 Position;		//Position of the camera
@@ -114,6 +118,10 @@ private:
 	//Music and sound effects
 	CMusic MusicMain;
 	CSoundEffect SoundFire;
+
+	//Font
+	Text_GL FontGunplay;
+	Text_GL FontEthnocentric;
 };
 
 

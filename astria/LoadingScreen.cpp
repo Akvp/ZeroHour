@@ -2,9 +2,10 @@
 #include "Main.h"
 
 SDL_Thread* CLoadingScreen::Thread_Loading = NULL;
-bool* CLoadingScreen::Condition = NULL;
+int* CLoadingScreen::Condition = NULL;
+int CLoadingScreen::StartTime = 0;
 
-void CLoadingScreen::OnActivate(bool* condition)
+void CLoadingScreen::OnActivate(int* condition)
 {
 	Condition = condition;
 	//Create a new thread
@@ -18,6 +19,7 @@ SDL_Thread* CLoadingScreen::GetThreadID()
 
 int CLoadingScreen::OnExecute(void* ptr)
 {
+	StartTime = SDL_GetTicks();
 	OnLoad();
 	while (*Condition == 0)
 	{
@@ -49,6 +51,8 @@ void CLoadingScreen::OnUpdate()
 	{
 		CSpark::AddRandomSpark();
 	}
+	if (SDL_GetTicks() - StartTime >= 3000)
+		*Condition = -1;
 }
 
 void CLoadingScreen::OnRender()

@@ -8,7 +8,7 @@ CAppStateMain CAppStateMain::Instance;
 
 CAppStateMain::CAppStateMain()
 {
-	Loaded = false;
+	Loaded = 0;
 	snapshot = NULL;
 }
 
@@ -76,14 +76,19 @@ void CAppStateMain::OnExit()
 		ShaderVertex.Release();
 		ShaderFragment.Release();
 		ShaderInstancing.Release();
+		ShaderFontVertex.Release();
+		ShaderFontFragment.Release();
 		ProgramMain.Release();
 		ProgramInstancing.Release();
+		ProgramFont.Release();
 		Skybox.Release();
 		CHeightMap::ReleaseShaderProgram();
 		for (int i = 0; i < 6; i++) TextureTerrain[i].Release();
 		Map.Release();
 		SoundFire.Release();
 		MusicMain.Release();
+		FontGunplay.Release();
+		FontEthnocentric.Release();
 	}
 }
 
@@ -153,6 +158,8 @@ void CAppStateMain::OnUpdate()
 		Up
 		);
 
+	OrthogonalMatrix = glm::ortho(0.0f, (float)CMain::GetInstance()->GetWindowWidth(), 0.0f, (float)CMain::GetInstance()->GetWindowHeight());
+
 	//Set matrices for particle program
 	ParticleEruption.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 	ParticleSmoke.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
@@ -169,6 +176,8 @@ void CAppStateMain::OnRender()
 {
 	//Clear the screen for each frame
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glEnable(GL_DEPTH_TEST);
 
 	//Use shaders
 	ProgramMain.Use();
@@ -258,10 +267,21 @@ void CAppStateMain::OnRender()
 	ParticleSnow.Update(FrameInterval);
 	ParticleSnow.Render();
 
+	//Print text
+	ProgramFont.Use();
+	glDisable(GL_DEPTH_TEST);
+	ProgramFont.SetUniform("matrices.projMatrix", OrthogonalMatrix);
+	int height = CMain::GetInstance()->GetWindowHeight();
+	ProgramFont.SetUniform("vColor", glm::vec4(1.0, 1.0, 1.0, 1.0f));
+	FontEthnocentric.PrintFormatted(25, 25, 18, "Shao Kun Deng | Project ASTRIA v.%s", CParams::VersionNumber);
+	ProgramFont.SetUniform("vColor", glm::vec4(0.4, 0.4, 0.4, 1.0f));
+	FontGunplay.PrintFormatted(20, height - 30, 18, "FPS: %d", CFPS::FPSControl.GetFPS());
+	FontGunplay.Print(HelpText, 20, height - 50, 18);
+
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
 
-bool CAppStateMain::OnLoad()
+int CAppStateMain::OnLoad()
 {
 	//Initialize GLEW
 	glewExperimental = GL_TRUE;
@@ -269,7 +289,7 @@ bool CAppStateMain::OnLoad()
 	if (glewInitStatus != GLEW_OK)
 	{
 		Error("Loading error", (char*)(glewGetErrorString(glewInitStatus)));
-		return false;
+		return -1;
 	}
 
 	//Disable Vsync to prevent framerate capping at refresh rate
@@ -296,15 +316,21 @@ bool CAppStateMain::OnLoad()
 
 	//Load shaders and programs
 	if (!ShaderVertex.Load("shaders/main_shader.vert", GL_VERTEX_SHADER))
-		return false;
+		return -1;
 	if (!ShaderFragment.Load("shaders/main_shader.frag", GL_FRAGMENT_SHADER))
-		return false;
+		return -1;
 	if (!ProgramMain.Initiate(&ShaderVertex, &ShaderFragment))
-		return false;
+		return -1;
 	if (!ShaderInstancing.Load("shaders/instancing.vert", GL_VERTEX_SHADER))
-		return false;
+		return -1;
 	if (!ProgramInstancing.Initiate(&ShaderInstancing, &ShaderFragment))
-		return false;
+		return -1;
+	if (!ShaderFontVertex.Load("shaders/ortho2D.vert", GL_VERTEX_SHADER))
+		return -1;
+	if (!ShaderFontFragment.Load("shaders/font2D.frag", GL_FRAGMENT_SHADER))
+		return -1;
+	if (!ProgramFont.Initiate(&ShaderFontVertex, &ShaderFontFragment))
+		return -1;
 
 	//Load terrain
 	string TextureNames[] = { "sand.jpg", "sand_specular.jpg", "grass.jpg", "grass_specular.jpg", "snow.jpg", "snow_specular.png" };
@@ -428,9 +454,18 @@ bool CAppStateMain::OnLoad()
 	MusicMain.Play();
 
 	SoundFire.Load("sound/fireplace.wav", 1);
+	//This is need so we dont hear the sound effect for a split second at the very beginning
+	float dist = Distance(FirePosition, Position);
+	int vol = 1 / (dist - 50) * MIX_MAX_VOLUME;
+	SoundFire.SetVolume(vol);
 	SoundFire.Play(-1);
 
-	return true;
+	FontGunplay.LoadFont("ttf/gunplay.ttf", 32);
+	FontGunplay.SetShader(&ProgramFont);
+	FontEthnocentric.LoadFont("ttf/ethnocentric.ttf", 32);
+	FontEthnocentric.SetShader(&ProgramFont);
+
+	return 1;
 }
 
 SDL_Texture* CAppStateMain::GetSnapshot()
@@ -453,14 +488,6 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 			CMain::GetInstance()->Running = false;
 		}
 		break;
-	case SDLK_F2:
-		//Faster movement speed for quicker debugging xD
-		Speed = (Speed == 0.5) ? 5 : 0.5;
-		break;
-	case SDLK_F3:
-		//Disable gravity
-		GravityEnabled = !GravityEnabled;
-		break;
 	case SDLK_F12:
 		//Prompt current position
 		pos = Stringify::Float(Position.x) + " " + Stringify::Float(Position.y) + " " + Stringify::Float(Position.z) + "\n";
@@ -481,6 +508,12 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		MoveLeft = true;
 		break;
 
+	//Sprint mode
+	case SDLK_LSHIFT:
+	case SDLK_RSHIFT:
+		Speed = 3;
+		break;
+
 		//Switch between normal model and wireframe
 	case SDLK_q:
 		if (PolyMode == GL_FILL)
@@ -496,6 +529,10 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		break;
 	case SDLK_f:
 		FogEnabled = 1 - FogEnabled;
+		break;
+	case SDLK_g:
+		//Toggle gravity
+		GravityEnabled = !GravityEnabled;
 		break;
 	}
 }
@@ -515,6 +552,11 @@ void CAppStateMain::OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
 		break;
 	case SDLK_a:
 		MoveLeft = false;
+		break;
+
+	case SDLK_LSHIFT:
+	case SDLK_RSHIFT:
+		Speed = 0.5;
 		break;
 	}
 }

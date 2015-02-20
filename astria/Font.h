@@ -4,6 +4,15 @@
 #include "Common.h"
 #include "Shader.h"
 #include "VBO.h"
+#include "Texture.h"
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+#ifdef _DEBUG
+#pragma comment(lib, "freetype255d.lib")
+#else
+#pragma comment(lib, "freetype255.lib")
+#endif
 
 enum TTF_RENDER_TYPE
 {
@@ -65,13 +74,39 @@ class Text_GL
 {
 public:
 	Text_GL();
-	bool Load(Font_SDL* font, std::string text, SDL_Color color, TTF_RENDER_TYPE type);
+
+	bool LoadFont(std::string file, int size);
+	bool LoadSystemFont(std::string font, int size);
+
+	int GetTextWidth(std::string text, int size);
+
+	void Print(std::string text, int x, int y, int size = -1);
+	void PrintFormatted(int x, int y, int size, char* text, ...);
+
+	void Release();
+	void SetShader(CShaderProgram* program);
+
+	//For debugging
+#ifdef _DEBUG
+	CTexture* GetTexture() { return CharTextures; }
+#endif
+
 private:
-	GLuint Texture;
+	void CreateChar(int index);
+
+	CTexture CharTextures[256];
+	int AdvX[256], AdvY[256];
+	int BearingX[256], BearingY[256];
+	int CharW[256], CharH[256];
+	int PixelSize, NewLine;
+
+	bool Loaded;
 
 	GLuint VAO;
-	CVBO VBO;
+	CVBO vboData;
 
-	CShaderProgram* Program;
+	FT_Library Library;
+	FT_Face Face;
+	CShaderProgram* ProgramFont;
 };
 #endif

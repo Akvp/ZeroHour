@@ -1,5 +1,7 @@
 #include "ParticleSystem.h"
 
+int CParticleSystem::MAX_PARTICLES = 100000;
+
 CParticleSystem::CParticleSystem()
 {
 	Initialized = false;
@@ -127,6 +129,11 @@ void CParticleSystem::Update(float time)
 
 	CurrentReadBuffer = 1 - CurrentReadBuffer;
 	glBindTransformFeedback(GL_TRANSFORM_FEEDBACK, 0);
+}
+
+void CParticleSystem::SetMaxParticles(int count)
+{
+	MAX_PARTICLES = count;
 }
 
 void CParticleSystem::Render()

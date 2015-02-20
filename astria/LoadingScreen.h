@@ -22,7 +22,7 @@ class CLoadingScreen
 public:	
 	//Activate the loading screen
 	//Loading screen will run on a seperate thread until condition variable becomes true
-	static void OnActivate(bool* condition);
+	static void OnActivate(int* condition);
 
 	static SDL_Thread* GetThreadID();
 
@@ -33,9 +33,11 @@ private:
 	static void OnRender();
 	static void OnUnload();
 	static void OnExit();
+
+	static int StartTime;
 	
 	static SDL_Thread* Thread_Loading;
-	static bool* Condition;
+	static int* Condition;
 };
 
 class CSpark
