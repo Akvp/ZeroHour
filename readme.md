@@ -11,7 +11,7 @@ This is an OpenGL demo showcasing many rasterizing techniques used in games such
  - Multiple lighting techniques such as directional sun light, point light and spotlight
 
 ##(Ready to go)
-Download the demo [**HERE**](https://drive.google.com/file/d/0BwiufLZ-yoAOb0xZZ2hFRjNkeTQ/view?usp=sharing)
+Download the demo [**HERE**](https://drive.google.com/file/d/0BwiufLZ-yoAOR1prR3Zod1hwOFE/view?usp=sharing)
 **OR**
 Clone this repo and run the executable in Release folder
 
@@ -37,7 +37,7 @@ Requirement to build this project:
 Many loading parameters can be modified in params.ini file located in the same folder as the executable
 
 ##Version
-__0.2.1__
+__0.2.2__
 
 For more information please refer to changelog.txt file 
 
