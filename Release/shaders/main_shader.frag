@@ -1,16 +1,9 @@
 #version 330
 
-#include
-
-smooth in vec2 vTexCoord;
-smooth in vec3 vNormal;
-smooth in vec4 vEyeSpacePos;
-smooth in vec3 vWorldPos;
-out vec4 outputColor;
-
 struct Material
 {
 	sampler2D diffuse;
+	sampler2D normal;
 	sampler2D specular;
 };
 
@@ -54,6 +47,16 @@ uniform FogParameters fogParams;
 
 uniform int bSkybox;
 uniform int bFog;
+uniform bool bEnableNormalMap;
+
+smooth in vec2 vTexCoord;
+smooth in vec3 vNormal;
+smooth in vec4 vEyeSpacePos;
+smooth in vec3 vWorldPos;
+in vec3 vLightDir_tangentspace;
+in vec3 vEyeDir_tangentspace;
+
+out vec4 outputColor;
 
 void main()
 {
@@ -69,21 +72,29 @@ void main()
 		return;
 	}
 
-	vec3 vNormalized = normalize(vNormal);
+	vec3 vNormal_extended = normalize(vNormal);
+	vec3 vLightDir = sunLight.vDirection;
+
+	if(bEnableNormalMap)
+	{
+		vNormal_extended = normalize(texture2D(mat.normal, vTexCoord).rgb*2.0-1.0);
+		vLightDir = vLightDir_tangentspace;
+	}
 
 	//Diffuse light
-	float fDiffuseIntensity = clamp(dot(vNormal, -sunLight.vDirection), 0.0, 1.0);
+	float fDiffuseIntensity = clamp(dot(vNormal_extended, -vLightDir), 0.0, 1.0);
 	vec3 vDiffuseColor = pow(sunLight.fBrightness,2) * sunLight.vColor * fDiffuseIntensity * vec3(texture2D(mat.diffuse, vTexCoord));
+	//vDiffuseColor = vec3(0,0,0);
 	
 	//Ambient
 	vec3 vAmbientColor = sunLight.vColor * sunLight.fAmbient * vec3(texture2D(mat.diffuse, vTexCoord));
 	
 	//Specular
-	vec3 vReflected = normalize(reflect(sunLight.vDirection, vNormalized));
+	vec3 vReflected = (reflect(sunLight.vDirection, vNormal));	//Not using normal map yet
 	vec3 vView = normalize(vEyePosition - vWorldPos);
 	float fSpecularIntensity = clamp(dot(vReflected, vView), 0, 1);
 	vec3 vSpecularColor = 0.6 * sunLight.vColor * fSpecularIntensity * vec3(texture2D(mat.specular, vTexCoord));
-
+	
 	outputColor = vec4(vAmbientColor + vDiffuseColor + vSpecularColor, 1.0f);
 	
 	if (bFog == 1)

@@ -51,8 +51,8 @@ void CLoadingScreen::OnUpdate()
 	{
 		CSpark::AddRandomSpark();
 	}
-	if (SDL_GetTicks() - StartTime >= 3000)
-		*Condition = -1;
+//	if (SDL_GetTicks() - StartTime >= 3000)
+//		*Condition = -1;
 }
 
 void CLoadingScreen::OnRender()

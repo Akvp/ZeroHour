@@ -26,20 +26,30 @@ public:
 
 	void Render(bool texture = true);
 
+	bool NormalMap() { return bNormalMap; }
+
 	//Release all model
 	static void ReleaseAll();
 
 protected:
-	bool loaded;
+	bool Loaded;
+	bool bNormalMap;
 	static CVBO vboModelData;
+	static CVBO vboTangentData;
 	static GLuint VAO;
-	static vector<CTexture> textures;
+	static vector<CTexture> TextureDiffuse;
+	static vector<CTexture> TextureNormal;
+	static vector<CTexture> TextureSpecular;
 	vector<int> meshStartIndices;
 	vector<int> meshSize;
-	vector<vector<int>> materialIndices;	
+
+	vector<int> DiffuseIndices;
+	vector<int> NormalIndices;
+	vector<int> SpecularIndices;
 	int numMaterials;
 };
 
+//For now, i only implemented instancing with varying model matrix
 class CInstancedModel : public CModel
 {
 public:

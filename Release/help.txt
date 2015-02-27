@@ -2,7 +2,6 @@ WASD - Movement
 Mouse - Look
 MouseWheel - Zoom In/Out
 Hold Shift - Toggle Sprint
-Q - Toggle Wireframe Mode
 F - Toggle Fog (to see the beautiful skybox)
 G - Toggle Gravity (also collision with map)
 Escape - Pause

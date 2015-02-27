@@ -64,8 +64,6 @@ private:
 	CShader ShaderFontFragment;
 	CShaderProgram ProgramFont;
 
-	GLuint PolyMode;	//Used for wireframe
-
 	//Skybox and lighting
 	CSkybox Skybox;
 	CDirectLight Sun;

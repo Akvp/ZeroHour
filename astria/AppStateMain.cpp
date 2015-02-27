@@ -185,6 +185,7 @@ void CAppStateMain::OnRender()
 	ProgramMain.SetUniform("matrices.mProjection", &ProjectionMatrix);
 	ProgramMain.SetUniform("matrices.mView", &ViewMatrix);
 	ProgramMain.SetUniform("mat.diffuse", 0);
+	ProgramMain.SetUniform("mat.normal", 1);
 	ProgramMain.SetUniform("mat.specular", 2);
 	ProgramMain.SetUniform("matrices.mModel", glm::mat4(1.0));
 	ProgramMain.SetUniform("matrices.mNormal", glm::mat4(1.0));
@@ -209,6 +210,7 @@ void CAppStateMain::OnRender()
 	newPos.y = Map.GetHeight(newPos);
 	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	ProgramMain.SetUniform("bEnableNormalMap", true);
 	models[0].Render();
 
 	newPos = glm::vec3(64, 0, 193);
@@ -217,6 +219,7 @@ void CAppStateMain::OnRender()
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(5.0));
 	ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	ProgramMain.SetUniform("bEnableNormalMap", models[1].NormalMap());
 	models[1].Render();
 
 	//Render instanced models
@@ -225,6 +228,7 @@ void CAppStateMain::OnRender()
 	ProgramInstancing.SetUniform("matrices.mView", ViewMatrix);
 	ProgramInstancing.SetUniform("mat.diffuse", 0);
 	ProgramInstancing.SetUniform("mat.specular", 2);
+	ProgramInstancing.SetUniform("bEnableNormalMap", false);
 	Sun.SetUniform(&ProgramInstancing, "sunLight");
 	CFog::SetUniforms(&ProgramInstancing, FogEnabled);
 	SmallTree.RenderInstanced();
@@ -428,9 +432,6 @@ int CAppStateMain::OnLoad()
 		0.1f,
 		30);
 
-	//Used for wire frame
-	PolyMode = GL_FILL;
-
 	//Model matrix //Identity matrix
 	ModelMatrix = glm::mat4(1.0f);
 
@@ -489,7 +490,7 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		}
 		break;
 	case SDLK_F12:
-		//Prompt current position
+		//Prompt current position, for debug purposes
 		pos = Stringify::Float(Position.x) + " " + Stringify::Float(Position.y) + " " + Stringify::Float(Position.z) + "\n";
 		Warning("Position", pos);
 		break;
@@ -514,19 +515,6 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		Speed = 3;
 		break;
 
-		//Switch between normal model and wireframe
-	case SDLK_q:
-		if (PolyMode == GL_FILL)
-		{
-			PolyMode = GL_LINE;
-			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
-		}
-		else if (PolyMode == GL_LINE)	//Useless but pretty cool
-		{
-			PolyMode = GL_FILL;
-			glPolygonMode(GL_FRONT_AND_BACK, PolyMode);
-		}
-		break;
 	case SDLK_f:
 		FogEnabled = 1 - FogEnabled;
 		break;
