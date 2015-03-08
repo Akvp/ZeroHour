@@ -74,27 +74,28 @@ void main()
 
 	vec3 vNormal_extended = normalize(vNormal);
 	vec3 vLightDir = sunLight.vDirection;
+	vec3 vEyeDirection = vEyePosition - vWorldPos;
 
 	if(bEnableNormalMap)
 	{
 		vNormal_extended = normalize(texture2D(mat.normal, vTexCoord).rgb*2.0-1.0);
-		vLightDir = vLightDir_tangentspace;
+		vLightDir = normalize(vLightDir_tangentspace);
+		vEyeDirection = vEyeDir_tangentspace;
 	}
 
 	//Diffuse light
 	float fDiffuseIntensity = clamp(dot(vNormal_extended, -vLightDir), 0.0, 1.0);
-	vec3 vDiffuseColor = pow(sunLight.fBrightness,2) * sunLight.vColor * fDiffuseIntensity * vec3(texture2D(mat.diffuse, vTexCoord));
-	//vDiffuseColor = vec3(0,0,0);
+	vec3 vDiffuseColor = sunLight.fBrightness * sunLight.vColor * fDiffuseIntensity * vec3(texture2D(mat.diffuse, vTexCoord));
 	
 	//Ambient
 	vec3 vAmbientColor = sunLight.vColor * sunLight.fAmbient * vec3(texture2D(mat.diffuse, vTexCoord));
 	
-	//Specular
-	vec3 vReflected = (reflect(sunLight.vDirection, vNormal));	//Not using normal map yet
-	vec3 vView = normalize(vEyePosition - vWorldPos);
+	//Specular	
+	vec3 vReflected = reflect(vLightDir, vNormal_extended);
+	vec3 vView = normalize(vEyeDirection);
 	float fSpecularIntensity = clamp(dot(vReflected, vView), 0, 1);
-	vec3 vSpecularColor = 0.6 * sunLight.vColor * fSpecularIntensity * vec3(texture2D(mat.specular, vTexCoord));
-	
+	vec3 vSpecularColor = sunLight.fBrightness * 0.6 * sunLight.vColor * fSpecularIntensity * vec3(texture2D(mat.specular, vTexCoord));
+
 	outputColor = vec4(vAmbientColor + vDiffuseColor + vSpecularColor, 1.0f);
 	
 	if (bFog == 1)

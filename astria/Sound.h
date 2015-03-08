@@ -24,6 +24,9 @@ public:
 
 	static void Pause();
 	static void Resume();
+
+	static bool IsPlaying();
+	static bool IsPaused();
 private:
 	Mix_Music* Music;
 };
@@ -44,8 +47,10 @@ public:
 	//angle 0 = front, 90 = right
 	void SetPositionEffect(int angle, int dist);
 
-	static void PauseAll();
-	static void ResumeAll();
+	void Pause();
+	void Resume();
+	bool IsPlaying();
+	bool IsPaused();
 private:
 	Mix_Chunk* Sound;
 	int Channel;

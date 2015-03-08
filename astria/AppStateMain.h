@@ -108,6 +108,7 @@ private:
 
 	bool GravityEnabled;
 	int FogEnabled;
+	bool NormalMapEnabled;
 	
 	//Control parameters
 	float Speed;			//Speed of movements
@@ -116,6 +117,7 @@ private:
 	//Music and sound effects
 	CMusic MusicMain;
 	CSoundEffect SoundFire;
+	bool MusicPaused, SfxPaused;
 
 	//Font
 	Text_GL FontGunplay;

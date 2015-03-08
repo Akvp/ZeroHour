@@ -34,6 +34,12 @@
     <Filter Include="Resource Files\Shaders">
       <UniqueIdentifier>{05fae406-b96f-4462-bbbb-c06746f2a7ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{311b3d06-419e-4873-a895-8611ec9e0fa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{014cc848-c44b-4160-871e-b46fbe2e6eee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Shader.cpp">

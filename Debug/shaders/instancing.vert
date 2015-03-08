@@ -1,9 +1,19 @@
 #version 330 
 
-layout(location = 0) in vec3 inPosition;
-layout(location = 1) in vec2 inCoords;
-layout(location = 2) in vec3 inNormal;
-layout(location = 3) in mat4 inModelMatrix;
+layout (location = 0) in vec3 inPosition;
+layout (location = 1) in vec2 inCoords;
+layout (location = 2) in vec3 inNormal;
+layout (location = 3) in vec3 inTangent;
+layout (location = 4) in vec3 inBitangent;
+layout (location = 5) in mat4 inModelMatrix;
+
+struct DirectionalLight
+{
+	vec3 vColor;
+	vec3 vDirection;
+	float fAmbient;
+	float fBrightness;
+};
 
 uniform struct Matrices
 {
@@ -14,6 +24,11 @@ uniform struct Matrices
 smooth out vec3 vNormal;
 smooth out vec2 vTexCoord;
 smooth out vec3 vWorldPos;
+
+out vec3 vLightDir_tangentspace;
+
+uniform DirectionalLight sunLight;
+uniform bool bEnableNormalMap;
 
 void main()
 {

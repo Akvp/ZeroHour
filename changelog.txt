@@ -1,3 +1,8 @@
+- 0.2.3a
+  - Added Normal Mapping to specular lighting
+  - Added Music/Sound effect pause/resume
+  - Fixed minor instancing bug
+
 - 0.2.3
   - Added Normal Mapping (quite laggy and only diffuse textures use it for now)
 

@@ -8,6 +8,7 @@ SplashScreen	- Perilous Ice Shape by tobylewin
 Skybox		- from www.custommapmakers.org/skyboxes.php
 Models		- tf3dm.com
 		- www.turbosquid.com
-Font		- After shok by eightface
-		- Gunplay by Typodermic Fonts
+Font		- After shok	by eightface
+		- Gunplay	by Typodermic Fonts
+		- Ethnocentric	by Typodermic Fonts
 Music		- Self Esteem Fund from Portal

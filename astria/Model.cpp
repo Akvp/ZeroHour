@@ -310,20 +310,18 @@ void CInstancedModel::UploadMatrices(int count, glm::mat4* model)
 
 	glBindVertexArray(VAO);
 
-	
 	vboMatrixData.AddData(model, count*sizeof(glm::mat4));
 	
-
 	vboMatrixData.Bind();
 	vboMatrixData.UploadGPU(GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)0);
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(sizeof(glm::vec4)));
 	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(2 * sizeof(glm::vec4)));
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)0);
 	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(sizeof(glm::vec4)));
+	glEnableVertexAttribArray(7);
+	glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(2 * sizeof(glm::vec4)));
+	glEnableVertexAttribArray(8);
 	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(glm::vec4), (GLvoid*)(3 * sizeof(glm::vec4)));
 
 	glVertexAttribDivisor(5, 1);

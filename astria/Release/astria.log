@@ -1,18 +1,7 @@
-﻿Build started 2/27/2015 3:21:29 AM.
+﻿Build started 3/8/2015 5:42:31 PM.
      1>Project "C:\Users\kvp_\astria\astria\astria.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /IC:\Users\kvp_\Documents\LocalSDK\include\freetype /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D _CRT_NONSTDC_NO_DEPRECATE /D _CRT_SECURE_NO_DEPRECATE /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Model.cpp
-         Model.cpp
-     1>Model.cpp(65): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(115): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(123): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(144): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(152): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(174): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(182): warning C4018: '<' : signed/unsigned mismatch
-     1>Model.cpp(204): warning C4018: '<' : signed/unsigned mismatch
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kvp_\astria\Release\astria.exe" /NOLOGO SDL2.lib SDL2main.lib SDL2_image.lib SDL2_ttf.lib SDL2_mixer.lib opengl32.lib glu32.lib glew32.lib assimp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\kvp_\astria\Release\astria.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\kvp_\astria\Release\astria.lib" /MACHINE:X86 /SAFESEH Release\Fog.obj
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kvp_\astria\Release\astria.exe" /NOLOGO /LIBPATH:C:\Users\kvp_\Documents\LocalSDK\physx332\Lib\vc11win32 SDL2.lib SDL2main.lib SDL2_image.lib SDL2_ttf.lib SDL2_mixer.lib opengl32.lib glu32.lib glew32.lib assimp.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\kvp_\astria\Release\astria.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\kvp_\astria\Release\astria.lib" /MACHINE:X86 /SAFESEH /NODEFAULTLIB:libcmt.lib Release\Fog.obj
          Release\Font.obj
          Release\LoadingScreen.obj
          Release\AppStateMain.obj
@@ -28,6 +17,7 @@
          Release\Light.obj
          Release\Model.obj
          Release\ParticleSystem.obj
+         Release\PxMain.obj
          Release\Shader.obj
          Release\Skybox.obj
          Release\Sound.obj
@@ -37,11 +27,29 @@
          Release\Texture_SDL.obj
          Release\VBO.obj
          Release\Water.obj
-         Generating code
-         Finished generating code
-         astria.vcxproj -> C:\Users\kvp_\astria\Release\astria.exe
-     1>Done Building Project "C:\Users\kvp_\astria\astria\astria.vcxproj" (Build target(s)).
+     1>PhysX3Extensions.lib(ExtExtensions.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtDefaultSimulationFilterShader.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtDefaultErrorCallback.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtDefaultCpuDispatcher.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtDistanceJoint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtD6Joint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtFixedJoint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtPrismaticJoint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtRevoluteJoint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtSphericalJoint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(SnRepXCoreSerializer.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(SnJointRepXSerializer.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtCpuWorkerThread.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtDistanceJointSolverPrep.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtJoint.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtD6JointSolverPrep.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtFixedJointSolverPrep.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtPrismaticJointSolverPrep.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtRevoluteJointSolverPrep.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>PhysX3Extensions.lib(ExtSphericalJointSolverPrep.obj) : error LNK2038: mismatch detected for 'RuntimeLibrary': value 'MT_StaticRelease' doesn't match value 'MD_DynamicRelease' in Fog.obj
+     1>C:\Users\kvp_\astria\Release\astria.exe : fatal error LNK1319: 20 mismatches detected
+     1>Done Building Project "C:\Users\kvp_\astria\astria\astria.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:05.30
+Time Elapsed 00:00:03.70

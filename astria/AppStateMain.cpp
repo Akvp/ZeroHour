@@ -26,6 +26,7 @@ void CAppStateMain::OnActivate()
 		MouseSpeed = 0.0015f;
 		GravityEnabled = false;
 		FogEnabled = 1;
+		NormalMapEnabled = true;
 		CLoadingScreen::OnActivate(&Loaded);
 		Loaded = OnLoad();
 		if (!Loaded)	CMain::GetInstance()->Running = false;
@@ -33,7 +34,7 @@ void CAppStateMain::OnActivate()
 	}
 
 	//Resume all sound effects for when we return from pause
-	CSoundEffect::ResumeAll();
+	if(!SfxPaused) SoundFire.Resume();
 
 	//Hide mouse cursor
 	if (SDL_ShowCursor(SDL_DISABLE) < 0)
@@ -57,7 +58,7 @@ void CAppStateMain::OnDeactivate()
 	SDL_FreeSurface(Surf_Tmp);
 
 	//Pause all sound effects
-	CSoundEffect::PauseAll();
+	SoundFire.Pause();
 
 	SDL_ShowCursor(SDL_ENABLE);
 }
@@ -210,7 +211,7 @@ void CAppStateMain::OnRender()
 	newPos.y = Map.GetHeight(newPos);
 	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-	ProgramMain.SetUniform("bEnableNormalMap", true);
+	ProgramMain.SetUniform("bEnableNormalMap", NormalMapEnabled);
 	models[0].Render();
 
 	newPos = glm::vec3(64, 0, 193);
@@ -219,10 +220,11 @@ void CAppStateMain::OnRender()
 	ModelMatrix = glm::scale(ModelMatrix, glm::vec3(5.0));
 	ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
 	ProgramMain.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
-	ProgramMain.SetUniform("bEnableNormalMap", models[1].NormalMap());
+	ProgramMain.SetUniform("bEnableNormalMap", NormalMapEnabled);
 	models[1].Render();
 
 	//Render instanced models
+	CModel::BindVAO();
 	ProgramInstancing.Use();
 	ProgramInstancing.SetUniform("matrices.mProjection", ProjectionMatrix);
 	ProgramInstancing.SetUniform("matrices.mView", ViewMatrix);
@@ -280,7 +282,8 @@ void CAppStateMain::OnRender()
 	FontEthnocentric.PrintFormatted(25, 25, 18, "Shao Kun Deng | Project ASTRIA v.%s", CParams::VersionNumber);
 	ProgramFont.SetUniform("vColor", glm::vec4(0.4, 0.4, 0.4, 1.0f));
 	FontGunplay.PrintFormatted(20, height - 30, 18, "FPS: %d", CFPS::FPSControl.GetFPS());
-	FontGunplay.Print(HelpText, 20, height - 50, 18);
+	FontGunplay.PrintFormatted(20, height - 50, 18, "Normal map: %s", NormalMapEnabled ? "Enabled" : "Disabled");
+	FontGunplay.Print(HelpText, 20, height - 70, 18);
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
 }
@@ -451,6 +454,7 @@ int CAppStateMain::OnLoad()
 	HorizontalAngle = 0.5f;
 	VerticalAngle = -0.1f;
 
+	MusicPaused = SfxPaused = false;
 	MusicMain.Load("sound/PortalSelfEsteemFund.mp3");
 	MusicMain.Play();
 
@@ -516,11 +520,23 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		break;
 
 	case SDLK_f:
+		//Toggle fog
 		FogEnabled = 1 - FogEnabled;
 		break;
 	case SDLK_g:
 		//Toggle gravity
 		GravityEnabled = !GravityEnabled;
+		break;
+	case SDLK_m:
+		//Toggle music
+		if (MusicPaused) { MusicMain.Resume(); MusicPaused = false;	}
+		else { MusicMain.Pause(); MusicPaused = true; }
+		if (SfxPaused) { SoundFire.Resume(); SfxPaused = false; }
+		else { SoundFire.Pause(); SfxPaused = true; }
+		break;
+	case SDLK_n:
+		//Toggle normal map
+		NormalMapEnabled = !NormalMapEnabled;
 		break;
 	}
 }

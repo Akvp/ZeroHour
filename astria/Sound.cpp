@@ -80,6 +80,16 @@ void CMusic::Resume()
 	}
 }
 
+bool CMusic::IsPlaying()
+{
+	return Mix_PlayingMusic();
+}
+
+bool CMusic::IsPaused()
+{
+	return Mix_PausedMusic();
+}
+
 //==================================================================================
 
 CSoundEffect::CSoundEffect()
@@ -126,12 +136,22 @@ void CSoundEffect::SetPositionEffect(int angle, int dist)
 	Mix_SetPosition(Channel, angle, dist);
 }
 
-void CSoundEffect::PauseAll()
+void CSoundEffect::Pause()
 {
-	Mix_Pause(-1);
+	Mix_Pause(Channel);
 }
 
-void CSoundEffect::ResumeAll()
+void CSoundEffect::Resume()
 {
-	Mix_Resume(-1);
+	Mix_Resume(Channel);
+}
+
+bool CSoundEffect::IsPlaying()
+{
+	return Mix_Playing(Channel);
+}
+
+bool CSoundEffect::IsPaused()
+{
+	return Mix_Paused(Channel);
 }
