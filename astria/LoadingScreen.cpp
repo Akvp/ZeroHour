@@ -77,6 +77,37 @@ int CSpark::count = 0;
 std::vector<CSpark> CSpark::sparkList;
 std::vector<Texture_SDL*> CSpark::textureList;
 
+CSpark::CSpark(SPARK_TYPE type, int size, int x, int y)
+{
+	this->frame = 0;
+	this->type = type;
+	this->size = size;
+	this->ID = freeID++;
+	this->xpos = x; this->ypos = y;
+	switch (type)
+	{
+	case BLUE_SPARK:
+		maxFrames = 83;
+		spriteFile = "blue_spark";
+		tileSize = 100;
+		framePerRow = 5;
+		break;
+	case ORANGE_SPARK:
+		maxFrames = 39;
+		spriteFile = "orange_spark";
+		tileSize = 141;
+		framePerRow = 5;
+		break;
+	case PINK_SPARK:
+		maxFrames = 40;
+		spriteFile = "pink_spark";
+		tileSize = 133;
+		framePerRow = 5;
+		break;
+	}
+	this->count++;
+}
+
 void CSpark::Load(int size)
 {
 	std::string files[] = { "blue_spark.png", "orange_spark.jpg", "pink_spark.jpg" };
@@ -133,8 +164,8 @@ void CSpark::OnRender()
 	for (int i = 0; i < sparkList.size(); i++)
 	{
 		int x, y;
-		x = (sparkList[i].frame % 5) * sparkList[i].tileSize;
-		y = (sparkList[i].frame / 5) * sparkList[i].tileSize;
+		x = (sparkList[i].frame % sparkList[i].framePerRow) * sparkList[i].tileSize;
+		y = (sparkList[i].frame / sparkList[i].framePerRow) * sparkList[i].tileSize;
 		textureList[sparkList[i].type]->Render(sparkList[i].xpos, sparkList[i].ypos, sparkList[i].size, sparkList[i].size, x, y, sparkList[i].tileSize, sparkList[i].tileSize);
 		sparkList[i].frame++;
 		if (sparkList[i].frame == sparkList[i].maxFrames) KillSpark(sparkList[i].ID);

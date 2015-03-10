@@ -118,6 +118,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FBO.cpp" />
     <ClCompile Include="Fog.cpp" />
     <ClCompile Include="Font.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
@@ -135,6 +136,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -146,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AppState.h" />
+    <ClInclude Include="FBO.h" />
     <ClInclude Include="Fog.h" />
     <ClInclude Include="Font.h" />
     <ClInclude Include="LoadingScreen.h" />
@@ -164,13 +167,13 @@
     <ClInclude Include="Params.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="Stringify.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureBank_SDL.h" />
     <ClInclude Include="Texture_SDL.h" />
-    <ClInclude Include="utils.h" />
     <ClInclude Include="VBO.h" />
     <ClInclude Include="Water.h" />
   </ItemGroup>

@@ -1,7 +1,6 @@
 ﻿#include "AppStateManager.h"
 #include "AppStateMain.h"
 #include "Main.h"
-#include "utils.h"
 #include "Stringify.h"
 
 CAppStateMain CAppStateMain::Instance;
@@ -168,7 +167,7 @@ void CAppStateMain::OnUpdate()
 	ParticleSnow.ChangePosition(glm::vec3(Position.x, Position.y + 200, Position.z));
 	ParticleSnow.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 
-	float dist = Distance(FirePosition, Position);
+	float dist = glm::distance(FirePosition, Position);
 	int vol = 1/(dist - 50) * MIX_MAX_VOLUME;
 	SoundFire.SetVolume(vol);
 }
@@ -257,19 +256,12 @@ void CAppStateMain::OnRender()
 	//Render particles
 	float fps = CFPS::FPSControl.GetFPS();
 	float FrameInterval = 1 / fps;
-	TextureParticleEruption.Bind();
 	ParticleEruption.Update(FrameInterval);
 	ParticleEruption.Render();
-
-	TextureParticleSmoke.Bind();
 	ParticleSmoke.Update(FrameInterval);
 	ParticleSmoke.Render();
-
-	TextureParticleFire.Bind();
 	ParticleFire.Update(FrameInterval);
 	ParticleFire.Render();
-
-	TextureParticleSnow.Bind();
 	ParticleSnow.Update(FrameInterval);
 	ParticleSnow.Render();
 
@@ -286,6 +278,11 @@ void CAppStateMain::OnRender()
 	FontGunplay.Print(HelpText, 20, height - 70, 18);
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
+}
+
+void CAppStateMain::RenderScene(CShaderProgram* modelProgram, CShaderProgram* instanceProgram, CShaderProgram* terrainProgram)
+{
+
 }
 
 int CAppStateMain::OnLoad()
@@ -375,9 +372,18 @@ int CAppStateMain::OnLoad()
 
 	ModelMatrices.clear(); ModelMatrices.shrink_to_fit();
 
+	std::string ParticleShaders[] =
+	{
+		"shaders/particles_update.vert",
+		"shaders/particles_update.geom",
+		"shaders/particles_render.vert",
+		"shaders/particles_render.geom",
+		"shaders/particles_render.frag"
+	};
+
 	//Load particles
-	TextureParticleEruption.Load_2D("gfx/particle.bmp", true);
-	ParticleEruption.Init();
+	ParticleEruption.Init(ParticleShaders);
+	ParticleEruption.SetTexture("gfx/particle.bmp");
 	FirePosition = glm::vec3(64, 0, 193);
 	FirePosition.y = Map.GetHeight(FirePosition);
 	ParticleEruption.Set(
@@ -392,8 +398,8 @@ int CAppStateMain::OnLoad()
 		0.02,	//Spawn interval
 		1000);	//Count i.e. number generated per frame
 
-	TextureParticleFire.Load_2D("gfx/img/FireParticle.jpg", true);
-	ParticleFire.Init();
+	ParticleFire.Init(ParticleShaders);
+	ParticleFire.SetTexture("gfx/img/FireParticle.jpg");
 	ParticleFire.Set(
 		FirePosition,
 		glm::vec3(-7, 8, -7),
@@ -407,8 +413,8 @@ int CAppStateMain::OnLoad()
 		50);
 
 	FirePosition.y += 3;
-	TextureParticleSmoke.Load_2D("gfx/img/SmokeParticle.jpg", true);
-	ParticleSmoke.Init();
+	ParticleSmoke.Init(ParticleShaders);
+	ParticleSmoke.SetTexture("gfx/img/SmokeParticle.jpg");
 	ParticleSmoke.Set(
 		FirePosition,
 		glm::vec3(-5, 8, -5),
@@ -421,8 +427,8 @@ int CAppStateMain::OnLoad()
 		0.2,
 		10);
 
-	TextureParticleSnow.Load_2D("gfx/img/SnowParticle.png", true);
-	ParticleSnow.Init();
+	ParticleSnow.Init(ParticleShaders);
+	ParticleSnow.SetTexture("gfx/img/SnowParticle.png");
 	ParticleSnow.Set(
 		glm::vec3(0, 500, 0),
 		glm::vec3(-30, -20, -30),
@@ -460,7 +466,7 @@ int CAppStateMain::OnLoad()
 
 	SoundFire.Load("sound/fireplace.wav", 1);
 	//This is need so we dont hear the sound effect for a split second at the very beginning
-	float dist = Distance(FirePosition, Position);
+	float dist = glm::distance(FirePosition, Position);
 	int vol = 1 / (dist - 50) * MIX_MAX_VOLUME;
 	SoundFire.SetVolume(vol);
 	SoundFire.Play(-1);

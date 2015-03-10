@@ -238,6 +238,13 @@ void CTexture::CreateFromData(BYTE* data, int width, int height, int BPP, GLenum
 	this->BPP = BPP;
 }
 
+void CTexture::SetWrap(int wrapS, int wrapT)
+{
+	glBindSampler(0, sampler);
+	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_S, wrapS);
+	glSamplerParameteri(sampler, GL_TEXTURE_WRAP_T, wrapT);
+}
+
 void CTexture::SetSamplerParameter(GLenum parameter, GLenum value)
 {
 	glSamplerParameteri(sampler, parameter, value);

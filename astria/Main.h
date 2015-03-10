@@ -7,9 +7,7 @@
 #include "Common.h"
 
 #include "FPS.h"
-#include "Params.h"
 #include "TextureBank_SDL.h"
-
 #include "AppStateManager.h"
 
 class CMain

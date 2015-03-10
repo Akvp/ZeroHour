@@ -4,7 +4,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Common.h"
-#include "utils.h"
 
 using namespace std;
 

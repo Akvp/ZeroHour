@@ -117,6 +117,12 @@
     <ClCompile Include="Fog.cpp">
       <Filter>Source Files\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="FBO.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Source Files\OpenGL</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Light.h">
@@ -185,9 +191,6 @@
     <ClInclude Include="LoadingScreen.h">
       <Filter>Header Files\AppStates</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="ParticleSystem.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
@@ -201,6 +204,12 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="Fog.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="FBO.h">
+      <Filter>Header Files\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
   </ItemGroup>

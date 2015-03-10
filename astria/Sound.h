@@ -2,7 +2,6 @@
 #define _SOUND_H_
 
 #include "Common.h"
-#include "utils.h"
 
 class CMusic
 {

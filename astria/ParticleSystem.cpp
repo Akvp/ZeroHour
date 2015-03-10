@@ -8,7 +8,12 @@ CParticleSystem::CParticleSystem()
 	CurrentReadBuffer = 0;
 }
 
-bool CParticleSystem::Init()
+bool CParticleSystem::Init(std::string* shaders)
+{
+	return Init(shaders[0], shaders[1], shaders[2], shaders[3], shaders[4]);
+}
+
+bool CParticleSystem::Init(std::string update_vert, std::string update_geom, std::string render_vert, std::string render_geom, std::string render_frag)
 {
 	if (Initialized)
 	{
@@ -26,9 +31,8 @@ bool CParticleSystem::Init()
 	};
 
 	//Load update program
-	Update_Vertex.Load("shaders/particles_update.vert", GL_VERTEX_SHADER);
-	Update_Geometry.Load("shaders/particles_update.geom", GL_GEOMETRY_SHADER);
-	//Update_Fragment.Load("shaders/particles_update.frag", GL_FRAGMENT_SHADER);
+	Update_Vertex.Load(update_vert, GL_VERTEX_SHADER);
+	Update_Geometry.Load(update_geom, GL_GEOMETRY_SHADER);
 
 	Program_Update.Create();
 	Program_Update.AddShader(&Update_Vertex);
@@ -39,9 +43,9 @@ bool CParticleSystem::Init()
 	Program_Update.Link();
 
 	//Load render program
-	Render_Vertex.Load("shaders/particles_render.vert", GL_VERTEX_SHADER);
-	Render_Geometry.Load("shaders/particles_render.geom", GL_GEOMETRY_SHADER);
-	Render_Fragment.Load("shaders/particles_render.frag", GL_FRAGMENT_SHADER);
+	Render_Vertex.Load(render_vert, GL_VERTEX_SHADER);
+	Render_Geometry.Load(render_geom, GL_GEOMETRY_SHADER);
+	Render_Fragment.Load(render_frag, GL_FRAGMENT_SHADER);
 
 	Program_Render.Initiate(3, &Render_Vertex, &Render_Geometry, &Render_Fragment);
 
@@ -79,6 +83,7 @@ bool CParticleSystem::Init()
 	CurrentReadBuffer = 0;
 	NumParticles = 1;
 	Initialized = true;
+	
 	return true;
 }
 
@@ -139,6 +144,8 @@ void CParticleSystem::SetMaxParticles(int count)
 void CParticleSystem::Render()
 {
 	if (!Initialized)	return;
+	
+	Texture->Bind();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -174,6 +181,9 @@ void CParticleSystem::Clear()
 bool CParticleSystem::Release()
 {
 	if (!Initialized) return false;
+
+	Texture->Release();
+	Texture = NULL;
 
 	Program_Update.Release();
 	Program_Render.Release();
@@ -222,6 +232,17 @@ void CParticleSystem::Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 v
 	ElapsedTime = 0.8f;
 
 	Count = count;
+}
+
+void CParticleSystem::SetTexture(std::string file)
+{
+	Texture = new CTexture(file, true);
+	Texture->SetFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_BILINEAR_MIPMAP);
+}
+
+void CParticleSystem::SetTexture(CTexture* texture)
+{
+	Texture = texture;
 }
 
 int CParticleSystem::GetNumParticles()

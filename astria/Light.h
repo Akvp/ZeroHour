@@ -3,8 +3,8 @@
 
 #include <string>
 
+#include "Common.h"
 #include "Shader.h"
-#include <glm/glm.hpp>
 
 class CDirectLight
 {

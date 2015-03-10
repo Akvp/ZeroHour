@@ -2,11 +2,11 @@
 #define _APP_STATE_GL_H_
 
 #include "AppState.h"
+#include "Common.h"
 #include "Shader.h"
 #include "Light.h"
 #include "Skybox.h"
 #include "HeightMap.h"
-#include "Params.h"
 #include "Model.h"
 #include "Water.h"
 #include "ParticleSystem.h"
@@ -33,9 +33,17 @@ public:
 	SDL_Texture* GetSnapshot();
 
 private:
+	//Private methods
+	int OnLoad();
+	void RenderScene(CShaderProgram* modelProgram, CShaderProgram* instanceProgram, CShaderProgram* terrainProgram);
+	//Event functions
+	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
+	void OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
+	void OnLoseFocus();
+
+private:
 	static CAppStateMain Instance;
 	int Loaded;
-	int OnLoad();
 	SDL_GLContext glContext;
 
 	const int OPENGL_MAJOR_VERSION = 3;
@@ -48,11 +56,6 @@ private:
 	int Mouse_Y;	//Mouse y position
 
 	bool MoveLeft, MoveRight, MoveUp, MoveDown;
-
-	//Event functions
-	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
-	void OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
-	void OnLoseFocus();
 
 	//Shaders & Shader programs
 	CShader ShaderVertex;

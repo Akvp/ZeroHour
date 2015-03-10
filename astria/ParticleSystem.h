@@ -3,7 +3,7 @@
 
 #include "Common.h"
 #include "Shader.h"
-#include "utils.h"
+#include "Texture.h"
 
 enum
 {
@@ -32,7 +32,8 @@ class CParticleSystem
 public:
 	CParticleSystem();
 
-	bool Init();
+	bool Init(std::string* shaders);
+	bool Init(std::string update_vert, std::string update_geom, std::string render_vert, std::string render_geom, std::string render_frag);
 
 	void Render();
 	void Update(float time);
@@ -40,6 +41,8 @@ public:
 	void SetMaxParticles(int count);
 
 	void Set(glm::vec3 position, glm::vec3 velocitymin, glm::vec3 velocitymax, glm::vec3 acceleration, glm::vec3 color, float lifemin, float lifemax, float size, float interval, int count);
+	void SetTexture(std::string file);
+	void SetTexture(CTexture* texture);
 
 	void ChangePosition(glm::vec3 position);
 
@@ -59,7 +62,7 @@ private:
 	GLuint VAO[2];
 
 	GLuint Query;
-	GLuint Texture;
+	CTexture* Texture;
 
 	int CurrentReadBuffer;
 	int NumParticles;

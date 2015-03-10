@@ -6,7 +6,6 @@
 
 #include "Common.h"
 #include "Texture_SDL.h"
-#include "utils.h"
 #include "Params.h"
 
 enum SPARK_TYPE
@@ -43,33 +42,7 @@ private:
 class CSpark
 {
 public:
-	CSpark(SPARK_TYPE type, int size, int x, int y)
-	{
-		this->frame = 0;
-		this->type = type;
-		this->size = size;
-		this->ID = freeID++;
-		this->xpos = x; this->ypos = y;
-		switch (type)
-		{
-		case BLUE_SPARK:
-			maxFrames = 83;
-			spriteFile = "blue_spark";
-			tileSize = 100;
-			break;
-		case ORANGE_SPARK:
-			maxFrames = 39;
-			spriteFile = "orange_spark";
-			tileSize = 141;
-			break;
-		case PINK_SPARK:
-			maxFrames = 40;
-			spriteFile = "pink_spark";
-			tileSize = 133;
-			break;
-		}
-		this->count++;
-	}
+	CSpark(SPARK_TYPE type, int size, int x, int y);
 	static void Load(int size);
 	static void AddRandomSpark();
 	static void AddSpark(SPARK_TYPE type, int size, int x, int y);
@@ -89,6 +62,7 @@ private:
 	int xpos, ypos;
 	int ID;
 	int maxFrames;
+	int framePerRow;
 	std::string spriteFile;
 	int tileSize;
 	SPARK_TYPE type;

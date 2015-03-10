@@ -46,7 +46,7 @@ uniform Material mat;
 uniform FogParameters fogParams;
 
 uniform int bSkybox;
-uniform int bFog;
+uniform bool bFog;
 uniform bool bEnableNormalMap;
 
 smooth in vec2 vTexCoord;
@@ -64,7 +64,7 @@ void main()
 	{
 		vec3 vTexColor = sunLight.vColor * vec3(texture2D(mat.diffuse, vTexCoord));
 		outputColor = vec4(vTexColor * sunLight.fBrightness, 1.0f);
-		if(bFog == 1)
+		if(bFog)
 		{
 			float fFogCoord = 500 *250*fogParams.fDensity;
 			outputColor = mix(outputColor, fogParams.vFogColor, getFogFactor(fogParams, fFogCoord));
@@ -98,7 +98,7 @@ void main()
 
 	outputColor = vec4(vAmbientColor + vDiffuseColor + vSpecularColor, 1.0f);
 	
-	if (bFog == 1)
+	if (bFog)
 	{
 		float fFogCoord = distance(vEyePosition, vWorldPos);
 		outputColor = mix(outputColor, fogParams.vFogColor, getFogFactor(fogParams, fFogCoord));

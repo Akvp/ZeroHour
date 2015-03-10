@@ -2,7 +2,6 @@
 #define _TEXTURE_H_
 
 #include "Common.h"
-#include "utils.h"
 
 enum ETextureFiltering
 {
@@ -28,6 +27,7 @@ public:
 
 	bool Reload();
 	
+	void SetWrap(int wrapS, int wrapT);
 	void SetFiltering(int magnification, int minification);
 	void SetSamplerParameter(GLenum parament, GLenum value);
 

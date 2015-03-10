@@ -4,7 +4,6 @@
 #include "Common.h"
 #include "Shader.h"
 #include "VBO.h"
-#include "utils.h"
 
 class CHeightMap
 {
