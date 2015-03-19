@@ -13,6 +13,7 @@ CTexture::CTexture()
 	mipmap = false;
 	loaded = false;
 	file = "";
+	BPP = 0;
 }
 
 CTexture::CTexture(std::string file, bool generateMipMap)
@@ -206,12 +207,22 @@ void CTexture::CreateEmpty(int width, int height, GLenum format)
 	glGenTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	if (format == GL_RGBA || format == GL_BGRA)
+	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, format, GL_UNSIGNED_BYTE, NULL);
+		BPP = 4;
+	}
 	// We must handle this because of internal format parameter
 	else if (format == GL_RGB || format == GL_BGR)
+	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, NULL);
+		BPP = 3;
+	}
 	else
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, NULL);
+
+	this->width = width;
+	this->height = height;
+	this->format = format;
 
 	glGenSamplers(1, &sampler);
 }
@@ -328,4 +339,24 @@ GLuint CTexture::GetID()
 std::string CTexture::GetFile()
 {
 	return file;
+}
+
+void CTexture::Save(std::string file)
+{
+	long imageSize = BPP == 0 ? width * height * 3 : width * height * BPP;
+	BYTE* data = (BYTE*) malloc(imageSize);
+	Bind();
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	int xa = width % 256;
+	int xb = (width - xa) / 256;
+	int ya = height % 256;
+	int yb = (height - ya) / 256;
+	unsigned char header[18] = { 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, (char)xa, (char)xb, (char)ya, (char)yb, 24, 0 };
+	std::fstream File(file, std::ios::out | std::ios::binary);
+	File.write(reinterpret_cast<char *>(header), sizeof (char)* 18);
+	File.write(reinterpret_cast<char *>(data), sizeof (char)*imageSize);
+	File.close();
+
+	delete[] data;
+	data = NULL;
 }

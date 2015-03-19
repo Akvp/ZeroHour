@@ -148,10 +148,10 @@ void CSoundEffect::Resume()
 
 bool CSoundEffect::IsPlaying()
 {
-	return (bool)Mix_Playing(Channel);
+	return Mix_Playing(Channel);
 }
 
 bool CSoundEffect::IsPaused()
 {
-	return (bool)Mix_Paused(Channel);
+	return Mix_Paused(Channel);
 }

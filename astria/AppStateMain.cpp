@@ -9,6 +9,7 @@ CAppStateMain::CAppStateMain()
 {
 	Loaded = 0;
 	snapshot = NULL;
+	ProgramTerrain = NULL;
 }
 
 CAppStateMain* CAppStateMain::GetInstance()
@@ -24,8 +25,10 @@ void CAppStateMain::OnActivate()
 		Speed = 0.5f;
 		MouseSpeed = 0.0015f;
 		GravityEnabled = false;
-		FogEnabled = 1;
+		FogEnabled = true;
 		NormalMapEnabled = true;
+		ShadowMapEnabled = true;
+		Wireframe = false;
 		CLoadingScreen::OnActivate(&Loaded);
 		Loaded = OnLoad();
 		if (!Loaded)	CMain::GetInstance()->Running = false;
@@ -66,13 +69,17 @@ void CAppStateMain::OnExit()
 {
 	if (Loaded)
 	{
-		std::cout << "Releasing CAppStateMain\n";
+		//Release models
 		CModel::ReleaseAll();
 		CInstancedModel::ReleaseAllInstanced();
-		ParticleEruption.Release();	TextureParticleEruption.Release();
-		ParticleSmoke.Release();	TextureParticleSmoke.Release();
-		ParticleFire.Release();		TextureParticleFire.Release();
-		ParticleSnow.Release();		TextureParticleSnow.Release();
+
+		//Release particles
+		ParticleEruption.Release();
+		ParticleSmoke.Release();
+		ParticleFire.Release();
+		ParticleSnow.Release();
+
+		//Release shaders and programs
 		ShaderVertex.Release();
 		ShaderFragment.Release();
 		ShaderInstancing.Release();
@@ -81,10 +88,22 @@ void CAppStateMain::OnExit()
 		ProgramMain.Release();
 		ProgramInstancing.Release();
 		ProgramFont.Release();
+
+		//Release skybox
 		Skybox.Release();
+
+		//Release shadow
+		FBOShadowMap.Release();
+		ShadowMapFragment.Release();
+		ShaderFontVertex.Release();
+		ProgramShadowMap.Release();
+
+		//Release heightmap
 		CHeightMap::ReleaseShaderProgram();
 		for (int i = 0; i < 6; i++) TextureTerrain[i].Release();
 		Map.Release();
+		
+		//Release music
 		SoundFire.Release();
 		MusicMain.Release();
 		FontGunplay.Release();
@@ -116,7 +135,7 @@ void CAppStateMain::OnEvent(SDL_Event* Event)
 	//Compute new orientation
 	HorizontalAngle += MouseSpeed * float(CMain::GetInstance()->GetWindowWidth() / 2 - Mouse_X);
 	VerticalAngle += MouseSpeed * float(CMain::GetInstance()->GetWindowHeight() / 2 - Mouse_Y);
-	Clamp(VerticalAngle, -CParams::Pi / 2.0, CParams::Pi / 2.0);
+	Clamp(VerticalAngle, (float)(-CParams::Pi / 2.0), (float)(CParams::Pi / 2.0));
 }
 
 void CAppStateMain::OnUpdate()
@@ -168,16 +187,23 @@ void CAppStateMain::OnUpdate()
 	ParticleSnow.SetMatrices(&ProjectionMatrix, &ViewMatrix, Direction);
 
 	float dist = glm::distance(FirePosition, Position);
-	int vol = 1/(dist - 50) * MIX_MAX_VOLUME;
+	int vol = int(1/(dist - 50.0f) * MIX_MAX_VOLUME);
 	SoundFire.SetVolume(vol);
 }
 
 void CAppStateMain::OnRender()
 {
+	//Generate shadow map
+	if (ShadowMapEnabled)
+	{
+		GenerateShadowMap();
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, CMain::GetInstance()->GetWindowWidth(), CMain::GetInstance()->GetWindowHeight());
+
 	//Clear the screen for each frame
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glEnable(GL_DEPTH_TEST);
 
 	//Use shaders
 	ProgramMain.Use();
@@ -202,6 +228,12 @@ void CAppStateMain::OnRender()
 	//Reset model matrix
 	ProgramMain.SetUniform("matrices.mModel", glm::mat4(1.0));
 
+	//Bind shadow maps for ProgramMain
+	ProgramMain.SetUniform("matrices.mDepthBiasMVP", DepthBiasMVP);
+	ProgramMain.SetUniform("bEnableShadowMap", ShadowMapEnabled);
+	ProgramMain.SetUniform("sShadowMap", 6);
+	FBOShadowMap.BindTexture(6);
+
 	//Render models
 	CModel::BindVAO();
 	ProgramMain.SetUniform("vEyePosition", Position);
@@ -223,7 +255,6 @@ void CAppStateMain::OnRender()
 	models[1].Render();
 
 	//Render instanced models
-	CModel::BindVAO();
 	ProgramInstancing.Use();
 	ProgramInstancing.SetUniform("matrices.mProjection", ProjectionMatrix);
 	ProgramInstancing.SetUniform("matrices.mView", ViewMatrix);
@@ -235,26 +266,31 @@ void CAppStateMain::OnRender()
 	SmallTree.RenderInstanced();
 
 	//Render ground
-	CShaderProgram* Program_Terrain = CHeightMap::GetShaderProgram();
-	Program_Terrain->Use();
-	Program_Terrain->SetUniform("matrices.mProjection", ProjectionMatrix);
-	Program_Terrain->SetUniform("matrices.mView", ViewMatrix);
-	Program_Terrain->SetUniform("vEyePosition", Position);
-	Program_Terrain->SetUniform("LowAlt.diffuse", 0);	Program_Terrain->SetUniform("LowAlt.specular", 1);
-	Program_Terrain->SetUniform("MidAlt.diffuse", 2);	Program_Terrain->SetUniform("MidAlt.specular", 3);
-	Program_Terrain->SetUniform("HighAlt.diffuse", 4);	Program_Terrain->SetUniform("HighAlt.specular", 5);
-	Program_Terrain->SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", glm::mat4(1.0));
-	Program_Terrain->SetUniform("vColor", glm::vec4(1, 1, 1, 1));
-	Sun.SetUniform(Program_Terrain, "sunLight");
-	CFog::SetUniforms(Program_Terrain, FogEnabled);
+	ProgramTerrain = CHeightMap::GetShaderProgram();
+	ProgramTerrain->Use();
+	ProgramTerrain->SetUniform("matrices.mProjection", ProjectionMatrix);
+	ProgramTerrain->SetUniform("matrices.mView", ViewMatrix);
+	ProgramTerrain->SetUniform("vEyePosition", Position);
+	ProgramTerrain->SetUniform("LowAlt.diffuse", 0);	ProgramTerrain->SetUniform("LowAlt.specular", 1);
+	ProgramTerrain->SetUniform("MidAlt.diffuse", 2);	ProgramTerrain->SetUniform("MidAlt.specular", 3);
+	ProgramTerrain->SetUniform("HighAlt.diffuse", 4);	ProgramTerrain->SetUniform("HighAlt.specular", 5);
+	ProgramTerrain->SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", glm::mat4(1.0));
+	ProgramTerrain->SetUniform("vColor", glm::vec4(1, 1, 1, 1));
+	Sun.SetUniform(ProgramTerrain, "sunLight");
+	CFog::SetUniforms(ProgramTerrain, FogEnabled);
 	//Diffuse textures			//Specular textures
 	TextureTerrain[0].Bind(0);	TextureTerrain[1].Bind(1);
 	TextureTerrain[2].Bind(2);	TextureTerrain[3].Bind(3);
 	TextureTerrain[4].Bind(4);	TextureTerrain[5].Bind(5);
+	//Bind shadow map texture
+	ProgramTerrain->SetUniform("matrices.mDepthBiasMVP", DepthBiasMVP);
+	ProgramTerrain->SetUniform("bEnableShadowMap", ShadowMapEnabled);
+	ProgramTerrain->SetUniform("sShadowMap", 6);
+	FBOShadowMap.BindTexture(6);
 	Map.Render();
 
 	//Render particles
-	float fps = CFPS::FPSControl.GetFPS();
+	float fps = (float)(CFPS::FPSControl.GetFPS());
 	float FrameInterval = 1 / fps;
 	ParticleEruption.Update(FrameInterval);
 	ParticleEruption.Render();
@@ -276,13 +312,9 @@ void CAppStateMain::OnRender()
 	FontGunplay.PrintFormatted(20, height - 30, 18, "FPS: %d", CFPS::FPSControl.GetFPS());
 	FontGunplay.PrintFormatted(20, height - 50, 18, "Normal map: %s", NormalMapEnabled ? "Enabled" : "Disabled");
 	FontGunplay.Print(HelpText, 20, height - 70, 18);
+	glEnable(GL_DEPTH_TEST);
 
 	SDL_GL_SwapWindow(CMain::GetInstance()->GetWindow());
-}
-
-void CAppStateMain::RenderScene(CShaderProgram* modelProgram, CShaderProgram* instanceProgram, CShaderProgram* terrainProgram)
-{
-
 }
 
 int CAppStateMain::OnLoad()
@@ -395,7 +427,7 @@ int CAppStateMain::OnLoad()
 		1.5f,	//Minimum lifespan in second
 		2.0f,	//Maximum lifespan in second
 		0.25f, 	//Size
-		0.02,	//Spawn interval
+		0.02f,	//Spawn interval
 		1000);	//Count i.e. number generated per frame
 
 	ParticleFire.Init(ParticleShaders);
@@ -409,7 +441,7 @@ int CAppStateMain::OnLoad()
 		0.5f,
 		1.5f,
 		2.0f,
-		0.2,
+		0.2f,
 		50);
 
 	FirePosition.y += 3;
@@ -424,7 +456,7 @@ int CAppStateMain::OnLoad()
 		1.5f,
 		2.0f,
 		2.0f,
-		0.2,
+		0.2f,
 		10);
 
 	ParticleSnow.Init(ParticleShaders);
@@ -441,18 +473,20 @@ int CAppStateMain::OnLoad()
 		0.1f,
 		30);
 
-	//Model matrix //Identity matrix
+	//Initiate model matrix
 	ModelMatrix = glm::mat4(1.0f);
 
 	//Load the skybox
 	Skybox.Load(CParams::SkyboxFolder);
-
 	//Load sun light
-	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.1, -1.2, 1), 0.2f, 0.5f);
-
+	Sun = CDirectLight(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(-0.1f, -1.2f, 1.0f), 0.2f, 0.5f);
 	//Enable fog
-	CFog::Properties(0.005, glm::vec4(0.8, 0.8, 0.8, 1.0));
+	CFog::Properties(0.003f, glm::vec4(0.8f, 0.8f, 0.8f, 1.0f));
 
+	//Initiate shadow maps
+	if (!InitiateShadowMap())
+		return -1;
+	
 	//Load camera properties
 	Position = glm::vec3(-78, 135, 76);
 	Position.y = 5 + Map.GetHeight(Position);
@@ -467,7 +501,7 @@ int CAppStateMain::OnLoad()
 	SoundFire.Load("sound/fireplace.wav", 1);
 	//This is need so we dont hear the sound effect for a split second at the very beginning
 	float dist = glm::distance(FirePosition, Position);
-	int vol = 1 / (dist - 50) * MIX_MAX_VOLUME;
+	int vol = (int)(1 / (dist - 50) * MIX_MAX_VOLUME);
 	SoundFire.SetVolume(vol);
 	SoundFire.Play(-1);
 
@@ -482,6 +516,93 @@ int CAppStateMain::OnLoad()
 SDL_Texture* CAppStateMain::GetSnapshot()
 {
 	return snapshot;
+}
+
+bool CAppStateMain::InitiateShadowMap()
+{
+	ShadowMapSize = 1024;
+
+	if (!FBOShadowMap.CreateWithTexture(ShadowMapSize, ShadowMapSize))
+		return false;
+	if (!FBOShadowMap.AddDepthBuffer())
+		return false;
+	FBOShadowMap.SetTextureFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_NEAREST);
+
+	if (!ShadowMapVertex.Load("shaders/shadowMapper.vert", GL_VERTEX_SHADER))
+		return false;
+	if (!ShadowMapFragment.Load("shaders/shadowMapper.frag", GL_FRAGMENT_SHADER))
+		return false;
+	if (!ProgramShadowMap.Initiate(&ShadowMapVertex, &ShadowMapFragment))
+		return false;
+
+	return true;
+}
+
+void CAppStateMain::GenerateShadowMap()
+{	
+	FBOShadowMap.Bind();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	ProgramShadowMap.Use();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	ProgramShadowMap.Use();
+
+	const float RangeX = 500, RangeY = 500, MinZ = 0.05f, MaxZ = 400;
+	glm::mat4 ProjShadow = glm::ortho<float>(-RangeX, RangeX, RangeY, -RangeY, MinZ, MaxZ);
+	glm::vec3 LightPosition = glm::vec3(0.0f, 0.0f, 0.0f)-Sun.Direction*500.0f;	//Since we have directional, we just make the light very far so it can see everything
+	glm::mat4 ViewShadow = glm::lookAt(LightPosition, glm::vec3(0, 0, 0) - LightPosition, glm::vec3(0, 1, 0));
+	glm::mat4 depthMVP;
+
+	glm::mat4 BiasMatrix(
+		0.5, 0.0, 0.0, 0.0,
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+		0.5, 0.5, 0.5, 1.0
+		);
+
+	//Calculate depth bias matrix
+	DepthBiasMVP = BiasMatrix * ProjShadow * ViewShadow;
+
+	//Render models
+	CModel::BindVAO();
+
+	glm::vec3 newPos(83, 0, 180);
+	newPos.y = Map.GetHeight(newPos);
+	ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
+	ProgramShadowMap.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	depthMVP = ProjShadow * ViewShadow * ModelMatrix;
+	ProgramShadowMap.SetUniform("depthMVP", depthMVP);
+	models[0].Render();
+
+	//newPos = glm::vec3(64, 0, 193);
+	//newPos.y = Map.GetHeight(newPos);
+	//ModelMatrix = glm::translate(glm::mat4(1.0), newPos);
+	//ModelMatrix = glm::scale(ModelMatrix, glm::vec3(5.0));
+	//ModelMatrix = glm::rotate(ModelMatrix, -90.0f, glm::vec3(1, 0, 0));
+	//ProgramShadowMap.SetModelAndNormalMatrix("matrices.mModel", "matrices.mNormal", ModelMatrix);
+	//depthMVP = ProjShadow * ViewShadow * ModelMatrix;
+	//ProgramShadowMap.SetUniform("depthMVP", depthMVP);
+	//models[1].Render();
+
+	//Render instanced models
+	//CModel::BindVAO();
+	//ProgramInstancing.Use();
+	//ProgramInstancing.SetUniform("matrices.mProjection", ProjectionMatrix);
+	//ProgramInstancing.SetUniform("matrices.mView", ViewMatrix);
+	//ProgramInstancing.SetUniform("mat.diffuse", 0);
+	//ProgramInstancing.SetUniform("mat.specular", 2);
+	//Sun.SetUniform(&ProgramInstancing, "sunLight");
+	//CFog::SetUniforms(&ProgramInstancing, FogEnabled);
+	//SmallTree.RenderInstanced();
+
+	//Render ground
+	//ModelMatrix = glm::mat4(1.0f);
+	//depthMVP = ProjShadow * ViewShadow * ModelMatrix;
+	//ProgramShadowMap.SetUniform("depthMVP", depthMVP);
+	//Map.Render();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode)
@@ -525,9 +646,10 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 		Speed = 3;
 		break;
 
+	//Toggles
 	case SDLK_f:
 		//Toggle fog
-		FogEnabled = 1 - FogEnabled;
+		FogEnabled = !FogEnabled;
 		break;
 	case SDLK_g:
 		//Toggle gravity
@@ -543,6 +665,18 @@ void CAppStateMain::OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode
 	case SDLK_n:
 		//Toggle normal map
 		NormalMapEnabled = !NormalMapEnabled;
+		break;
+	case SDLK_t:
+		//Toggle shadow map
+		ShadowMapEnabled = !ShadowMapEnabled;
+		break;
+	case SDLK_q:
+		//toggle wireframe mode
+		if (Wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		else glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case SDLK_p:
+		FBOShadowMap.GetTexture()->Save("shadowmap.tga");
 		break;
 	}
 }

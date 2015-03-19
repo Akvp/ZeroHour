@@ -34,7 +34,7 @@ int CLoadingScreen::OnExecute(void* ptr)
 void CLoadingScreen::OnLoad()
 {
 	//Random seed
-	srand(time(0));
+	srand((unsigned int)(time(0)));
 	//Load sprite textures
 	TextureBank::Init("gfx/img/sprites");
 	CSpark::Load(10);

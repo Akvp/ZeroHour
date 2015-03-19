@@ -14,6 +14,7 @@
 #include "Sound.h"
 #include "Font.h"
 #include "Fog.h"
+#include "ShadowMap.h"
 
 class CAppStateMain : public CAppState
 {
@@ -35,7 +36,8 @@ public:
 private:
 	//Private methods
 	int OnLoad();
-	void RenderScene(CShaderProgram* modelProgram, CShaderProgram* instanceProgram, CShaderProgram* terrainProgram);
+	bool InitiateShadowMap();
+	void GenerateShadowMap();
 	//Event functions
 	void OnKeyDown(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
 	void OnKeyUp(SDL_Keycode sym, Uint16 mod, SDL_Scancode scancode);
@@ -45,6 +47,7 @@ private:
 	static CAppStateMain Instance;
 	int Loaded;
 	SDL_GLContext glContext;
+	bool Wireframe;
 
 	const int OPENGL_MAJOR_VERSION = 3;
 	const int OPENGL_MINOR_VERSION = 3;
@@ -54,7 +57,6 @@ private:
 	//Event variables
 	int Mouse_X;	//Mouse x position
 	int Mouse_Y;	//Mouse y position
-
 	bool MoveLeft, MoveRight, MoveUp, MoveDown;
 
 	//Shaders & Shader programs
@@ -66,10 +68,19 @@ private:
 	CShader ShaderFontVertex;
 	CShader ShaderFontFragment;
 	CShaderProgram ProgramFont;
+	CShaderProgram* ProgramTerrain;
 
-	//Skybox and lighting
+	//Environment
 	CSkybox Skybox;
 	CDirectLight Sun;
+	
+	//Shadow mapping
+	CFBO FBOShadowMap;
+	int ShadowMapSize;
+	CShader ShadowMapVertex;
+	CShader ShadowMapFragment;
+	CShaderProgram ProgramShadowMap;
+	glm::mat4 DepthBiasMVP;
 
 	//Scene obj
 	CHeightMap Map;
@@ -84,13 +95,9 @@ private:
 	//Particles
 	glm::vec3 FirePosition;
 	CParticleSystem ParticleEruption;
-	CTexture TextureParticleEruption;
 	CParticleSystem ParticleSmoke;
-	CTexture TextureParticleSmoke;
 	CParticleSystem ParticleFire;
-	CTexture TextureParticleFire;
 	CParticleSystem ParticleSnow;
-	CTexture TextureParticleSnow;
 
 	//Matrices
 	glm::mat4 ProjectionMatrix;
@@ -109,9 +116,11 @@ private:
 	glm::vec3 Right;
 	glm::vec3 Up;
 
+	//Toggles
 	bool GravityEnabled;
-	int FogEnabled;
+	bool FogEnabled;
 	bool NormalMapEnabled;
+	bool ShadowMapEnabled;
 	
 	//Control parameters
 	float Speed;			//Speed of movements

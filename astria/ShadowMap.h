@@ -11,21 +11,30 @@ class CShadowMap
 {
 public:
 	CShadowMap::CShadowMap();
-	bool Create();
+	bool Create(int mapSize);
 
 	//TODO: implement shadow mapping for point light and spotlight
-	CFBO* Render(void* RenderCallBack(), CDirectLight* sun);
-	bool LoadShaders(std::string);
-	void SetProgram(CShaderProgram* mapping, CShaderProgram* rendering);
+	//returns DepthBiasMVP
+	glm::mat4 Render(void (*RenderCallBack)(CShaderProgram* program, glm::mat4 projection, glm::mat4 view), CDirectLight* sun);
+	
+	//Return the fbo for the shadow map
+	CFBO* GetFBO();
+
+	//Load the shaders and programs
+	bool LoadShaders(std::string map_vert, std::string map_frag);
+	//Get shadow map programs
+	CShaderProgram* GetProgram();
+
 private:
 	CFBO FBOShadowMap;
 	CVBO VBOShadowMap;
 	GLuint VAOShadowMap;
 	int ShadowMapSizeTextureSize;
 
-	CShaderProgram* ProgramMap;
-	CShaderProgram* ProgramRender;
+	CShader ShaderVertex;
+	CShader ShaderFragment;
 
+	CShaderProgram* ProgramMap;
 };
 
 #endif

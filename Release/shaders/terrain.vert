@@ -6,6 +6,7 @@ uniform struct Matrices
 	mat4 mModel;
 	mat4 mView;                                                                           
 	mat4 mNormal;
+	mat4 mDepthBiasMVP;
 } matrices;
 
 layout (location = 0) in vec3 inPosition;
@@ -16,6 +17,7 @@ smooth out vec2 vTexCoord;
 smooth out vec3 vNormal;
 smooth out vec3 vWorldPos;
 smooth out vec4 vEyeSpacePos;
+smooth out vec4 vShadowCoord;
 
 uniform mat4 HeightmapScaleMatrix;
 uniform mat3 NormalScaleMatrix;
@@ -33,4 +35,6 @@ void main()
    
 	vec4 vWorldPosLocal = matrices.mModel*inPositionScaled;
 	vWorldPos = vWorldPosLocal.xyz;
+
+	vShadowCoord = matrices.mDepthBiasMVP * vWorldPosLocal;
 }

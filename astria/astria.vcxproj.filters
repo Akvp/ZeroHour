@@ -31,9 +31,6 @@
     <Filter Include="Source Files\AppStates">
       <UniqueIdentifier>{f448bde9-ad95-4b1f-8ac7-670161420a25}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Shaders">
-      <UniqueIdentifier>{05fae406-b96f-4462-bbbb-c06746f2a7ad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Physics">
       <UniqueIdentifier>{311b3d06-419e-4873-a895-8611ec9e0fa5}</UniqueIdentifier>
     </Filter>
@@ -212,94 +209,5 @@
     <ClInclude Include="ShadowMap.h">
       <Filter>Header Files\OpenGL</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\blaze_gen_common.geom">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\blaze_part_gen_box.geom">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\color.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\color.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\dirLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\fog.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\font2D.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\main_shader.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\main_shader.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\normal_displayer.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\normal_displayer.geom">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\normal_displayer.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\ortho2D.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\ortho2D.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\particles_render.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\particles_render.geom">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\particles_render.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\particles_update.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\particles_update.geom">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\particles_update.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\pointLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\spotLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\terrain.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\terrain.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\skybox.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\water.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\water.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\instancing.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="shaders\instancing.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>

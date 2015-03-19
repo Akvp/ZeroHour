@@ -37,13 +37,13 @@ Requirement to build this project:
 Many loading parameters can be modified in params.ini file located in the same folder as the executable
 
 ##Version
-__0.2.2__
+__0.2.3a__
 
 For more information please refer to changelog.txt file 
 
 ##TODO List
 - ~~Add background music & sound effects~~
-- Add text rendering using orthogonal projection
-- Add normal mapping
+- ~~Add text rendering using orthogonal projection~~
+- ~~Add normal mapping~~
 - Implement realistic water with reflection and refraction
 - Implement OPTION button in pause menu to change graphics options

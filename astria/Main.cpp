@@ -76,7 +76,7 @@ bool CMain::OnInit()
 	//Load parameters
 	CParams::Load(CParams::File);
 
-	srand(time(0));
+	srand((unsigned int)(time(0)));
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)

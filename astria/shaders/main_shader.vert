@@ -6,6 +6,7 @@ uniform struct Matrices
 	mat4 mModel;
 	mat4 mView;                                                                           
 	mat4 mNormal;
+	mat4 mDepthBiasMVP;
 } matrices;
 
 struct DirectionalLight
@@ -28,6 +29,7 @@ smooth out vec2 vTexCoord;
 smooth out vec3 vWorldPos;
 
 smooth out vec4 vEyeSpacePos;
+smooth out vec4 vShadowCoord;
 
 out vec3 vEyeDir_tangentspace;
 out vec3 vLightDir_tangentspace;
@@ -69,4 +71,7 @@ void main()
 	{
 		vLightDir_tangentspace = vec3(0,0,0);
 	}
+
+	//Shadow map calculations
+	vShadowCoord = matrices.mDepthBiasMVP * vec4(vWorldPos, 1.0);
 }

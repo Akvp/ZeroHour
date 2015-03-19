@@ -45,6 +45,8 @@ public:
 	GLuint GetID();
 	GLuint operator()();
 
+	void Save(std::string file);
+
 private:
 	bool load_SDL(std::string file);
 	bool load_DDS(std::string file);

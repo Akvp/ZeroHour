@@ -92,7 +92,7 @@ void Text_SDL::Render(int x, int y)
 
 void Text_SDL::Render(int x, int y, float ratio)
 {
-	SDL_Rect dest = { x, y, width*ratio, height*ratio };
+	SDL_Rect dest = { x, y, int(width*ratio), int(height*ratio) };
 	SDL_RenderCopy(Renderer, FontTexture, NULL, &dest);
 }
 

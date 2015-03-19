@@ -2,10 +2,9 @@
 
 CShadowMap::CShadowMap()
 {
-
 }
 
-bool CShadowMap::Create()
+bool CShadowMap::Create(int mapSize)
 {
 	glm::vec3 ShadowMapQuad[] =
 	{
@@ -40,14 +39,18 @@ bool CShadowMap::Create()
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) + sizeof(glm::vec2), (void*)sizeof(glm::vec3));
 
-	FBOShadowMap.CreateWithTexture(ShadowMapSizeTextureSize, ShadowMapSizeTextureSize);
-	FBOShadowMap.AddDepthBuffer();
+	ShadowMapSizeTextureSize = mapSize;
+
+	if (!FBOShadowMap.CreateWithTexture(ShadowMapSizeTextureSize, ShadowMapSizeTextureSize))
+		return false;
+	if (!FBOShadowMap.AddDepthBuffer())
+		return false;
 	FBOShadowMap.SetTextureFiltering(TEXTURE_FILTER_MAG_BILINEAR, TEXTURE_FILTER_MIN_NEAREST);
 
 	return true;
 }
 
-CFBO* CShadowMap::Render(void* RenderCallBack(), CDirectLight* sun)
+glm::mat4 CShadowMap::Render(void (*RenderCallBack)(CShaderProgram* program, glm::mat4 projection, glm::mat4 view), CDirectLight* sun)
 {
 	//Render the scene from the light's POV
 	FBOShadowMap.Bind();
@@ -60,7 +63,7 @@ CFBO* CShadowMap::Render(void* RenderCallBack(), CDirectLight* sun)
 
 	const float RangeX = 150, RangeY = 150, MinZ = 0.05f, MaxZ = 400;
 	glm::mat4 Projection = glm::ortho<float>(-RangeX, RangeX, RangeY, -RangeY, MinZ, MaxZ);
-	glm::vec3 LightPosition = -sun->Direction*1000.0f;	//Since we have directional, we just make the light very far so it can see everything
+	glm::vec3 LightPosition = -sun->Direction*250.0f;	//Since we have directional, we just make the light very far so it can see everything
 	glm::mat4 View_Light = glm::lookAt(LightPosition, glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 
 	glm::mat4 BiasMatrix(
@@ -73,15 +76,29 @@ CFBO* CShadowMap::Render(void* RenderCallBack(), CDirectLight* sun)
 	//Calculate depth bias matrix
 	glm::mat4 DepthBiasMVP = BiasMatrix * Projection * View_Light;
 
-	RenderCallBack();
+	RenderCallBack(ProgramMap, Projection, View_Light);
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	return DepthBiasMVP;
+}
+
+CFBO* CShadowMap::GetFBO()
+{
 	return &FBOShadowMap;
 }
 
-void CShadowMap::SetProgram(CShaderProgram* mapping, CShaderProgram* rendering)
+CShaderProgram* CShadowMap::GetProgram()
 {
-	ProgramMap = mapping;
-	ProgramRender = rendering;
+	return ProgramMap;
+}
+
+bool CShadowMap::LoadShaders(std::string map_vert, std::string map_frag)
+{
+	ProgramMap = new CShaderProgram;
+	bool ret = true;
+	ret = ret && ShaderVertex.Load(map_vert, GL_VERTEX_SHADER);
+	ret = ret && ShaderFragment.Load(map_frag, GL_FRAGMENT_SHADER);
+	ret = ret && ProgramMap->Initiate(&ShaderVertex, &ShaderFragment);
+	return ret;
 }

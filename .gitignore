@@ -1,3 +1,17 @@
 *.opensdf
 *.sdf
+*.suo
+*.vcxproj.filters
+*.user
+*.pdb
+
 /astria/Debug
+/astria/Release
+/Debug
+/astria/gfx
+/astria/shaders
+/astria/sound
+/astria/ttf
+/astria/*.dll
+/astria/*.txt
+/astria/*.ini

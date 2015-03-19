@@ -28,6 +28,7 @@ public:
 	glm::mat4 GetOrthogonalMatrix();
 	int GetWidth();
 	int GetHeight();
+	CTexture* GetTexture();
 private:
 	GLuint FrameBuffer;
 	GLuint DepthBuffer;

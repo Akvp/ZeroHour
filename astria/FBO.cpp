@@ -8,7 +8,7 @@ CFBO::CFBO()
 
 bool CFBO::CreateDepthShadowBuffer()
 {
-	const char* LOG_TAG = "FBO::CreateDepthShadowBuffer";
+	const char* LOG_TAG = "CFBO::CreateDepthShadowBuffer";
 	glGenFramebuffers(1, &FrameBuffer);
 	
 	Texture.CreateEmpty(1024, 1024, 0);
@@ -27,7 +27,7 @@ bool CFBO::CreateDepthShadowBuffer()
 
 bool CFBO::CreateWithTexture(int width, int height)
 {
-	const char* LOG_TAG = "FBO::CreateWithTexture";
+	const char* LOG_TAG = "CFBO::CreateWithTexture";
 	if (FrameBuffer != 0)
 	{
 		Error(LOG_TAG, "Trying to create into an existing buffer");
@@ -38,6 +38,7 @@ bool CFBO::CreateWithTexture(int width, int height)
 	glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
 
 	Texture.CreateEmpty(width, height, GL_RGB);
+
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Texture.GetID(), 0);
 
 	Width = width;
@@ -54,7 +55,12 @@ bool CFBO::CreateWithTexture(int width, int height)
 
 bool CFBO::AddDepthBuffer()
 {
-	if (FrameBuffer == 0) return false;
+	const char* LOG_TAG = "CFBO::AddDepthBuffer";
+	if (FrameBuffer == 0)
+	{
+		Error(LOG_TAG, "Null buffer");
+		return false;
+	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
 
@@ -63,13 +69,18 @@ bool CFBO::AddDepthBuffer()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, Width, Height);
 
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, DepthBuffer);
-	return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+	{
+		Error(LOG_TAG, "glCheckFramebufferStatus failed");
+		return false;
+	}
+	return true;
 }
 
 void CFBO::Bind(bool fullViewPort)
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, FrameBuffer);
-	if (fullViewPort) glViewport(0, 0, 1024, 1024);
+	if (fullViewPort) glViewport(0, 0, Width, Height);
 }
 
 void CFBO::BindShadowMap()
@@ -123,4 +134,9 @@ int CFBO::GetWidth()
 int CFBO::GetHeight()
 {
 	return Height;
+}
+
+CTexture* CFBO::GetTexture()
+{
+	return &Texture;
 }

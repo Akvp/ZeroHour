@@ -6,7 +6,7 @@ glm::vec4 CFog::Color;
 void CFog::SetUniforms(CShaderProgram* program, int enabled)
 {
 	program->SetUniform("bFog", enabled);
-	program->SetUniform("fogParams.iEquation", 1);
+	program->SetUniform("fogParams.iEquation", 2);
 	program->SetUniform("fogParams.vFogColor", Color);
 	program->SetUniform("fogParams.fDensity", Density);
 }
